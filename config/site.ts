@@ -7,18 +7,19 @@ export const siteConfig = {
   creator: "Anuj Srivastava",
 
   navigation: [
+      {
+      title: "Itineraries",
+      href: "/itineraries",
+    },
     {
-      title: "Travel",
-      href: "/travel",
+      title: "Stories",
+      href: "/stories",
     },
     {
       title: "Destinations",
       href: "/destinations",
     },
-    {
-      title: "Itineraries",
-      href: "/itineraries",
-    },
+  
     {
       title: "My Journey",
       href: "/journey",

@@ -52,7 +52,7 @@ export default function AboutPage() {
 
             <div className="mt-10 flex flex-wrap gap-3">
               <Link
-                href="/travel"
+                href="/stories"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition hover:bg-white/90"
               >
                 Explore my journeys
@@ -229,7 +229,7 @@ export default function AboutPage() {
       </section> */}
 
       {/* WHAT'S NEXT */}
-      <section className="border-y border-white/10 bg-white/[0.02]">
+      {/* <section className="border-y border-white/10 bg-white/[0.02]">
         <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32">
           <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
             <div>
@@ -265,7 +265,7 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* TOP VIDEOS */}
       <section className="mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32">

@@ -6,10 +6,12 @@ import { destinations } from "../data/destinations";
 import { travelPosts } from "../data/travel-posts";
 import { DestinationCard } from "../components/destination/destination-card";
 import { TravelCard } from "../components/travel/travel-card";
+import { ItineraryPopup } from "../components/navigation/itinerary-popup";
 
 export default function HomePage() {
   return (
     <div className="bg-black text-white">
+      <ItineraryPopup />
       {/* HERO */}
       {/* HERO */}
       <section className="relative min-h-screen overflow-hidden bg-black">
@@ -248,7 +250,7 @@ export default function HomePage() {
         {/* More Travel Stories */}
         <div className="mt-14 flex justify-center">
           <Link
-            href="/travel"
+            href="/stories"
             className="group inline-flex items-center gap-3 rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white transition hover:border-white hover:bg-white hover:text-black"
           >
             More Travel Stories

@@ -12,7 +12,7 @@ export function TravelCard({ post }: TravelCardProps) {
   return (
     <article>
       <Link
-        href={`/travel/${post.slug}`}
+        href={`/stories/${post.slug}`}
         className="group block overflow-hidden rounded-2xl"
       >
         <div className="relative aspect-[4/3] overflow-hidden">
@@ -40,7 +40,7 @@ export function TravelCard({ post }: TravelCardProps) {
       </p>
 
       <Link
-  href={`/travel/${post.slug}`}
+  href={`/stories/${post.slug}`}
   className="mt-4 inline-flex items-center gap-2 text-sm text-white/60 transition hover:text-white"
 >
   Read story

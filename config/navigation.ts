@@ -1,22 +1,14 @@
 export const mainNavigation = [
   {
-    title: "Travel",
-    href: "/travel",
-  },
-  {
-    title: "Destinations",
-    href: "/destinations",
-  },
-  {
     title: "Itineraries",
     href: "/itineraries",
   },
   {
-    title: "My Journey",
-    href: "/journey",
+    title: "Stories",
+    href: "/stories",
   },
   {
-    title: "About",
-    href: "/about",
+    title: "My Journey",
+    href: "/journey",
   },
 ];

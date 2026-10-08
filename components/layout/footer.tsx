@@ -42,7 +42,7 @@ export async function Footer() {
             </h3>
 
             <div className="mt-4 flex flex-col gap-3 text-sm text-white/50">
-              <Link href="/travel" className="hover:text-white">
+              <Link href="/stories" className="hover:text-white">
                 Travel Stories
               </Link>
 

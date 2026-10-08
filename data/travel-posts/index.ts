@@ -10,7 +10,7 @@ export const travelPosts: TravelPost[] = [
     "I thought I had missed my chance for Baba Vishwanath’s darshan. With barely ten minutes left before the temple closed, Kashi had other plans.",
   location: "Varanasi, Uttar Pradesh, India",
   date: "October 2026",
-  coverImage: "/images/travel/kashi.jpg",
+  coverImage: "/images/stories/kashi.jpg",
   tags: ["Varanasi", "Kashi", "Uttar Pradesh", "Spiritual Journey"],
 
   content: `[[THE PLAN I NEVER HAD]]
@@ -54,7 +54,7 @@ No plans. No expectations. No certainty that I would even make it. Just ten minu
       "What looked like a long wait turned into an unforgettable moment. With just 15 minutes from submitting my belongings, I finally got the opportunity to have Darshan of Ram Lalla at the magnificent Ram Mandir.",
     location: "Ayodhya, Uttar Pradesh, India",
     date: "October 2026",
-    coverImage: "/images/travel/ramji.jpg",
+    coverImage: "/images/stories/ramji.jpg",
     tags: ["Ayodhya", "Ram Mandir", "Ram Lalla", "Uttar Pradesh"],
 
     content: `[[ARRIVING IN AYODHYA]]
@@ -106,7 +106,7 @@ What I thought might take hours turned out to be completely different. From subm
       "A difficult journey to Chandratal became one of my favourite travel memories when two kind strangers, Chacha and Chachi, helped me when I needed it most.",
     location: "Chandratal, Himachal Pradesh, India",
     date: "July 2026",
-    coverImage: "/images/travel/dhaba.jpg",
+    coverImage: "/images/stories/dhaba.jpg",
     tags: ["Chandratal", "Solo Travel", "Himachal Pradesh"],
 
     content: `[[THE PLAN TO REACH CHANDRATAL]]
@@ -148,7 +148,7 @@ excerpt:
 "A journey through the remote villages of Spiti Valley, where I visited Hikkim and sent a postcard from one of the world's highest post offices.",
 location: "Hikkim, Himachal Pradesh, India",
 date: "July 2026",
-coverImage: "/images/travel/hikkim.jpg",
+coverImage: "/images/stories/hikkim.jpg",
 tags: ["Spiti Valley", "Hikkim", "Solo Travel", "Himachal Pradesh"],
 content: `[[THE RED BUILDING IN THE DISTANCE]]
 
@@ -269,7 +269,7 @@ The funny part is, I still haven’t received the postcard I sent from Hikkim. M
     "I thought I had missed my chance to get a window seat on the long journey from Kalpa to Kaza. But somehow, the seat I wanted ended up being mine.",
   location: "Kalpa to Kaza, Himachal Pradesh, India",
   date: "July 2026",
-  coverImage: "/images/travel/bus.jpg",
+  coverImage: "/images/stories/bus.jpg",
   tags: ["Kalpa", "Kaza", "Spiti Valley", "Solo Travel", "Road Trip"],
 
    content: `[[THE JOURNEY STARTS IN THE RAIN]]

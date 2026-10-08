@@ -64,8 +64,8 @@ export default async function TravelStoryPage({ params }: TravelPageProps) {
             <Breadcrumbs
               items={[
                 {
-                  label: "Travel",
-                  href: "/travel",
+                  label: "Stories",
+                  href: "/stories",
                 },
                 {
                   label: post.title,
