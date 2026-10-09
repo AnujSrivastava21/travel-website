@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, LogOut, Search } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, Search , ArrowRight} from "lucide-react";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useRef } from "react";
