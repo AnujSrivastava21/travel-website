@@ -1,21 +1,10 @@
+
 "use client";
 
 import { useState } from "react";
 import { Calculator, ArrowRight } from "lucide-react";
-import { BudgetPopup } from "./budget-popup";
-
-type Itinerary = {
-  title: string;
-  duration: number;
-  
-  days: {
-    day: number;
-    title: string;
-    description: string;
-    locations: string[];
-  }[],
-
-};
+import BudgetPopup from "../budget/budget-popup";
+import type { Itinerary } from "../budget/budget-types";
 
 interface ItineraryBudgetButtonProps {
   itinerary: Itinerary;
