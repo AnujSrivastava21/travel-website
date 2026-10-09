@@ -1,15 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Menu,
-  X,
-  ChevronDown,
-  LogOut,
-  Search,
-} from "lucide-react";
+
+import { usePathname } from "next/navigation";
+import { Menu, X, ChevronDown, LogOut, Search } from "lucide-react";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { useEffect, useRef } from "react";
 import { Ephesis } from "next/font/google";
 
 import { mainNavigation } from "../../config/navigation";
@@ -22,330 +19,287 @@ const ephesis = Ephesis({
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
+  const pathname = usePathname();
   const { data: session, status } = useSession();
 
   const user = session?.user;
   const firstName = user?.name?.split(" ")[0] ?? "Account";
 
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!searchOpen) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setSearchOpen(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSearchOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [searchOpen]);
+
   const handleLogout = async () => {
     setProfileOpen(false);
     setIsOpen(false);
 
-    await signOut({
-      callbackUrl: "/",
-    });
+    await signOut({ callbackUrl: "/" });
+  };
+
+  const closeMobileMenu = () => {
+    setIsOpen(false);
+    setProfileOpen(false);
   };
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      {/* Main Glass Navbar */}
-      <div className="border-b border-white/[0.06] bg-black/45 backdrop-blur-2xl">
-        <div className="mx-auto flex h-[76px] max-w-[1400px] items-center px-5 sm:px-6 lg:px-8">
-
-          {/* =====================================================
-              LEFT — LOGO
-          ====================================================== */}
+      <div className="border-b border-white/[0.07] bg-black/60 backdrop-blur-2xl">
+        <div className="mx-auto flex h-[72px] max-w-[1400px] items-center px-5 sm:px-6 lg:px-8">
+          {/* LOGO */}
           <div className="flex flex-1 items-center justify-start">
-            <Link
-              href="/"
-              className="group relative shrink-0"
-              onClick={() => {
-                setIsOpen(false);
-                setProfileOpen(false);
-              }}
-            >
+            <Link href="/" onClick={closeMobileMenu} className="group shrink-0">
               <span
-                className={`${ephesis.className} text-[30px] font-normal tracking-wide text-white transition-all duration-500 group-hover:text-white/75`}
+                className={`${ephesis.className} text-[30px] font-normal tracking-wide text-white/95 transition-colors group-hover:text-amber-200`}
               >
                 The Local Route
               </span>
-
-              <span className="absolute -bottom-1 left-0 h-px w-0 bg-white/70 transition-all duration-500 group-hover:w-full" />
             </Link>
           </div>
 
-          {/* =====================================================
-              CENTER — NAVIGATION
-          ====================================================== */}
-          <nav className="hidden items-center rounded-full border border-white/[0.08] bg-white/[0.025] p-1.5 shadow-[0_8px_40px_rgba(0,0,0,0.25)] backdrop-blur-xl md:flex">
-
+          {/* DESKTOP NAVIGATION */}
+          <nav className="hidden items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.025] p-1.5 shadow-[0_8px_40px_rgba(0,0,0,0.25)] backdrop-blur-xl md:flex">
             {mainNavigation.map((item) => {
+              const active = isActive(item.href);
               const isItinerary = item.href === "/itineraries";
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`group relative ${
-                    isItinerary ? "z-10" : ""
+                  aria-current={active ? "page" : undefined}
+                  className={`relative isolate overflow-hidden rounded-full px-4 py-2 text-[19px] transition-all duration-300 ${
+                    ephesis.className
+                  } ${
+                    active
+                      ? isItinerary
+                        ? "bg-amber-300/[0.13] text-amber-200 shadow-[inset_0_0_0_1px_rgba(252,211,77,0.25)]"
+                        : "bg-white/[0.09] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+                      : isItinerary
+                        ? "text-amber-100/75 hover:bg-amber-300/[0.07] hover:text-amber-200"
+                        : "text-white/55 hover:bg-white/[0.06] hover:text-white"
                   }`}
                 >
-                  <span
-                    className={`
-                      ${ephesis.className}
-                      relative z-10 flex items-center gap-2 rounded-full px-5 py-2 text-[19px]
-                      transition-all duration-300
-                      ${
-                        isItinerary
-                          ? "border border-[#d4af37]/25 bg-[#d4af37]/[0.08] text-white shadow-[0_0_20px_rgba(212,175,55,0.06)] group-hover:border-[#d4af37]/45 group-hover:bg-[#d4af37]/[0.14]"
-                          : "text-white/55 group-hover:bg-white/[0.08] group-hover:text-white"
-                      }
-                    `}
-                  >
-                    {item.title}
-
-                    {/* Premium feature badge */}
-                    {isItinerary && (
-                      <span className="rounded-full border border-[#d4af37]/20 bg-[#d4af37]/10 px-1.5 py-[2px] text-[8px] font-sans font-medium uppercase tracking-[0.14em] text-[#d4af37]">
-                        Plan
-                      </span>
-                    )}
-                  </span>
-
-                  {/* Bottom glow */}
-                  <span
-                    className={`
-                      absolute bottom-0 left-1/2 h-px -translate-x-1/2
-                      transition-all duration-300
-                      ${
-                        isItinerary
-                          ? "w-10 bg-[#d4af37] shadow-[0_0_12px_rgba(212,175,55,0.7)] group-hover:w-14"
-                          : "w-0 bg-white/70 shadow-[0_0_12px_rgba(255,255,255,0.5)] group-hover:w-8"
-                      }
-                    `}
-                  />
+                  {active && isItinerary && (
+                    <span className="pointer-events-none absolute inset-0 -z-10 animate-pulse rounded-full bg-amber-300/[0.08]" />
+                  )}
+                  {item.title}
+                  {active && (
+                    <span
+                      className={`absolute bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full ${
+                        isItinerary ? "bg-amber-300" : "bg-white/80"
+                      }`}
+                    />
+                  )}
                 </Link>
               );
             })}
           </nav>
 
-          {/* =====================================================
-              RIGHT — SEARCH + AUTH
-          ====================================================== */}
+          {/* SEARCH + ACCOUNT */}
           <div className="flex flex-1 items-center justify-end gap-3">
+            {/* Search icon and expandable input */}
+            <div ref={searchRef} className="relative hidden lg:block">
+              {searchOpen && (
+                <input
+                  autoFocus
+                  type="search"
+                  placeholder="Search destinations..."
+                  aria-label="Search destinations"
+                  className="h-10 w-[230px] rounded-full border border-amber-300/40 bg-[#111]/95 pl-4 pr-12 text-[13px] text-white outline-none shadow-[0_0_24px_rgba(252,211,77,0.10)] placeholder:text-white/40 focus:border-amber-300/70 focus:bg-[#151515]"
+                />
+              )}
 
-            {/* Premium Search Box */}
-            <div className="group relative hidden lg:block">
-              <Search
-                size={15}
-                strokeWidth={1.8}
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 transition-colors duration-300 group-focus-within:text-white/70"
-              />
-
-              <input
-                type="text"
-                placeholder="Search destinations..."
-                aria-label="Search destinations"
-                className="h-10 w-[190px] rounded-full border border-white/[0.10] bg-white/[0.035] pl-10 pr-4 text-[13px] text-white outline-none placeholder:text-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-all duration-500 hover:w-[210px] hover:border-white/[0.18] hover:bg-white/[0.055] focus:w-[230px] focus:border-white/[0.28] focus:bg-white/[0.07] focus:shadow-[0_0_25px_rgba(255,255,255,0.06)]"
-              />
+              <button
+                type="button"
+                aria-label={searchOpen ? "Close search" : "Open search"}
+                aria-expanded={searchOpen}
+                onClick={() => setSearchOpen((value) => !value)}
+                className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 ${
+                  searchOpen
+                    ? "absolute right-0 top-0 border-amber-300/40 bg-amber-300/10 text-amber-200"
+                    : "border-white/[0.10] bg-white/[0.035] text-white/60 hover:border-amber-300/40 hover:bg-amber-300/[0.08] hover:text-amber-200"
+                }`}
+              >
+                {searchOpen ? <X size={17} /> : <Search size={17} />}
+              </button>
             </div>
 
-            {/* =================================================
-                AUTH
-            ================================================== */}
+            {/* Mobile search icon */}
+            <button
+              type="button"
+              aria-label="Search"
+              onClick={() => {
+                setIsOpen(true);
+                setSearchOpen((value) => !value);
+              }}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.035] text-white/65 transition hover:border-amber-300/40 hover:bg-amber-300/[0.08] hover:text-amber-200 md:hidden"
+            >
+              <Search size={17} />
+            </button>
+
+            {/* ACCOUNT */}
             {status === "loading" ? (
-              <div className="h-10 w-24 animate-pulse rounded-full bg-white/[0.06]" />
+              <div className="h-9 w-9 animate-pulse rounded-full bg-white/[0.06]" />
             ) : user ? (
               <div className="relative">
                 <button
                   type="button"
+                  aria-expanded={profileOpen}
+                  aria-label="Open account menu"
                   onClick={() => setProfileOpen((value) => !value)}
-                  className="group flex items-center gap-2 rounded-full border border-white/[0.10] bg-white/[0.045] px-2 py-1.5 text-sm text-white/75 shadow-[0_5px_25px_rgba(0,0,0,0.2)] backdrop-blur-xl transition-all duration-300 hover:border-white/[0.20] hover:bg-white/[0.08] hover:text-white"
+                  className="flex items-center gap-2 rounded-full border border-white/[0.10] bg-white/[0.045] px-2 py-1.5 text-sm text-white/75 transition hover:border-white/[0.20] hover:bg-white/[0.08] hover:text-white"
                 >
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.07] text-xs transition group-hover:bg-white/[0.12]">
-                    👤
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.07] text-xs">
+                    {firstName.charAt(0).toUpperCase()}
                   </div>
 
-                  <span className="max-w-20 truncate">
+                  <span className="hidden max-w-20 truncate sm:block">
                     {firstName}
                   </span>
 
                   <ChevronDown
                     size={13}
-                    className={`text-white/40 transition-transform duration-300 ${
+                    className={`text-white/40 transition-transform ${
                       profileOpen ? "rotate-180" : ""
                     }`}
                   />
                 </button>
 
-                {/* Profile Dropdown */}
                 {profileOpen && (
                   <div className="absolute right-0 mt-3 w-60 overflow-hidden rounded-2xl border border-white/[0.10] bg-[#0c0c0c]/95 shadow-[0_20px_70px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
-
                     <div className="border-b border-white/[0.08] p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.06]">
-                          👤
-                        </div>
-
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-medium text-white">
-                            {firstName}
-                          </p>
-
-                          <p className="mt-1 truncate text-xs text-white/35">
-                            {user.email}
-                          </p>
-                        </div>
-                      </div>
+                      <p className="truncate text-sm font-medium text-white">
+                        {user.name ?? "Account"}
+                      </p>
+                      <p className="mt-1 truncate text-xs text-white/40">
+                        {user.email}
+                      </p>
                     </div>
 
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className="group flex w-full items-center gap-3 px-4 py-3.5 text-sm text-white/55 transition-all duration-300 hover:bg-white/[0.06] hover:text-white"
+                      className="group flex w-full items-center gap-3 px-4 py-3.5 text-sm text-white/55 transition hover:bg-white/[0.06] hover:text-white"
                     >
                       <LogOut
                         size={15}
-                        className="text-white/35 transition-colors group-hover:text-white/80"
+                        className="text-white/35 group-hover:text-amber-200"
                       />
                       Logout
                     </button>
                   </div>
                 )}
               </div>
-            ) : (
-              <Link
-                href="/signup"
-                className="group relative hidden overflow-hidden rounded-full border border-white/[0.15] bg-white px-5 py-2.5 text-[13px] font-medium text-black shadow-[0_5px_25px_rgba(255,255,255,0.08)] transition-all duration-300 hover:scale-[1.02] hover:bg-white/90 hover:shadow-[0_8px_35px_rgba(255,255,255,0.14)] sm:block"
-              >
-                {/* Shine */}
-                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/[0.05] to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            ) : null}
 
-                <span className="relative">
-                  Sign up
-                </span>
-              </Link>
-            )}
+            {/* MOBILE MENU BUTTON */}
+            <button
+              type="button"
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-white/70 transition hover:border-amber-300/30 hover:bg-amber-300/[0.08] hover:text-amber-200 md:hidden"
+              onClick={() => setIsOpen((value) => !value)}
+            >
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
-
-          {/* =====================================================
-              MOBILE BUTTON
-          ====================================================== */}
-          <button
-            type="button"
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-            className="ml-3 flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-white/70 transition-all duration-300 hover:border-white/[0.16] hover:bg-white/[0.08] hover:text-white md:hidden"
-            onClick={() => setIsOpen((value) => !value)}
-          >
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
         </div>
 
-        {/* =====================================================
-            MOBILE NAVIGATION
-        ====================================================== */}
+        {/* MOBILE NAVIGATION */}
         {isOpen && (
-          <div className="border-t border-white/[0.07] bg-black/75 px-5 py-6 backdrop-blur-2xl md:hidden">
-            <nav className="flex flex-col gap-2">
-
-              {/* Mobile Navigation */}
+          <div className="border-t border-white/[0.07] bg-black/95 px-5 py-5 backdrop-blur-2xl md:hidden">
+            <nav className="flex flex-col gap-1">
               {mainNavigation.map((item) => {
+                const active = isActive(item.href);
                 const isItinerary = item.href === "/itineraries";
 
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`
-                      group flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300
-                      ${
-                        isItinerary
-                          ? "border border-[#d4af37]/20 bg-[#d4af37]/[0.07] hover:border-[#d4af37]/40 hover:bg-[#d4af37]/[0.12]"
-                          : "border border-transparent hover:border-white/[0.08] hover:bg-white/[0.05]"
-                      }
-                    `}
+                    aria-current={active ? "page" : undefined}
+                    onClick={closeMobileMenu}
+                    className={`flex items-center justify-between rounded-xl border px-4 py-3 transition-all duration-300 ${
+                      ephesis.className
+                    } text-[22px] ${
+                      active
+                        ? isItinerary
+                          ? "border-amber-300/25 bg-amber-300/[0.10] text-amber-200"
+                          : "border-white/[0.10] bg-white/[0.07] font-semibold text-white"
+                        : isItinerary
+                          ? "border-transparent text-amber-100/80 hover:bg-amber-300/[0.06]"
+                          : "border-transparent text-white/65 hover:bg-white/[0.05] hover:text-white"
+                    }`}
                   >
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`${ephesis.className} text-[22px] transition-colors duration-300 ${
-                          isItinerary
-                            ? "text-white"
-                            : "text-white/65 group-hover:text-white"
-                        }`}
-                      >
-                        {item.title}
-                      </span>
-
-                      {isItinerary && (
-                        <span className="rounded-full border border-[#d4af37]/20 bg-[#d4af37]/10 px-1.5 py-[2px] text-[8px] font-sans font-medium uppercase tracking-[0.14em] text-[#d4af37]">
-                          Plan
-                        </span>
-                      )}
-                    </div>
-
-                    <span
-                      className={`transition-all duration-300 group-hover:translate-x-1 ${
-                        isItinerary
-                          ? "text-[#d4af37]/60 group-hover:text-[#d4af37]"
-                          : "text-white/20 group-hover:text-white/60"
-                      }`}
-                    >
-                      →
-                    </span>
+                    <span>{item.title}</span>
+                    <ArrowRight
+                      size={15}
+                      className={active ? "text-amber-200" : "text-white/25"}
+                    />
                   </Link>
                 );
               })}
 
-              {/* Mobile Search */}
-              <div className="group relative mt-4">
-                <Search
-                  size={16}
-                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/30 transition-colors group-focus-within:text-white/70"
-                />
-
+              {/* Mobile search input: visual only for now */}
+              {searchOpen && (
                 <input
-                  type="text"
+                  autoFocus
+                  type="search"
                   placeholder="Search destinations..."
                   aria-label="Search destinations"
-                  className="h-12 w-full rounded-xl border border-white/[0.10] bg-white/[0.04] pl-11 pr-4 text-sm text-white outline-none placeholder:text-white/30 transition-all duration-300 focus:border-white/[0.25] focus:bg-white/[0.07] focus:shadow-[0_0_25px_rgba(255,255,255,0.05)]"
+                  className="mt-3 h-12 w-full rounded-xl border border-amber-300/35 bg-amber-300/[0.08] px-4 text-sm text-white outline-none placeholder:text-white/40 focus:border-amber-300/70"
                 />
-              </div>
+              )}
 
-              {/* Mobile Auth */}
-              {status === "loading" ? (
-                <div className="mt-4 h-12 animate-pulse rounded-xl bg-white/[0.06]" />
-              ) : user ? (
-                <div className="mt-4 border-t border-white/[0.08] pt-5">
-
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.06]">
-                      👤
-                    </div>
-
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-white">
-                        {firstName}
-                      </p>
-
-                      <p className="truncate text-xs text-white/35">
-                        {user.email}
-                      </p>
-                    </div>
+              {user && (
+                <div className="mt-4 border-t border-white/[0.08] pt-4">
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-white">
+                      {user.name ?? firstName}
+                    </p>
+                    <p className="mt-1 text-xs text-white/40">{user.email}</p>
                   </div>
 
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="group mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.03] px-4 py-3 text-sm text-white/60 transition-all duration-300 hover:border-white/[0.18] hover:bg-white/[0.07] hover:text-white"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.03] px-4 py-3 text-sm text-white/65 transition hover:bg-white/[0.07] hover:text-white"
                   >
-                    <LogOut
-                      size={16}
-                      className="text-white/40 transition-colors group-hover:text-white"
-                    />
+                    <LogOut size={16} />
                     Logout
                   </button>
                 </div>
-              ) : (
-                <Link
-                  href="/signup"
-                  className="mt-4 rounded-xl bg-white px-5 py-3 text-center text-sm font-medium text-black transition-all duration-300 hover:bg-white/90 hover:shadow-[0_8px_30px_rgba(255,255,255,0.12)]"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Sign up
-                </Link>
               )}
             </nav>
           </div>

@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Lock } from "lucide-react";
-
+// import { BudgetPopup } from "../../../../components/navigation/budget-popup";
+// import { useState } from "react";
 import { itineraries } from "../../../../data/itineraries";
-
+import { ItineraryBudgetButton } from "../../../../components/navigation/itinerary-budget-button";
+// import { ItineraryBudgetButton } from "../../../../components/navigation/itinerary-budget-button";
+// import { ItineraryBudgetButton } from "../../../../components/navigation/itinerary-budget-button";
 interface ItineraryPageProps {
   params: Promise<{
     slug: string;
@@ -75,7 +78,7 @@ export default async function ItineraryPage({
             <span className="text-white/30">•</span>
 
             <span className="text-white/50">
-              {itinerary.duration} Days
+              {itinerary.duration} Nights
             </span>
 
             {itinerary.isPremium && (
@@ -97,6 +100,10 @@ export default async function ItineraryPage({
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/70">
             {itinerary.description}
           </p>
+          {/* <ItineraryBudgetButton itinerary={itinerary} /> */}
+
+          {/* BUDGET PLANNER BUTTON */}
+          <ItineraryBudgetButton itinerary={itinerary} />
         </div>
       </section>
 

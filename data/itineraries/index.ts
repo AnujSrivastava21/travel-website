@@ -214,7 +214,7 @@ export const itineraries: Itinerary[] = [
     coverImage: "/images/iternery/kashmirs.jpg",
 
     isPremium: true,
-    price: 199,
+    price: 49,
 
     days: [
       {
