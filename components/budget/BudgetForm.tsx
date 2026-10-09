@@ -53,11 +53,15 @@ function Option({
       type="button"
       aria-pressed={selected}
       onClick={onClick}
-      className={`min-w-0 rounded-xl border px-3 py-2.5 text-left transition ${
-        selected
-          ? "border-amber-300/40 bg-amber-300/[0.08] text-white"
-          : "border-white/10 bg-white/[0.025] text-white/60 hover:border-white/20 hover:text-white"
-      }`}
+
+
+className={`min-w-0 rounded-xl border px-3 py-2.5 text-left transition ${
+  selected
+    ? "border-emerald-300/70 bg-emerald-300/15 text-emerald-200 ring-1 ring-emerald-300/25"
+    : "border-white/10 bg-white/[0.025] text-white/60 hover:border-emerald-300/40 hover:bg-emerald-300/[0.05] hover:text-white"
+}`}
+
+
     >
       <span className="block text-sm font-medium">
         {title}
@@ -108,6 +112,20 @@ export default function BudgetForm({
   onCityTransportChange,
   onCalculate,
 }: Props) {
+  const arrivalPrice =
+    arrivalTransport === "train"
+      ? arrivalTrainPrice
+      : arrivalTransport === "bus"
+        ? arrivalBusPrice
+        : 0;
+
+  const departurePrice =
+    departureTransport === "train"
+      ? departureTrainPrice
+      : departureTransport === "bus"
+        ? departureBusPrice
+        : 0;
+
   const arrivalDetail = (type: TransportType) =>
     money(
       type === "train"
@@ -122,8 +140,27 @@ export default function BudgetForm({
         : departureBusPrice,
     );
 
+  const missingSelections: string[] = [];
+
+  if (arrivalTransport === null) {
+    missingSelections.push("Choose your arrival transport.");
+  } else if (arrivalPrice <= 0) {
+    missingSelections.push("Select your arrival ticket.");
+  }
+
+  if (departureTransport === null) {
+    missingSelections.push("Choose your return transport.");
+  } else if (departurePrice <= 0) {
+    missingSelections.push("Select your return ticket.");
+  }
+
+  if (cityTransport === null) {
+    missingSelections.push("Choose your local transport.");
+  }
+
   return (
     <div className="space-y-5">
+      {/* Trip details */}
       <div className="rounded-xl border border-amber-300/15 bg-amber-300/[0.04] p-3">
         <p className="text-[10px] uppercase tracking-[0.15em] text-white/40">
           Your trip
@@ -138,6 +175,7 @@ export default function BudgetForm({
         </p>
       </div>
 
+      {/* Travellers */}
       <Section title="Travellers">
         <div className="grid grid-cols-4 gap-2">
           {[1, 2, 3, 4].map((count) => (
@@ -152,6 +190,7 @@ export default function BudgetForm({
         </div>
       </Section>
 
+      {/* Arrival transport */}
       <Section title="Arrival · Getting there">
         <div className="grid grid-cols-2 gap-2">
           <Option
@@ -170,6 +209,7 @@ export default function BudgetForm({
         </div>
       </Section>
 
+      {/* Return transport */}
       <Section title="Return · Getting home">
         <div className="grid grid-cols-2 gap-2">
           <Option
@@ -188,6 +228,7 @@ export default function BudgetForm({
         </div>
       </Section>
 
+      {/* Local transport */}
       <Section title="Local transport">
         <div className="grid grid-cols-3 gap-2">
           <Option
@@ -216,24 +257,50 @@ export default function BudgetForm({
         </p>
       </Section>
 
+      {/* Missing selections */}
       {!canCalculate && (
-        <p className="text-xs leading-5 text-amber-200/70">
-          Select your arrival ticket, return ticket, and local
-          transport to calculate your budget.
-        </p>
+        <div className="rounded-xl border border-amber-300/15 bg-amber-300/[0.04] p-3">
+          <p className="mb-1.5 text-xs font-medium text-amber-200">
+            Complete your budget
+          </p>
+
+          <ul className="space-y-1">
+            {missingSelections.map((message) => (
+              <li
+                key={message}
+                className="text-xs leading-5 text-white/55"
+              >
+                • {message}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
+      {/* Calculate button */}
       <button
         type="button"
         disabled={!canCalculate}
-        onClick={onCalculate}
-        className={`group flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition ${
-          canCalculate
-            ? "bg-white text-black hover:bg-amber-200"
-            : "cursor-not-allowed bg-white/10 text-white/30"
-        }`}
+        onClick={() => {
+          if (canCalculate) {
+            onCalculate();
+          }
+        }}
+
+
+
+className={`group flex w-full items-center justify-between rounded-xl border px-4 py-3.5 text-sm font-semibold transition ${
+  canCalculate
+    ? "border-amber-300/30 bg-amber-300/10 text-amber-100 hover:border-amber-200/60 hover:bg-amber-300/20"
+    : "cursor-not-allowed border-white/5 bg-white/10 text-white/30"
+}`}
+
+
+
       >
-        Calculate budget
+        <span>
+          {canCalculate ? "Calculate budget" : "Complete selections"}
+        </span>
 
         <ArrowRight
           size={16}
