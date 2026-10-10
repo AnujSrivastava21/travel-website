@@ -46,7 +46,7 @@ const regions: Region[] = [
     ],
     icon: Mountain,
     accent: "#55705B",
-    background: "#E9EFE5",
+    background: "#E4EADF",
   },
   {
     name: "South India",
@@ -62,7 +62,7 @@ const regions: Region[] = [
     ],
     icon: Waves,
     accent: "#367C78",
-    background: "#E4F0EB",
+    background: "#E5EFEB",
   },
   {
     name: "East India",
@@ -94,8 +94,8 @@ const regions: Region[] = [
     mood: "THE OPEN ROAD",
     states: ["Rajasthan", "Gujarat", "Maharashtra", "Goa"],
     icon: Sun,
-    accent: "#B2763E",
-    background: "#F5E9D9",
+    accent: "#A16F35",
+    background: "#F1E7D8",
   },
 ];
 
@@ -114,29 +114,29 @@ export default function ItineraryMegaMenu({
       }
     >
       <div
-        className={`border border-[#E6DCCB] bg-[#FCFAF5] text-[#252E27] ${
+        className={`border border-[#EAE5D9] bg-[#FFFEFA] text-[#303A32] ${
           isMobile
             ? "max-h-[calc(100dvh-150px)] overflow-x-hidden overflow-y-auto overscroll-contain rounded-xl [-webkit-overflow-scrolling:touch]"
-            : "overflow-hidden rounded-2xl shadow-[0_20px_60px_-24px_rgba(36,43,32,0.28)]"
+            : "overflow-hidden rounded-2xl shadow-[0_20px_60px_-24px_rgba(38,61,50,0.25)]"
         }`}
       >
         {/* HEADER */}
-        <div className="border-b border-[#E8DFD0] px-5 py-5 sm:px-7 sm:py-5">
+        <div className="border-b border-[#EAE5D9] px-5 py-5 sm:px-7">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
               <div className="mb-2 flex items-center gap-2">
-                <Compass size={14} className="text-[#A8783C]" />
+                <Compass size={14} className="text-[#A16F35]" />
 
-                <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8C795D]">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#A16F35]">
                   The Local Route · Explore India
                 </span>
               </div>
 
-              <h2 className="text-xl font-semibold leading-tight tracking-tight text-[#28352C] sm:text-2xl">
+              <h2 className="font-[var(--font-heading)] text-xl font-semibold leading-tight tracking-tight text-[#263D32] sm:text-2xl">
                 Find your next journey.
               </h2>
 
-              <p className="mt-1.5 text-xs leading-5 text-[#777468] sm:text-sm">
+              <p className="mt-1.5 text-xs leading-5 text-[#626A5D] sm:text-sm">
                 Explore destinations by region and discover your next route.
               </p>
             </div>
@@ -144,7 +144,7 @@ export default function ItineraryMegaMenu({
             <Link
               href="/itineraries"
               onClick={onClose}
-              className="hidden shrink-0 items-center gap-1.5 rounded-lg border border-[#DDD2BE] px-3 py-2 text-xs font-medium text-[#384337] transition hover:border-[#A8783C] hover:bg-white sm:inline-flex"
+              className="hidden shrink-0 items-center gap-1.5 rounded-lg border border-[#EAE5D9] px-3 py-2 text-xs font-semibold text-[#263D32] transition hover:border-[#A16F35] hover:bg-[#F8F6F0] sm:inline-flex"
             >
               All itineraries
               <ArrowUpRight size={13} />
@@ -162,19 +162,19 @@ export default function ItineraryMegaMenu({
                 key={region.name}
                 className={[
                   index > 0
-                    ? "border-t border-[#E8DFD0] sm:border-t-0"
+                    ? "border-t border-[#EAE5D9] sm:border-t-0"
                     : "",
                   index % 2 === 1
-                    ? "sm:border-l sm:border-[#E8DFD0]"
+                    ? "sm:border-l sm:border-[#EAE5D9]"
                     : "",
                   index > 0
-                    ? "lg:border-l lg:border-[#E8DFD0]"
+                    ? "lg:border-l lg:border-[#EAE5D9]"
                     : "",
                 ].join(" ")}
               >
                 {/* REGION HEADER */}
                 <div
-                  className="px-4 py-3.5 sm:px-4"
+                  className="px-4 py-3.5"
                   style={{ backgroundColor: region.background }}
                 >
                   <div className="flex items-center justify-between gap-2">
@@ -193,7 +193,7 @@ export default function ItineraryMegaMenu({
                   </div>
 
                   <div className="mt-2 flex items-baseline justify-between gap-2">
-                    <h3 className="text-base font-semibold tracking-tight text-[#28352C]">
+                    <h3 className="font-[var(--font-heading)] text-base font-semibold tracking-tight text-[#263D32]">
                       {region.name}
                     </h3>
 
@@ -205,14 +205,14 @@ export default function ItineraryMegaMenu({
                     </span>
                   </div>
 
-                  <p className="mt-1 text-[11px] leading-4 text-[#716F62]">
+                  <p className="mt-1 text-[11px] leading-4 text-[#626A5D]">
                     {region.description}
                   </p>
                 </div>
 
                 {/* DESTINATION LINKS */}
                 <div className="px-4 py-3.5">
-                  <p className="mb-2.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#A19A8B]">
+                  <p className="mb-2.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#8B8B7D]">
                     Explore destinations
                   </p>
 
@@ -222,13 +222,13 @@ export default function ItineraryMegaMenu({
                         <Link
                           href={`/itineraries?state=${encodeURIComponent(state)}`}
                           onClick={onClose}
-                          className="group/link flex min-h-7 items-center justify-between gap-2 rounded-md py-1 text-xs leading-4 text-[#5F6055] transition hover:text-[#A8783C]"
+                          className="group/link flex min-h-7 items-center justify-between gap-2 rounded-md py-1 text-xs leading-4 text-[#626A5D] transition-colors hover:text-[#A16F35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A16F35]"
                         >
                           <span>{state}</span>
 
                           <ArrowUpRight
                             size={12}
-                            className="shrink-0 text-[#A8783C] opacity-0 transition group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 group-hover/link:opacity-100"
+                            className="shrink-0 text-[#A16F35] opacity-0 transition group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 group-hover/link:opacity-100"
                           />
                         </Link>
                       </li>
@@ -241,15 +241,15 @@ export default function ItineraryMegaMenu({
         </div>
 
         {/* FOOTER */}
-        <div className="flex flex-col gap-2 border-t border-[#E8DFD0] bg-[#F5F0E6] px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-7">
-          <p className="text-[11px] text-[#777468]">
+        <div className="flex flex-col gap-2 border-t border-[#EAE5D9] bg-[#F8F6F0] px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+          <p className="text-[11px] text-[#626A5D]">
             Travel local. Discover more. Find your own way.
           </p>
 
           <Link
             href="/itineraries"
             onClick={onClose}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#394638] transition hover:text-[#A8783C]"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#263D32] transition hover:text-[#A16F35]"
           >
             Explore all journeys
             <ArrowUpRight size={13} />

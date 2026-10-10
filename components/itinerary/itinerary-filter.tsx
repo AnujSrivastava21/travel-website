@@ -260,14 +260,18 @@ export function ItineraryFilter({
     setSelectedState(stateFromUrl);
   }, [stateFromUrl]);
 
-  function updateUrl(params: URLSearchParams) {
-    const queryString = params.toString();
 
-    router.push(
-      queryString ? `/itinerary?${queryString}` : "/itinerary",
-      { scroll: false },
-    );
-  }
+function updateUrl(params: URLSearchParams) {
+  const queryString = params.toString();
+
+  router.push(
+    queryString
+      ? `/itineraries?${queryString}`
+      : "/itineraries",
+    { scroll: false },
+  );
+}
+
 
   function handleStateChange(state: string) {
     setSelectedState(state);

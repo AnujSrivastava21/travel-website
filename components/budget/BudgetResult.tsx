@@ -295,33 +295,41 @@ export default function BudgetResult(props: Props) {
     style={sharedCardStyle}
   >
     {/* HEADER */}
-    <div className="flex items-start justify-between gap-3">
-      <div className="min-w-0">
-        <h3 className="text-sm font-semibold sm:text-base">
-          Places covered
-        </h3>
+    {/* HEADER */}
+<div className="flex w-full items-start justify-between gap-3">
+  {/* Left side */}
+  <div className="min-w-0 flex-1">
+    <h3 className="text-sm font-semibold sm:text-base">
+      Places covered
+    </h3>
 
-        <p
-          className="mt-1 text-xs leading-5 sm:text-sm"
-          style={{ color: theme.muted }}
-        >
-          {uniqueLocations.length} places across {itinerary.days.length} days
-        </p>
-      </div>
+    <p
+      className="mt-1 text-xs leading-5 sm:text-sm"
+      style={{ color: theme.muted }}
+    >
+      {uniqueLocations.length} places across {itinerary.days.length} days
+    </p>
+  </div>
 
-      <button
-        type="button"
-        onClick={() => setShowDestinations(false)}
-        style={{
-          borderColor: theme.border,
-          color: theme.primary,
-          backgroundColor: theme.surface,
-        }}
-        className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-semibold transition hover:opacity-75 sm:px-3.5 sm:py-1.5 sm:text-xs ${focusRing}`}
-      >
-        Close
-      </button>
-    </div>
+  {/* Right side: Close button */}
+  <button
+  type="button"
+  onClick={() => setShowDestinations(false)}
+  aria-label="Close places covered"
+  style={{
+    borderColor: theme.border,
+    color: theme.primary,
+    backgroundColor: theme.surface,
+    width: "56px",
+    minWidth: "56px",
+    maxWidth: "56px",
+    flex: "0 0 56px",
+  }}
+  className={`!h-8 shrink-0 items-center justify-center rounded-full border text-lg leading-none transition hover:opacity-75 sm:!h-8 sm:!w-8 sm:!min-w-8 sm:!max-w-8 ${focusRing} inline-flex`}
+>
+  ×
+</button>
+</div>
 
     {/* DESTINATIONS */}
     {uniqueLocations.length > 0 ? (

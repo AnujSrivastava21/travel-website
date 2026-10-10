@@ -1,8 +1,11 @@
+
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+
 import { Breadcrumbs } from "../../../../components/navigation/breadcrumbs";
 import { travelPosts } from "../../../../data/travel-posts";
+import { headingFont, bodyFont } from "../../../font";
 
 interface TravelPageProps {
   params: Promise<{
@@ -20,7 +23,6 @@ export async function generateMetadata({
   params,
 }: TravelPageProps): Promise<Metadata> {
   const { slug } = await params;
-
   const post = travelPosts.find((item) => item.slug === slug);
 
   if (!post) {
@@ -33,9 +35,10 @@ export async function generateMetadata({
   };
 }
 
-export default async function TravelStoryPage({ params }: TravelPageProps) {
+export default async function TravelStoryPage({
+  params,
+}: TravelPageProps) {
   const { slug } = await params;
-
   const post = travelPosts.find((item) => item.slug === slug);
 
   if (!post) {
@@ -43,23 +46,25 @@ export default async function TravelStoryPage({ params }: TravelPageProps) {
   }
 
   return (
-    <article className="min-h-screen bg-black">
-      {/* Hero */}
-      <section className="relative flex min-h-[75vh] items-end overflow-hidden">
+    <article
+      className={`${headingFont.variable} ${bodyFont.variable} min-h-screen bg-[#F8F6F0] font-[var(--font-body)] text-[#303A32] antialiased`}
+    >
+      {/* HERO */}
+      <section className="relative flex min-h-[75svh] items-end overflow-hidden bg-[#1D3027] sm:min-h-[80svh]">
         <Image
           src={post.coverImage}
           alt={post.title}
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="object-cover object-center"
         />
 
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-[#1D3027]/40" />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1D3027]/20 via-[#1D3027]/20 to-[#1D3027]/90" />
 
-        <div className="relative mx-auto w-full max-w-5xl px-6 pb-16 lg:px-8">
+        <div className="relative mx-auto w-full max-w-6xl px-5 pb-12 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:pb-20">
           <div className="mb-8">
             <Breadcrumbs
               items={[
@@ -74,54 +79,85 @@ export default async function TravelStoryPage({ params }: TravelPageProps) {
             />
           </div>
 
-          <p className="text-sm uppercase tracking-[0.2em] text-white/60">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#E5C18B] sm:text-sm">
             {post.location}
           </p>
 
-          <h1 className="mt-5 max-w-4xl text-5xl font-semibold tracking-tight sm:text-6xl lg:text-7xl">
+          <h1 className="mt-5 max-w-4xl break-words font-[var(--font-heading)] text-4xl font-semibold leading-[1.12] tracking-[-0.035em] text-white sm:text-6xl lg:text-7xl">
             {post.title}
           </h1>
 
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/70">
+          <p className="mt-6 max-w-2xl text-base leading-7 text-white/85 sm:text-lg sm:leading-8">
             {post.excerpt}
           </p>
 
-          <p className="mt-6 text-sm text-white/40">{post.date}</p>
+          <div className="mt-7 flex items-center gap-3">
+            <span className="h-px w-10 bg-[#D4AC73]" />
+            <p className="text-sm text-white/70">{post.date}</p>
+          </div>
         </div>
       </section>
 
-<section className="mx-auto max-w-5xl px-6 py-14 lg:px-8 lg:py-20">
-  <div className="space-y-4">
-    {post.content
-      .trim()
-      .split(/\n\s*\n/)
-      .map((paragraph, index) => {
-        const parts = paragraph.split(/(\[\[.*?\]\])/g);
+      {/* STORY CONTENT */}
+      <section className="px-5 py-14 sm:px-8 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-3xl">
+          <div className="mb-10 flex items-center gap-3">
+            <span className="h-8 w-1 rounded-full bg-[#A16F35]" />
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#A16F35]">
+              The story
+            </p>
+          </div>
 
-        return (
-          <p
-            key={index}
-            className="text-[15px] leading-7 tracking-[-0.005em] text-white/65 sm:text-base sm:leading-8"
-          >
-            {parts.map((part, i) => {
-              if (part.startsWith("[[") && part.endsWith("]]")) {
+          <div className="space-y-6">
+            {post.content
+              .trim()
+              .split(/\n\s*\n/)
+              .map((paragraph, index) => {
+                const parts = paragraph.split(/(\[\[.*?\]\])/g);
+
                 return (
-                  <span
-                    key={i}
-                    className="font-medium text-amber-300"
+                  <p
+                    key={index}
+                    className="break-words text-[15px] leading-8 tracking-[-0.005em] text-[#626A5D] sm:text-base sm:leading-9"
                   >
-                    {part.slice(2, -2)}
-                  </span>
-                );
-              }
+                    {parts.map((part, i) => {
+                      if (part.startsWith("[[") && part.endsWith("]]")) {
+                        return (
+                          <span
+                            key={i}
+                            className="font-semibold text-[#A16F35]"
+                          >
+                            {part.slice(2, -2)}
+                          </span>
+                        );
+                      }
 
-              return part;
-            })}
-          </p>
-        );
-      })}
-  </div>
-</section>
+                      return part;
+                    })}
+                  </p>
+                );
+              })}
+          </div>
+
+          {/* STORY ENDING */}
+          <div className="mt-12 border-t border-[#EAE5D9] pt-8">
+            <div className="flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-[#A16F35]" />
+              <span className="h-px w-12 bg-[#EAE5D9]" />
+              <span className="h-2 w-2 rounded-full bg-[#A16F35]" />
+            </div>
+
+            <p className="mt-5 font-[var(--font-heading)] text-xl italic leading-8 text-[#263D32] sm:text-2xl">
+              Some journeys stay with you long after the road ends.
+            </p>
+
+            <p className="mt-3 text-sm text-[#626A5D]">
+              A story from The Local Route.
+            </p>
+          </div>
+        </div>
+      </section>
     </article>
   );
 }
+

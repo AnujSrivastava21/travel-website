@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -7,7 +6,6 @@ import { ArrowLeft, X } from "lucide-react";
 import BudgetForm from "./BudgetForm";
 import BudgetResult from "./BudgetResult";
 import TransportExplorer from "./TransportExplorer";
-
 
 import type {
   CityTransport,
@@ -40,11 +38,7 @@ const defaultTheme: DestinationTheme = {
 const iconButton =
   "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
 
-export default function BudgetPopup({
-  itinerary,
-  open,
-  onClose,
-}: Props) {
+export default function BudgetPopup({ itinerary, open, onClose }: Props) {
   const [step, setStep] = useState<"budget" | "result">("budget");
   const [members, setMembers] = useState(2);
   const [isMobile, setIsMobile] = useState(false);
@@ -62,8 +56,9 @@ export default function BudgetPopup({
   const [departureTransport, setDepartureTransport] =
     useState<TransportType | null>(null);
 
-  const [cityTransport, setCityTransport] =
-    useState<CityTransport | null>(null);
+  const [cityTransport, setCityTransport] = useState<CityTransport | null>(
+    null,
+  );
 
   const [arrivalTrainPrice, setArrivalTrainPrice] = useState(0);
   const [arrivalBusPrice, setArrivalBusPrice] = useState(0);
@@ -275,75 +270,71 @@ export default function BudgetPopup({
           }}
         />
 
-        <header className="shrink-0 px-4 pt-4 sm:px-6">
-          <div
-            className="mx-auto flex w-full items-center justify-between gap-3 border-b pb-4"
-            style={{ borderColor: theme.border }}
-          >
-            <div className="flex min-w-0 items-center gap-3">
-              {showingMobileTransport ? (
-                <button
-                  type="button"
-                  onClick={() => setMobileView("form")}
-                  aria-label="Back to budget form"
-                  className={iconButton}
-                  style={themedIconButtonStyle}
-                >
-                  <ArrowLeft size={18} />
-                </button>
-              ) : step === "result" ? (
-                <button
-                  type="button"
-                  onClick={() => setStep("budget")}
-                  aria-label="Back to budget form"
-                  className={iconButton}
-                  style={themedIconButtonStyle}
-                >
-                  <ArrowLeft size={18} />
-                </button>
-              ) : null}
+        <header className="w-full shrink-0 px-4 pt-4 sm:px-6">
+  <div
+    className="flex w-full min-w-0 items-center gap-2 border-b pb-4"
+    style={{ borderColor: theme.border }}
+  >
+    {/* Left: Back button and title */}
+    <div className="flex min-w-0 flex-1 items-center gap-2">
+      {showingMobileTransport || step === "result" ? (
+        <button
+          type="button"
+          onClick={() =>
+            showingMobileTransport
+              ? setMobileView("form")
+              : setStep("budget")
+          }
+          aria-label="Back to budget form"
+          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border"
+          style={themedIconButtonStyle}
+        >
+          <ArrowLeft size={18} />
+        </button>
+      ) : null}
 
-              <div className="min-w-0">
-                <p
-                  className="text-xs font-medium"
-                  style={{ color: theme.muted }}
-                >
-                  Travel budget planner
-                </p>
+      <div className="min-w-0 flex-1">
+        <p
+          className="truncate text-[11px] font-medium sm:text-xs"
+          style={{ color: theme.muted }}
+        >
+          Travel budget planner
+        </p>
 
-                <h2
-                  className="truncate font-sans text-xl font-bold tracking-tight sm:text-2xl"
-                  style={{ color: theme.text }}
-                >
-                  {step === "result"
-                    ? "Your budget"
-                    : showingMobileTransport
-                      ? editingSection === "arrival"
-                        ? "Arrival ticket"
-                        : "Return ticket"
-                      : "Plan your budget"}
-                </h2>
+        <h2
+          className="truncate text-base font-bold tracking-tight sm:text-2xl"
+          style={{ color: theme.text }}
+        >
+          {step === "result"
+            ? "Your budget"
+            : showingMobileTransport
+              ? editingSection === "arrival"
+                ? "Arrival ticket"
+                : "Return ticket"
+              : "Plan your budget"}
+        </h2>
 
-                <p
-                  className="mt-0.5 truncate text-xs"
-                  style={{ color: theme.muted }}
-                >
-                  {itinerary.destination}
-                </p>
-              </div>
-            </div>
+        <p
+          className="mt-0.5 truncate text-[11px] sm:text-xs"
+          style={{ color: theme.muted }}
+        >
+          {itinerary.destination}
+        </p>
+      </div>
+    </div>
 
-            <button
-              type="button"
-              onClick={handleClose}
-              aria-label="Close budget planner"
-              className={iconButton}
-              style={themedIconButtonStyle}
-            >
-              <X size={18} />
-            </button>
-          </div>
-        </header>
+    {/* Right: Fixed-size close button */}
+   <button
+  type="button"
+  onClick={handleClose}
+  aria-label="Close budget planner"
+  className="ml-auto inline-flex h-7 w-7 shrink-0 items-center justify-center border-0 bg-transparent p-0"
+  style={{ color: theme.muted }}
+>
+  <X size={18} strokeWidth={1.8} />
+</button>
+  </div>
+</header>
 
         <div
           className={`grid min-h-0 flex-1 ${
@@ -417,7 +408,7 @@ export default function BudgetPopup({
               members={members}
               activeTransport={activeTransport}
               editingSection={editingSection}
-               theme={theme}
+              theme={theme}
               onTrainPriceChange={(price) =>
                 handleTrainPriceChange(editingSection, price)
               }

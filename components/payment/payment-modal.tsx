@@ -240,27 +240,34 @@ export default function PaymentModal({
         <div className="h-1.5 shrink-0 bg-gradient-to-r from-[#1E4F8F] via-[#1E4F8F] to-[#E8A317]" />
 
         {/* Header */}
-        <header className="flex shrink-0 items-start justify-between gap-3 px-5 pb-3 pt-4">
-          <div>
-            <h2 className="font-serif text-2xl font-semibold tracking-[-0.01em] text-[#14213D]">
-              {status === "success" ? "Payment received" : "Complete your payment"}
-            </h2>
-            <p className="mt-0.5 flex items-center gap-1.5 text-sm text-[#6B665A]">
-              <Lock size={13} />
-              Secure UPI payment
-            </p>
-          </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={status === "verifying"}
-            aria-label="Close payment"
-            className={`grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#DDD3BE] bg-white text-[#14213D] transition hover:border-[#1E4F8F] hover:text-[#1E4F8F] disabled:opacity-40 ${focusRing}`}
-          >
-            <X size={18} />
-          </button>
-        </header>
+<header className="flex shrink-0 items-start justify-between gap-3 border-b border-[#EAE5D9] px-5 pb-4 pt-5 sm:px-6">
+  <div className="min-w-0">
+    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#A16F35]">
+      THE LOCAL ROUTE
+    </p>
+
+    <h2 className="mt-1 font-serif text-2xl font-semibold tracking-tight text-[#263D32]">
+      {status === "success" ? "Payment received" : "Unlock your journey"}
+    </h2>
+
+    <p className="mt-1 text-sm text-[#626A5D]">
+      {status === "success"
+        ? "Your next adventure is one step closer."
+        : "A thoughtfully planned trip, made simple."}
+    </p>
+  </div>
+
+  <button
+    type="button"
+    onClick={onClose}
+    disabled={status === "verifying"}
+    aria-label="Close payment"
+    className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#EAE5D9] bg-[#FFFEFA] text-[#303A32] transition hover:border-[#A16F35] hover:text-[#A16F35] disabled:opacity-40 ${focusRing}`}
+  >
+    <X size={17} />
+  </button>
+</header>
 
         <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 pb-6">
           {/* Timer */}
@@ -320,48 +327,64 @@ export default function PaymentModal({
           )}
 
           {/* Order summary */}
-          <div className="flex items-center justify-between gap-4 rounded-2xl bg-white p-4 ring-1 ring-[#DDD3BE]">
-            <div className="min-w-0">
-              <p className="text-sm text-[#6B665A]">You are paying for</p>
-              <p className="mt-0.5 truncate text-base font-semibold text-[#14213D]">
-                {title}
-              </p>
-            </div>
+          {/* Order summary */}
+<div className="flex items-center justify-between gap-4 rounded-2xl border border-[#EAE5D9] bg-[#FFFEFA] p-4 sm:p-5">
+  <div className="min-w-0">
+    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#A16F35]">
+      YOUR TRIP PLAN
+    </p>
 
-            <p className="shrink-0 font-serif text-3xl font-semibold tabular-nums text-[#1E4F8F]">
-              {rupees(amount)}
-            </p>
-          </div>
+    <p className="mt-1 truncate text-sm font-semibold text-[#303A32] sm:text-base">
+      {title}
+    </p>
+
+    <p className="mt-1 text-xs text-[#626A5D]">
+      Secure UPI checkout
+    </p>
+  </div>
+
+  <p className="shrink-0 font-serif text-2xl font-semibold tabular-nums text-[#263D32] sm:text-3xl">
+    {rupees(amount)}
+  </p>
+</div>
 
           {/* SUCCESS */}
 {/* SUCCESS */}
+{/* SUCCESS */}
 {status === "success" && (
-  <div className="rounded-3xl bg-white p-6 text-center ring-1 ring-[#DDD3BE]">
-    <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[#1E4F8F] text-white">
-      <Check size={28} strokeWidth={3} />
+  <div
+    className="rounded-3xl border border-[#EAE5D9] bg-[#FFFEFA] px-5 py-6 text-center sm:px-7"
+    role="status"
+    aria-live="polite"
+  >
+    <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-[#263D32] text-[#F8F6F0]">
+      <Check size={24} strokeWidth={2.5} />
     </span>
 
-    <p className="mt-4 font-serif text-xl font-semibold text-[#14213D]">
-      Thank You for Trusting Us! ❤️
+    <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#A16F35]">
+      PAYMENT SUCCESSFUL
     </p>
 
-    <p className="mt-3 text-sm leading-6 text-[#6B665A]">
-      Your support means more than you know. Every contribution helps
-      me put more time, research, and hard work into making your travel
-      experience smoother and more memorable.
+    <h3 className="mt-2 font-serif text-2xl font-semibold leading-tight text-[#263D32]">
+      Your journey starts here.
+    </h3>
+
+    <p className="mx-auto mt-3 max-w-xs text-sm leading-6 text-[#626A5D]">
+      Thanks for supporting The Local Route. Here's to new places,
+      unexpected moments, and stories worth remembering ♥️ .
     </p>
 
-    <p className="mt-4 text-sm font-medium text-[#14213D]">
-      This money isn't just for me; it's for the effort behind every
-      itinerary, every detail, and every journey I help you plan.
+    <p className="mt-4 font-serif text-lg font-semibold text-[#263D32]">
+      With gratitude, Anuj
     </p>
 
-    <p className="mt-4 font-serif text-2xl font-semibold text-[#1E4F8F]">
-      {rupees(amount)}
-    </p>
+    <div className="mx-auto mt-4 h-px w-10 bg-[#A16F35]" />
 
-    <p className="mt-2 text-sm text-[#6B665A]">
-      Thank you for being part of The Local Route. Happy travels! ✨
+    <p className="mt-3 text-sm text-[#626A5D]">
+      Amount paid:{" "}
+      <span className="font-semibold text-[#263D32]">
+        {rupees(amount)}
+      </span>
     </p>
 
     <button
@@ -370,7 +393,7 @@ export default function PaymentModal({
         onSuccess();
         onClose();
       }}
-      className={`mt-5 w-full rounded-2xl bg-[#E8A317] px-5 py-3.5 text-base font-semibold text-[#14213D] transition hover:bg-[#F2B53A] ${focusRing}`}
+      className={`mt-5 w-full rounded-xl bg-[#263D32] px-5 py-3 text-sm font-semibold text-[#FFFEFA] transition hover:bg-[#1D3027] ${focusRing}`}
     >
       View Bill
     </button>
