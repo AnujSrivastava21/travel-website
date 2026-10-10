@@ -3,16 +3,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowDown, ArrowRight } from "lucide-react";
 
+import TestPaymentButton from "../../../components/payment/test-payment-button";
 import { travelPosts } from "../../../data/travel-posts";
 import { TravelCard } from "../../../components/travel/travel-card";
 import { headingFont, bodyFont } from "../../font";
-import { itineraries } from "../../../data/itineraries/index";
+
 export const metadata: Metadata = {
   title: "Travel Stories | Real Journeys Across India",
   description:
     "Discover real travel stories, unexpected encounters and unforgettable journeys across India.",
 };
-const featuredItineraries = itineraries.slice(0, 3);
 
 export default function TravelPage() {
   return (
@@ -94,6 +94,7 @@ export default function TravelPage() {
             <p className="font-[var(--font-heading)] text-lg font-medium text-[#263D32]">
               Every great journey starts somewhere.
             </p>
+
             <p className="mt-2 text-sm text-[#626A5D]">
               New travel stories are coming soon.
             </p>
@@ -103,7 +104,7 @@ export default function TravelPage() {
 
       {/* BOTTOM CTA */}
       <section className="border-t border-[#EAE5D9] bg-[#FFFEFA]">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-12 sm:px-8 sm:py-14 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-12 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-14">
           <div className="max-w-xl">
             <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#A16F35] sm:text-xs">
               Your next adventure
@@ -119,16 +120,21 @@ export default function TravelPage() {
             </p>
           </div>
 
-          <Link
-            href="/itineraries"
-            className="group inline-flex shrink-0 items-center justify-between gap-5 rounded-full border border-[#EAE5D9] bg-[#F8F6F0] px-5 py-3.5 text-sm font-medium text-[#263D32] transition hover:border-[#A16F35]/50 hover:bg-[#EAE5D9]/60"
-          >
-            Explore itineraries
-            <ArrowRight
-              size={16}
-              className="transition-transform group-hover:translate-x-1"
-            />
-          </Link>
+          {/* ACTION BUTTONS */}
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:min-w-[260px]">
+            <Link
+              href="/itineraries"
+              className="group inline-flex w-full items-center justify-between gap-5 rounded-full border border-[#EAE5D9] bg-[#F8F6F0] px-5 py-3.5 text-sm font-medium text-[#263D32] transition hover:border-[#A16F35]/50 hover:bg-[#EAE5D9]/60"
+            >
+              Explore itineraries
+              <ArrowRight
+                size={16}
+                className="transition-transform group-hover:translate-x-1"
+              />
+            </Link>
+
+
+          </div>
         </div>
       </section>
     </main>

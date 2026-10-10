@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Lock, ArrowRight } from "lucide-react";
 
-import PaymentModal from "../payment/payment-modal";
+import PaymentModal from "./payment-modal";
 
 type Props = {
   amount: number;
