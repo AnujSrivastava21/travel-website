@@ -1,8 +1,8 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Icon } from "@iconify/react";
 import { ArrowDown, ArrowRight, Mail, MapPin } from "lucide-react";
+import { Icon } from "@iconify/react";
 
 export const metadata: Metadata = {
   title: "My Journey | Anuj Srivastava",
@@ -43,34 +43,36 @@ const experiences = [
 
 export default function JourneyPage() {
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-[#F8F6F0] text-[#303A32]">
       {/* HERO */}
-      <section className="relative flex min-h-[85vh] items-end overflow-hidden sm:min-h-[90vh]">
+      <section className="relative flex min-h-[85vh] items-end overflow-hidden border-b border-[#EAE5D9] sm:min-h-[90vh]">
         <div className="absolute inset-0">
           <div
             className="absolute inset-0 bg-cover bg-[center_65%]"
-            style={{ backgroundImage: "url('/images/profile/hero.jpg')" }}
+            style={{
+              backgroundImage: "url('/images/profile/heros.jpg')",
+            }}
           />
           <div className="absolute inset-0 bg-black/35" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
         </div>
 
         <div className="relative mx-auto w-full max-w-7xl px-6 pb-16 pt-36 sm:pb-20 lg:px-8 lg:pb-24">
           <div className="max-w-4xl">
-            <p className="flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.22em] text-white/60 sm:text-xs">
+            <p className="flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.22em] text-white/75 sm:text-xs">
               <MapPin size={14} className="text-amber-200" />
               India · Solo traveller · Travel creator
             </p>
 
-            <h1 className="mt-6 text-4xl font-semibold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">
+            <h1 className="mt-6 text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-6xl lg:text-7xl">
               I&apos;m Anuj.
-              <span className="mt-2 block text-white/55">
+              <span className="mt-2 block text-white/65">
                 I travel to feel more alive.
               </span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-white/70 sm:text-base sm:leading-8">
+            <p className="mt-6 max-w-2xl text-sm leading-7 text-white/80 sm:text-base sm:leading-8">
               A solo traveller, techie and travel creator exploring India,
               capturing cinematic moments and sharing the real stories behind
               every journey.
@@ -79,7 +81,7 @@ export default function JourneyPage() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/stories"
-                className="group inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-amber-100"
+                className="group inline-flex items-center gap-3 rounded-full bg-[#F8F6F0] px-5 py-3 text-sm font-medium text-[#263D32] transition hover:bg-white"
               >
                 Read my stories
                 <ArrowRight
@@ -92,7 +94,7 @@ export default function JourneyPage() {
                 href={instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/20 px-5 py-3 text-sm text-white transition hover:border-white/50 hover:bg-white/10"
+                className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-black/20 px-5 py-3 text-sm text-white transition hover:border-white/50 hover:bg-white/10"
               >
                 <Icon icon="simple-icons:instagram" width="16" height="16" />
                 Follow the journey
@@ -101,7 +103,7 @@ export default function JourneyPage() {
 
             <a
               href="#my-story"
-              className="mt-12 inline-flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.18em] text-white/45 transition hover:text-white sm:text-xs"
+              className="mt-12 inline-flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.18em] text-white/65 transition hover:text-white sm:text-xs"
             >
               A little about me
               <ArrowDown size={14} />
@@ -117,16 +119,16 @@ export default function JourneyPage() {
       >
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
           <div>
-            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-amber-200/65 sm:text-xs">
+            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-[#A16F35] sm:text-xs">
               The person behind the journey
             </p>
 
-            <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+            <h2 className="mt-4 font-[var(--font-heading)] text-3xl font-semibold leading-tight tracking-tight text-[#263D32] sm:text-4xl lg:text-5xl">
               More than a list of places.
             </h2>
           </div>
 
-          <div className="space-y-5 text-sm leading-7 text-white/55 sm:text-base sm:leading-8">
+          <div className="space-y-5 text-sm leading-7 text-[#626A5D] sm:text-base sm:leading-8">
             <p>
               I&apos;m Anuj, a solo traveller and technology enthusiast with a
               growing love for exploring India. I create travel reels, document
@@ -145,7 +147,7 @@ export default function JourneyPage() {
               way.
             </p>
 
-            <p className="border-l border-amber-200/50 pl-5 text-white/85">
+            <p className="border-l-2 border-[#A16F35]/60 pl-5 font-medium text-[#263D32]">
               I don&apos;t just want to remember where I went. I want to
               remember how it felt to be there.
             </p>
@@ -154,23 +156,23 @@ export default function JourneyPage() {
       </section>
 
       {/* HOW IT STARTED */}
-      <section className="border-y border-white/10 bg-[#080808]">
+      <section className="border-y border-[#EAE5D9] bg-[#FFFEFA]">
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-8 lg:py-24">
           <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
             <div>
-              <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-amber-200/65 sm:text-xs">
+              <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-[#A16F35] sm:text-xs">
                 Where it began
               </p>
 
-              <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+              <h2 className="mt-4 font-[var(--font-heading)] text-3xl font-semibold leading-tight tracking-tight text-[#263D32] sm:text-4xl lg:text-5xl">
                 It started with a trip.
-                <span className="mt-1 block text-white/40">
+                <span className="mt-1 block text-[#626A5D]/70">
                   Then came the stories.
                 </span>
               </h2>
             </div>
 
-            <div className="space-y-5 text-sm leading-7 text-white/55 sm:text-base sm:leading-8">
+            <div className="space-y-5 text-sm leading-7 text-[#626A5D] sm:text-base sm:leading-8">
               <p>
                 At first, travelling meant choosing a destination, booking a
                 ticket and taking a few photographs. But the more I travelled,
@@ -185,7 +187,7 @@ export default function JourneyPage() {
                 longer than the photographs.
               </p>
 
-              <p className="text-white/80">
+              <p className="font-medium text-[#263D32]">
                 Somewhere along the way, I stopped collecting destinations and
                 started collecting experiences.
               </p>
@@ -195,23 +197,23 @@ export default function JourneyPage() {
       </section>
 
       {/* SOLO TRAVEL */}
-      <section className="border-b border-white/10">
+      <section className="border-b border-[#EAE5D9]">
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-8 lg:py-24">
           <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-20">
             <div>
-              <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-amber-200/65 sm:text-xs">
+              <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-[#A16F35] sm:text-xs">
                 Going alone
               </p>
 
-              <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+              <h2 className="mt-4 font-[var(--font-heading)] text-3xl font-semibold leading-tight tracking-tight text-[#263D32] sm:text-4xl lg:text-5xl">
                 Freedom begins
-                <span className="block text-white/40">
+                <span className="block text-[#626A5D]/70">
                   outside your comfort zone.
                 </span>
               </h2>
             </div>
 
-            <div className="space-y-5 text-sm leading-7 text-white/55 sm:text-base sm:leading-8">
+            <div className="space-y-5 text-sm leading-7 text-[#626A5D] sm:text-base sm:leading-8">
               <p>
                 Solo travel isn&apos;t always easy. Sometimes plans fall apart,
                 roads get confusing and there&apos;s no familiar face to turn
@@ -229,7 +231,7 @@ export default function JourneyPage() {
                 comfortable with the unknown.
               </p>
 
-              <p className="text-white/85">
+              <p className="font-medium text-[#263D32]">
                 Sometimes, the best company you find on the road is yourself.
               </p>
             </div>
@@ -238,38 +240,38 @@ export default function JourneyPage() {
       </section>
 
       {/* WHAT I DO */}
-      <section className="border-b border-white/10 bg-[#080808]">
+      <section className="border-b border-[#EAE5D9] bg-[#FFFEFA]">
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-8 lg:py-24">
           <div className="max-w-2xl">
-            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-amber-200/65 sm:text-xs">
+            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-[#A16F35] sm:text-xs">
               What I do
             </p>
 
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
+            <h2 className="mt-4 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-[#263D32] sm:text-4xl lg:text-5xl">
               Travel, stories and technology.
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-white/45 sm:text-base">
+            <p className="mt-4 text-sm leading-7 text-[#626A5D] sm:text-base">
               Different interests, connected by one thing: creating and sharing
               experiences.
             </p>
           </div>
 
-          <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-2">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
             {experiences.map((experience) => (
               <article
                 key={experience.number}
-                className="bg-black p-6 transition-colors hover:bg-white/[0.025] sm:p-8"
+                className="rounded-2xl border border-[#EAE5D9] bg-[#F8F6F0] p-6 transition duration-300 hover:border-[#A16F35]/50 hover:shadow-lg hover:shadow-[#263D32]/[0.04] sm:p-8"
               >
-                <p className="text-xs tracking-[0.18em] text-amber-200/60">
+                <p className="text-xs tracking-[0.18em] text-[#A16F35]">
                   {experience.number}
                 </p>
 
-                <h3 className="mt-4 text-xl font-medium tracking-tight sm:text-2xl">
+                <h3 className="mt-4 text-xl font-semibold tracking-tight text-[#263D32] sm:text-2xl">
                   {experience.title}
                 </h3>
 
-                <p className="mt-3 text-sm leading-7 text-white/50 sm:text-base">
+                <p className="mt-3 text-sm leading-7 text-[#626A5D] sm:text-base">
                   {experience.description}
                 </p>
               </article>
@@ -279,23 +281,23 @@ export default function JourneyPage() {
       </section>
 
       {/* SPITI STORY */}
-      <section className="border-b border-white/10">
+      <section className="border-b border-[#EAE5D9]">
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-8 lg:py-24">
           <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
             <div>
-              <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-amber-200/65 sm:text-xs">
+              <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-[#A16F35] sm:text-xs">
                 A journey to remember
               </p>
 
-              <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+              <h2 className="mt-4 font-[var(--font-heading)] text-3xl font-semibold leading-tight tracking-tight text-[#263D32] sm:text-4xl lg:text-5xl">
                 Spiti Valley.
-                <span className="block text-white/40">
+                <span className="block text-[#626A5D]/70">
                   No private vehicle. Just the road.
                 </span>
               </h2>
             </div>
 
-            <div className="space-y-5 text-sm leading-7 text-white/55 sm:text-base sm:leading-8">
+            <div className="space-y-5 text-sm leading-7 text-[#626A5D] sm:text-base sm:leading-8">
               <p>
                 One of my memorable adventures was completing the Spiti Valley
                 circuit using buses and local transport, travelling through
@@ -317,7 +319,7 @@ export default function JourneyPage() {
 
               <Link
                 href="/stories"
-                className="group inline-flex items-center gap-2 pt-1 text-sm font-medium text-white transition hover:text-amber-200"
+                className="group inline-flex items-center gap-2 pt-1 text-sm font-medium text-[#263D32] transition hover:text-[#A16F35]"
               >
                 Explore my travel stories
                 <ArrowRight
@@ -332,18 +334,18 @@ export default function JourneyPage() {
 
       {/* WHY I TRAVEL */}
       <section className="mx-auto max-w-5xl px-6 py-20 text-center sm:py-24 lg:px-8 lg:py-32">
-        <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-amber-200/65 sm:text-xs">
+        <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-[#A16F35] sm:text-xs">
           Why I keep going
         </p>
 
-        <h2 className="mt-6 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+        <h2 className="mt-6 font-[var(--font-heading)] text-3xl font-semibold leading-tight tracking-tight text-[#263D32] sm:text-4xl lg:text-5xl">
           Maybe it&apos;s not about finding new places.
-          <span className="mt-2 block text-white/40">
+          <span className="mt-2 block text-[#626A5D]/70">
             Maybe it&apos;s about seeing life differently.
           </span>
         </h2>
 
-        <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/50 sm:text-base sm:leading-8">
+        <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-[#626A5D] sm:text-base sm:leading-8">
           After exploring more than 40 destinations, I still feel like
           I&apos;ve barely scratched the surface. Every journey leaves me with
           a new memory, a different perspective or a story worth sharing.
@@ -351,23 +353,23 @@ export default function JourneyPage() {
       </section>
 
       {/* WHAT'S NEXT */}
-      <section className="border-y border-white/10 bg-[#080808]">
+      <section className="border-y border-[#EAE5D9] bg-[#FFFEFA]">
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-8 lg:py-24">
           <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
             <div>
-              <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-amber-200/65 sm:text-xs">
+              <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-[#A16F35] sm:text-xs">
                 What&apos;s next
               </p>
 
-              <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+              <h2 className="mt-4 font-[var(--font-heading)] text-3xl font-semibold leading-tight tracking-tight text-[#263D32] sm:text-4xl lg:text-5xl">
                 More roads to take.
-                <span className="block text-white/40">
+                <span className="block text-[#626A5D]/70">
                   More stories to live.
                 </span>
               </h2>
             </div>
 
-            <div className="space-y-5 text-sm leading-7 text-white/55 sm:text-base sm:leading-8">
+            <div className="space-y-5 text-sm leading-7 text-[#626A5D] sm:text-base sm:leading-8">
               <p>
                 There&apos;s still so much of India I want to explore, from
                 Northeast India and quiet villages to coastal towns and mountain
@@ -380,7 +382,7 @@ export default function JourneyPage() {
                 unexpected.
               </p>
 
-              <p className="text-white/80">
+              <p className="font-medium text-[#263D32]">
                 The map is far from complete, and that&apos;s exactly how I
                 like it.
               </p>
@@ -390,18 +392,20 @@ export default function JourneyPage() {
       </section>
 
       {/* WORK WITH ME */}
-      <section className="border-b border-white/10">
+      <section className="border-b border-[#EAE5D9]">
         <div className="mx-auto max-w-4xl px-6 py-20 text-center sm:py-24 lg:px-8 lg:py-28">
-          <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-amber-200/65 sm:text-xs">
+          <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-[#A16F35] sm:text-xs">
             Work with me
           </p>
 
-          <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
+          <h2 className="mt-5 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-[#263D32] sm:text-4xl lg:text-5xl">
             Let&apos;s create something
-            <span className="block text-white/40">worth remembering.</span>
+            <span className="block text-[#626A5D]/70">
+              worth remembering.
+            </span>
           </h2>
 
-          <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/50 sm:text-base sm:leading-8">
+          <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-[#626A5D] sm:text-base sm:leading-8">
             Open to travel and brand collaborations, destination features and
             creating cinematic reels for places, people and businesses.
           </p>
@@ -409,7 +413,7 @@ export default function JourneyPage() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <a
               href={`mailto:${emailAddress}`}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-amber-100"
+              className="inline-flex items-center gap-2 rounded-full bg-[#263D32] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#1D3027]"
             >
               <Mail size={16} />
               Get in touch
@@ -419,7 +423,7 @@ export default function JourneyPage() {
               href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-sm text-white/75 transition hover:border-white/30 hover:bg-white/[0.06] hover:text-white"
+              className="inline-flex items-center gap-2 rounded-full border border-[#EAE5D9] bg-[#FFFEFA] px-5 py-3 text-sm text-[#263D32] transition hover:border-[#A16F35]/50 hover:bg-[#EAE5D9]/50"
             >
               <Icon icon="simple-icons:instagram" width="16" height="16" />
               Instagram
@@ -429,12 +433,16 @@ export default function JourneyPage() {
               href={linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-sm text-white/75 transition hover:border-white/30 hover:bg-white/[0.06] hover:text-white"
+              className="inline-flex items-center gap-2 rounded-full border border-[#EAE5D9] bg-[#FFFEFA] px-5 py-3 text-sm text-[#263D32] transition hover:border-[#A16F35]/50 hover:bg-[#EAE5D9]/50"
             >
               <Icon icon="simple-icons:linkedin" width="16" height="16" />
               LinkedIn
             </a>
           </div>
+
+          <p className="mt-7 text-sm text-[#626A5D]">
+            {emailAddress}
+          </p>
         </div>
       </section>
     </main>

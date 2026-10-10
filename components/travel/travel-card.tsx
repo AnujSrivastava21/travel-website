@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -15,7 +16,7 @@ export function TravelCard({ post }: TravelCardProps) {
         href={`/stories/${post.slug}`}
         className="group block overflow-hidden rounded-2xl"
       >
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
           <Image
             src={post.coverImage}
             alt={post.title}
@@ -27,25 +28,25 @@ export function TravelCard({ post }: TravelCardProps) {
         </div>
       </Link>
 
-      <p className="mt-5 text-xs uppercase tracking-wider text-white/40">
+      <p className="mt-5 text-xs uppercase tracking-wider text-[#A16F35]">
         {post.location}
       </p>
 
-      <h2 className="mt-2 text-xl font-medium text-white">
+      <h2 className="mt-2 text-xl font-semibold leading-snug text-[#263D32] transition-colors group-hover:text-[#A16F35]">
         {post.title}
       </h2>
 
-      <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/50">
+      <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#626A5D]">
         {post.excerpt}
       </p>
 
       <Link
-  href={`/stories/${post.slug}`}
-  className="mt-4 inline-flex items-center gap-2 text-sm text-white/60 transition hover:text-white"
->
-  Read story
-  <ArrowRight size={15} />
-</Link>
+        href={`/stories/${post.slug}`}
+        className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#263D32] transition hover:text-[#A16F35]"
+      >
+        Read story
+        <ArrowRight size={15} />
+      </Link>
     </article>
   );
 }

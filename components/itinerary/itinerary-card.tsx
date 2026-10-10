@@ -55,7 +55,7 @@ function CardContent({ itinerary }: { itinerary: Itinerary }) {
 
       <div className="mt-5">
         <div className="flex items-start justify-between gap-4">
-          <h2 className="text-xl font-medium leading-snug text-[#263D32] transition group-hover:text-[#A16F35]">
+          <h2 className="font-[var(--font-heading)] text-xl font-semibold leading-snug text-[#263D32] transition-colors group-hover:text-[#A16F35]">
             {itinerary.title}
           </h2>
 
@@ -65,12 +65,12 @@ function CardContent({ itinerary }: { itinerary: Itinerary }) {
           />
         </div>
 
-        <p className="mt-3 text-sm leading-6 text-[#626A5D]">
+        <p className="mt-3 font-[var(--font-body)] text-sm leading-6 text-[#626A5D]">
           {itinerary.description}
         </p>
 
         {isPremium && (
-          <div className="mt-4 flex items-center gap-2 text-sm text-[#A16F35]">
+          <div className="mt-4 flex items-center gap-2 font-[var(--font-body)] text-sm text-[#A16F35]">
             <Lock size={14} />
             Premium itinerary
           </div>

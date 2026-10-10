@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Menu,
   X,
@@ -23,6 +23,7 @@ import { Ephesis } from "next/font/google";
 
 import ItineraryMegaMenu from "./itinerary-mega-menu";
 import { mainNavigation } from "../../config/navigation";
+import { NavbarSearchResults } from "../../components/search/navbar-search-results";
 
 const ephesis = Ephesis({
   subsets: ["latin"],
@@ -30,7 +31,7 @@ const ephesis = Ephesis({
 });
 
 const focusRing =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C58B35] focus-visible:ring-offset-2";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A16F35] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F6F0]";
 
 type NavbarProps = {
   hideNavbar?: boolean;
@@ -41,10 +42,11 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isItineraryMenuOpen, setIsItineraryMenuOpen] =
-    useState(false);
+  const [isItineraryMenuOpen, setIsItineraryMenuOpen] = useState(false);
 
   const pathname = usePathname();
+  const router = useRouter();
+
   const { data: session, status } = useSession();
   const user = session?.user;
   const firstName = user?.name?.split(" ")[0] ?? "Account";
@@ -57,23 +59,22 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  // Close menus when navigating to another page.
+  // Close menus when the route changes.
   useEffect(() => {
     setIsItineraryMenuOpen(false);
     setIsOpen(false);
     setProfileOpen(false);
+    setSearchOpen(false);
   }, [pathname]);
 
-  // Close the desktop search when clicking outside or pressing Escape.
+  // Close desktop search when clicking outside or pressing Escape.
   useEffect(() => {
     if (!searchOpen) return;
 
     const handleOutsideClick = (event: MouseEvent) => {
-      const target = event.target as Node;
-
       if (
         searchRef.current &&
-        !searchRef.current.contains(target)
+        !searchRef.current.contains(event.target as Node)
       ) {
         setSearchOpen(false);
       }
@@ -89,15 +90,12 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
     document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleOutsideClick
-      );
+      document.removeEventListener("mousedown", handleOutsideClick);
       document.removeEventListener("keydown", handleEscape);
     };
   }, [searchOpen]);
 
-  // Close the itinerary dropdown when clicking outside the navbar.
+  // Close the itinerary menu when clicking outside the navbar.
   useEffect(() => {
     if (!isItineraryMenuOpen) return;
 
@@ -120,21 +118,10 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
     document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleOutsideClick
-      );
+      document.removeEventListener("mousedown", handleOutsideClick);
       document.removeEventListener("keydown", handleEscape);
     };
   }, [isItineraryMenuOpen]);
-
-  const handleLogout = async () => {
-    setProfileOpen(false);
-    setIsOpen(false);
-    setIsItineraryMenuOpen(false);
-
-    await signOut({ callbackUrl: "/" });
-  };
 
   const closeMobileMenu = () => {
     setIsOpen(false);
@@ -143,16 +130,36 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
     setIsItineraryMenuOpen(false);
   };
 
+  const closeSearchResults = () => {
+    setSearchQuery("");
+    setSearchOpen(false);
+    setIsOpen(false);
+  };
+
+  // Preserve the existing homepage search-results behavior.
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const query = searchQuery.trim();
     if (!query) return;
 
-    window.location.href =
-      `/destinations?search=${encodeURIComponent(query)}`;
-
     setSearchOpen(false);
+    setIsOpen(false);
+    setProfileOpen(false);
+    setIsItineraryMenuOpen(false);
+
+    router.push(
+      `/?search=${encodeURIComponent(query)}#home-search-results`,
+    );
+  };
+
+  const handleLogout = async () => {
+    setProfileOpen(false);
+    setIsOpen(false);
+    setSearchOpen(false);
+    setIsItineraryMenuOpen(false);
+
+    await signOut({ callbackUrl: "/" });
   };
 
   if (hideNavbar) return null;
@@ -164,7 +171,7 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
         className="relative mx-auto max-w-7xl"
       >
         {/* NAVBAR */}
-        <div className="rounded-2xl border border-[#DED3C0]/80 bg-[#FFFCF6]/90 shadow-[0_12px_40px_-20px_rgba(20,33,61,0.30)] backdrop-blur-2xl">
+        <div className="rounded-2xl border border-[#EAE5D9]/90 bg-[#F8F6F0]/95 shadow-[0_12px_40px_-20px_rgba(29,48,39,0.25)] backdrop-blur-2xl">
           <div className="flex min-h-[66px] items-center px-3 sm:px-5 lg:px-6">
             {/* BRAND */}
             <div className="flex min-w-0 flex-1 items-center">
@@ -173,18 +180,18 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                 onClick={closeMobileMenu}
                 className={`group flex shrink-0 items-center gap-2.5 rounded-lg ${focusRing}`}
               >
-                <span className="grid h-10 w-10 place-items-center rounded-full border border-[#D8C59F] bg-[#F1E6D1] text-[#14213D] transition duration-300 group-hover:-rotate-[8deg] group-hover:bg-[#E8D8B7]">
+                <span className="grid h-10 w-10 place-items-center rounded-full border border-[#EAE5D9] bg-[#E4EADF] text-[#263D32] transition duration-300 group-hover:-rotate-[8deg] group-hover:bg-[#D7E0D3]">
                   <Compass size={20} strokeWidth={1.6} />
                 </span>
 
                 <span className="flex flex-col">
                   <span
-                    className={`${ephesis.className} whitespace-nowrap text-[28px] leading-none text-[#14213D] sm:text-[33px]`}
+                    className={`${ephesis.className} whitespace-nowrap text-[28px] leading-none text-[#263D32] sm:text-[33px]`}
                   >
                     The Local Route
                   </span>
 
-                  <span className="mt-1 hidden text-[8px] font-semibold uppercase tracking-[0.24em] text-[#8A7755] sm:block">
+                  <span className="mt-1 hidden text-[8px] font-semibold uppercase tracking-[0.24em] text-[#626A5D] sm:block">
                     Find your own way
                   </span>
                 </span>
@@ -215,8 +222,8 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                       }}
                       className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-[13px] font-semibold transition-colors xl:px-3.5 ${focusRing} ${
                         isItineraryMenuOpen || active
-                          ? "bg-[#14213D] text-[#FFFCF6] shadow-sm"
-                          : "text-[#59554B] hover:bg-[#F0E7D8] hover:text-[#14213D]"
+                          ? "bg-[#263D32] text-[#FFFEFA] shadow-sm"
+                          : "text-[#263D32] hover:bg-[#E4EADF] hover:text-[#1D3027]"
                       }`}
                     >
                       {item.title}
@@ -224,9 +231,7 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                       <ChevronDown
                         size={14}
                         className={`transition-transform duration-200 ${
-                          isItineraryMenuOpen
-                            ? "rotate-180"
-                            : ""
+                          isItineraryMenuOpen ? "rotate-180" : ""
                         }`}
                       />
                     </button>
@@ -241,8 +246,8 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                     onClick={closeMobileMenu}
                     className={`rounded-xl px-3 py-2.5 text-[13px] font-semibold transition-colors xl:px-3.5 ${focusRing} ${
                       active
-                        ? "bg-[#14213D] text-[#FFFCF6] shadow-sm"
-                        : "text-[#59554B] hover:bg-[#F0E7D8] hover:text-[#14213D]"
+                        ? "bg-[#263D32] text-[#FFFEFA] shadow-sm"
+                        : "text-[#263D32] hover:bg-[#E4EADF] hover:text-[#1D3027]"
                     }`}
                   >
                     {item.title}
@@ -259,30 +264,43 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                 className="relative hidden md:block"
               >
                 {searchOpen && (
-                  <form
-                    onSubmit={handleSearch}
-                    className="absolute right-0 top-0 z-30"
-                  >
-                    <input
-                      autoFocus
-                      type="search"
-                      value={searchQuery}
-                      onChange={(event) =>
-                        setSearchQuery(event.target.value)
-                      }
-                      placeholder="Search destinations..."
-                      aria-label="Search destinations"
-                      className="h-10 w-[220px] rounded-full border border-[#D8C8A8] bg-white pl-4 pr-11 text-sm text-[#2B2A26] outline-none placeholder:text-[#8A8172] focus:ring-2 focus:ring-[#C58B35]/30 sm:w-[260px]"
-                    />
-
-                    <button
-                      type="submit"
-                      aria-label="Submit search"
-                      className="absolute right-1 top-1 grid h-8 w-8 place-items-center rounded-full bg-[#14213D] text-white transition hover:bg-[#285078]"
+                  <>
+                    <form
+                      onSubmit={handleSearch}
+                      role="search"
+                      className="absolute right-0 top-0 z-30"
                     >
-                      <ArrowRight size={15} />
-                    </button>
-                  </form>
+                      <input
+                        autoFocus
+                        type="search"
+                        value={searchQuery}
+                        onChange={(event) =>
+                          setSearchQuery(event.target.value)
+                        }
+                        placeholder="Search destinations..."
+                        aria-label="Search itineraries by destination or location"
+                        className="h-10 w-[220px] rounded-full border border-[#EAE5D9] bg-[#FFFEFA] pl-4 pr-11 text-sm text-[#303A32] outline-none placeholder:text-[#626A5D] focus:border-[#A16F35] focus:ring-2 focus:ring-[#A16F35]/20 sm:w-[260px]"
+                      />
+
+                      <button
+                        type="submit"
+                        aria-label="Submit itinerary search"
+                        className="absolute right-1 top-1 grid h-8 w-8 place-items-center rounded-full bg-[#A16F35] text-white transition hover:bg-[#8E5E2D]"
+                      >
+                        <ArrowRight size={15} />
+                      </button>
+                    </form>
+
+                    {/* DESKTOP SEARCH DROPDOWN */}
+                    {searchQuery.trim() && (
+                      <div className="absolute right-0 top-12 z-[110] w-[min(90vw,420px)] min-w-0">
+                        <NavbarSearchResults
+                          query={searchQuery}
+                          onSelect={closeSearchResults}
+                        />
+                      </div>
+                    )}
+                  </>
                 )}
 
                 <button
@@ -294,8 +312,9 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                   onClick={() => {
                     setSearchOpen((value) => !value);
                     setIsItineraryMenuOpen(false);
+                    setProfileOpen(false);
                   }}
-                  className={`relative z-20 grid h-10 w-10 place-items-center rounded-full border border-[#E3D8C5] bg-white/80 text-[#14213D] transition hover:border-[#C7AC76] hover:bg-[#F3E8D3] ${focusRing} ${
+                  className={`relative z-20 grid h-10 w-10 place-items-center rounded-full border border-[#EAE5D9] bg-[#FFFEFA] text-[#263D32] transition hover:border-[#A16F35] hover:bg-[#E4EADF] ${focusRing} ${
                     searchOpen ? "invisible" : ""
                   }`}
                 >
@@ -305,7 +324,7 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
 
               {/* DESKTOP ACCOUNT */}
               {status === "loading" ? (
-                <div className="h-10 w-10 animate-pulse rounded-full bg-[#E6DDCE]" />
+                <div className="hidden h-10 w-10 animate-pulse rounded-full bg-[#E4EADF] sm:block" />
               ) : user ? (
                 <div className="relative hidden sm:block">
                   <button
@@ -315,10 +334,11 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                     onClick={() => {
                       setProfileOpen((value) => !value);
                       setIsItineraryMenuOpen(false);
+                      setSearchOpen(false);
                     }}
-                    className={`flex h-10 items-center gap-2 rounded-full border border-[#E3D8C5] bg-white/80 py-1 pl-1 pr-3 text-sm font-semibold text-[#14213D] transition hover:border-[#C7AC76] hover:bg-white ${focusRing}`}
+                    className={`flex h-10 items-center gap-2 rounded-full border border-[#EAE5D9] bg-[#FFFEFA] py-1 pl-1 pr-3 text-sm font-semibold text-[#263D32] transition hover:border-[#A16F35] hover:bg-[#F8F6F0] ${focusRing}`}
                   >
-                    <span className="grid h-7 w-7 place-items-center rounded-full bg-[#14213D] text-xs font-semibold text-white">
+                    <span className="grid h-7 w-7 place-items-center rounded-full bg-[#263D32] text-xs font-semibold text-[#FFFEFA]">
                       {firstName.charAt(0).toUpperCase()}
                     </span>
 
@@ -328,20 +348,20 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
 
                     <ChevronDown
                       size={14}
-                      className={`text-[#8A7755] transition-transform ${
+                      className={`text-[#626A5D] transition-transform ${
                         profileOpen ? "rotate-180" : ""
                       }`}
                     />
                   </button>
 
                   {profileOpen && (
-                    <div className="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-[#E3D8C5] bg-[#FFFCF6] shadow-[0_20px_60px_-20px_rgba(20,33,61,0.30)]">
-                      <div className="border-b border-[#E8DFD0] bg-[#F5EFE3] p-4">
-                        <p className="truncate text-sm font-semibold text-[#14213D]">
+                    <div className="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-[#EAE5D9] bg-[#FFFEFA] shadow-[0_20px_60px_-20px_rgba(29,48,39,0.25)]">
+                      <div className="border-b border-[#EAE5D9] bg-[#F8F6F0] p-4">
+                        <p className="truncate text-sm font-semibold text-[#263D32]">
                           {user.name ?? "Account"}
                         </p>
 
-                        <p className="mt-1 truncate text-xs text-[#777064]">
+                        <p className="mt-1 truncate text-xs text-[#626A5D]">
                           {user.email}
                         </p>
                       </div>
@@ -349,9 +369,9 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                       <button
                         type="button"
                         onClick={handleLogout}
-                        className="group flex w-full items-center gap-3 px-4 py-3.5 text-sm font-semibold text-[#3C3932] transition hover:bg-[#F4EFE4]"
+                        className="group flex w-full items-center gap-3 px-4 py-3.5 text-sm font-semibold text-[#303A32] transition hover:bg-[#E4EADF]"
                       >
-                        <span className="grid h-8 w-8 place-items-center rounded-full bg-[#EDE5D7] text-[#1E4F8F] group-hover:bg-[#E2D3B6]">
+                        <span className="grid h-8 w-8 place-items-center rounded-full bg-[#E4EADF] text-[#263D32] transition group-hover:bg-[#D7E0D3]">
                           <LogOut size={15} />
                         </span>
                         Sign out
@@ -361,18 +381,22 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                 </div>
               ) : null}
 
-              {/* MOBILE SEARCH */}
+              {/* MOBILE SEARCH BUTTON */}
               <button
                 type="button"
-                aria-label="Search destinations"
+                aria-label={
+                  searchOpen ? "Close search" : "Search itineraries"
+                }
+                aria-expanded={searchOpen}
                 onClick={() => {
                   setIsOpen(true);
                   setSearchOpen((value) => !value);
                   setIsItineraryMenuOpen(false);
+                  setProfileOpen(false);
                 }}
-                className={`grid h-10 w-10 place-items-center rounded-full border border-[#E3D8C5] bg-white/80 text-[#14213D] transition hover:bg-[#F3E8D3] md:hidden ${focusRing}`}
+                className={`grid h-10 w-10 place-items-center rounded-full border border-[#EAE5D9] bg-[#FFFEFA] text-[#263D32] transition hover:border-[#A16F35] hover:bg-[#E4EADF] md:hidden ${focusRing}`}
               >
-                <Search size={17} />
+                {searchOpen ? <X size={17} /> : <Search size={17} />}
               </button>
 
               {/* MOBILE MENU TOGGLE */}
@@ -380,7 +404,7 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                 type="button"
                 aria-label={isOpen ? "Close menu" : "Open menu"}
                 aria-expanded={isOpen}
-                className={`grid h-10 w-10 place-items-center rounded-full border border-[#E3D8C5] bg-white/80 text-[#14213D] transition hover:bg-[#F3E8D3] lg:hidden ${focusRing}`}
+                className={`grid h-10 w-10 place-items-center rounded-full border border-[#EAE5D9] bg-[#FFFEFA] text-[#263D32] transition hover:border-[#A16F35] hover:bg-[#E4EADF] lg:hidden ${focusRing}`}
                 onClick={() => {
                   setIsOpen((value) => !value);
                   setIsItineraryMenuOpen(false);
@@ -393,7 +417,7 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
 
           {/* MOBILE MENU */}
           {isOpen && (
-            <div className="border-t border-[#E8DFD0] px-3 pb-4 pt-3 lg:hidden sm:px-5">
+            <div className="border-t border-[#EAE5D9] px-3 pb-4 pt-3 lg:hidden sm:px-5">
               <nav
                 aria-label="Mobile navigation"
                 className="flex flex-col gap-1.5"
@@ -409,13 +433,14 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                         key={item.href}
                         type="button"
                         aria-expanded={isItineraryMenuOpen}
-                        onClick={() =>
-                          setIsItineraryMenuOpen((open) => !open)
-                        }
+                        onClick={() => {
+                          setIsItineraryMenuOpen((open) => !open);
+                          setSearchOpen(false);
+                        }}
                         className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
                           isItineraryMenuOpen
-                            ? "bg-[#14213D] text-[#FFFCF6]"
-                            : "text-[#59554B] hover:bg-[#F0E7D8]"
+                            ? "bg-[#263D32] text-[#FFFEFA]"
+                            : "text-[#263D32] hover:bg-[#E4EADF]"
                         }`}
                       >
                         <span>{item.title}</span>
@@ -423,9 +448,7 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                         <ChevronDown
                           size={16}
                           className={`transition-transform ${
-                            isItineraryMenuOpen
-                              ? "rotate-180"
-                              : ""
+                            isItineraryMenuOpen ? "rotate-180" : ""
                           }`}
                         />
                       </button>
@@ -440,8 +463,8 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                       aria-current={active ? "page" : undefined}
                       className={`rounded-xl px-4 py-3 text-sm font-semibold transition ${
                         active
-                          ? "bg-[#14213D] text-[#FFFCF6]"
-                          : "text-[#59554B] hover:bg-[#F0E7D8] hover:text-[#14213D]"
+                          ? "bg-[#263D32] text-[#FFFEFA]"
+                          : "text-[#263D32] hover:bg-[#E4EADF] hover:text-[#1D3027]"
                       }`}
                     >
                       {item.title}
@@ -460,48 +483,60 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                 </div>
               )}
 
-              {/* MOBILE SEARCH FORM */}
+              {/* MOBILE SEARCH + RESULTS */}
               {searchOpen && (
-                <form
-                  onSubmit={handleSearch}
-                  className="mt-3 flex gap-2"
-                >
-                  <input
-                    autoFocus
-                    type="search"
-                    value={searchQuery}
-                    onChange={(event) =>
-                      setSearchQuery(event.target.value)
-                    }
-                    placeholder="Search destinations..."
-                    aria-label="Search destinations"
-                    className="h-11 min-w-0 flex-1 rounded-xl border border-[#D8C8A8] bg-white px-4 text-sm text-[#2B2A26] outline-none placeholder:text-[#8A8172] focus:ring-2 focus:ring-[#C58B35]/30"
-                  />
-
-                  <button
-                    type="submit"
-                    aria-label="Submit search"
-                    className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#14213D] text-white transition hover:bg-[#285078]"
+                <div className="relative mt-3">
+                  <form
+                    onSubmit={handleSearch}
+                    role="search"
+                    className="flex gap-2"
                   >
-                    <ArrowRight size={17} />
-                  </button>
-                </form>
+                    <input
+                      autoFocus
+                      type="search"
+                      value={searchQuery}
+                      onChange={(event) =>
+                        setSearchQuery(event.target.value)
+                      }
+                      placeholder="Search destinations..."
+                      aria-label="Search itineraries by destination or location"
+                      className="h-11 min-w-0 flex-1 rounded-xl border border-[#EAE5D9] bg-[#FFFEFA] px-4 text-sm text-[#303A32] outline-none placeholder:text-[#626A5D] focus:border-[#A16F35] focus:ring-2 focus:ring-[#A16F35]/20"
+                    />
+
+                    <button
+                      type="submit"
+                      aria-label="Submit itinerary search"
+                      className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#A16F35] text-white transition hover:bg-[#8E5E2D]"
+                    >
+                      <ArrowRight size={17} />
+                    </button>
+                  </form>
+
+                  {searchQuery.trim() && (
+                    <div className="relative z-[110] mt-2">
+                      <NavbarSearchResults
+                        query={searchQuery}
+                        onSelect={closeSearchResults}
+                      />
+                    </div>
+                  )}
+                </div>
               )}
 
               {/* MOBILE ACCOUNT */}
               {user && (
-                <div className="mt-4 border-t border-[#E8DFD0] pt-4 sm:hidden">
+                <div className="mt-4 border-t border-[#EAE5D9] pt-4 sm:hidden">
                   <div className="mb-3 flex items-center gap-3">
-                    <span className="grid h-10 w-10 place-items-center rounded-full bg-[#14213D] text-sm font-semibold text-white">
+                    <span className="grid h-10 w-10 place-items-center rounded-full bg-[#263D32] text-sm font-semibold text-[#FFFEFA]">
                       {firstName.charAt(0).toUpperCase()}
                     </span>
 
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-[#14213D]">
+                      <p className="truncate text-sm font-semibold text-[#263D32]">
                         {user.name ?? firstName}
                       </p>
 
-                      <p className="truncate text-xs text-[#777064]">
+                      <p className="truncate text-xs text-[#626A5D]">
                         {user.email}
                       </p>
                     </div>
@@ -510,7 +545,7 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className={`flex w-full items-center justify-center gap-2 rounded-xl border border-[#E3D8C5] bg-white px-4 py-3 text-sm font-semibold text-[#14213D] transition hover:bg-[#F0E7D8] ${focusRing}`}
+                    className={`flex w-full items-center justify-center gap-2 rounded-xl border border-[#EAE5D9] bg-[#FFFEFA] px-4 py-3 text-sm font-semibold text-[#263D32] transition hover:bg-[#E4EADF] ${focusRing}`}
                   >
                     <LogOut size={16} />
                     Sign out
