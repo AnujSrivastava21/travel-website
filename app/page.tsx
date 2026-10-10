@@ -116,7 +116,7 @@ export default function HomePage() {
       <section className="relative flex min-h-[78svh] items-end overflow-hidden bg-[#1D3027] sm:min-h-[82svh]">
         <div className="absolute inset-0">
           <Image
-            src="/images/home/hero.jpg"
+            src="/images/home/hero_mains.jpg"
             alt="Golden sandstone fort rising above a desert town in Rajasthan"
             fill
             priority
