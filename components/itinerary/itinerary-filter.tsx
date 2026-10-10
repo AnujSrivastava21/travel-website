@@ -1,6 +1,8 @@
+
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import type { Itinerary } from "../../types/itinerary";
 import { ItineraryCard } from "./itinerary-card";
@@ -10,7 +12,6 @@ interface ItineraryFilterProps {
 }
 
 const statesAndUTs = [
-  // States
   "Andhra Pradesh",
   "Arunachal Pradesh",
   "Assam",
@@ -39,8 +40,6 @@ const statesAndUTs = [
   "Uttar Pradesh",
   "Uttarakhand",
   "West Bengal",
-
-  // Union Territories
   "Andaman and Nicobar Islands",
   "Chandigarh",
   "Dadra and Nagar Haveli and Daman and Diu",
@@ -51,17 +50,36 @@ const statesAndUTs = [
   "Puducherry",
 ];
 
-function getStateFromDestination(destination: string) {
-  const value = destination.toLowerCase().trim();
+function normalizeStateName(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, "and")
+    .replace(/\s+/g, " ");
+}
 
-  // Your current Kashmir itinerary
-  if (value === "kashmir") {
+function getValidState(value: string | null) {
+  if (!value) return "All";
+
+  const normalizedValue = normalizeStateName(value);
+
+  return (
+    statesAndUTs.find(
+      (state) => normalizeStateName(state) === normalizedValue,
+    ) ?? "All"
+  );
+}
+
+function getStateFromDestination(destination: string) {
+  const value = normalizeStateName(destination);
+
+  if (value.includes("kashmir")) {
     return "Jammu and Kashmir";
   }
 
   return (
     statesAndUTs.find((state) =>
-      value.includes(state.toLowerCase())
+      value.includes(normalizeStateName(state)),
     ) ?? null
   );
 }
@@ -69,7 +87,37 @@ function getStateFromDestination(destination: string) {
 export function ItineraryFilter({
   itineraries,
 }: ItineraryFilterProps) {
-  const [selectedState, setSelectedState] = useState("All");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const stateFromUrl = getValidState(searchParams.get("state"));
+
+  const [selectedState, setSelectedState] = useState(stateFromUrl);
+
+  // Sync the dropdown whenever the navbar URL changes.
+  useEffect(() => {
+    setSelectedState(stateFromUrl);
+  }, [stateFromUrl]);
+
+  // Update the URL and selected filter when the user changes the dropdown.
+  function handleStateChange(state: string) {
+    setSelectedState(state);
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (state === "All") {
+      params.delete("state");
+    } else {
+      params.set("state", state);
+    }
+
+    const queryString = params.toString();
+
+    router.replace(
+      queryString ? `/itineraries?${queryString}` : "/itineraries",
+      { scroll: false },
+    );
+  }
 
   const filteredItineraries = useMemo(() => {
     if (selectedState === "All") {
@@ -78,21 +126,20 @@ export function ItineraryFilter({
 
     return itineraries.filter(
       (itinerary) =>
-        getStateFromDestination(itinerary.destination) ===
-        selectedState
+        getStateFromDestination(itinerary.destination) === selectedState,
     );
   }, [itineraries, selectedState]);
 
   return (
     <>
       {/* FILTER */}
-      <div className="mt-12 flex flex-col gap-4 border-y border-white/10 py-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-12 flex flex-col gap-4 border-y border-[#EAE5D9] py-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+          <p className="text-xs uppercase tracking-[0.18em] text-[#626A5D]">
             Browse by location
           </p>
 
-          <p className="mt-1 text-sm text-white/50">
+          <p className="mt-1 text-sm text-[#626A5D]">
             {filteredItineraries.length}{" "}
             {filteredItineraries.length === 1
               ? "itinerary"
@@ -103,28 +150,20 @@ export function ItineraryFilter({
         <div className="relative">
           <select
             value={selectedState}
-            onChange={(event) =>
-              setSelectedState(event.target.value)
-            }
+            onChange={(event) => handleStateChange(event.target.value)}
             aria-label="Filter itineraries by state or union territory"
-            className="w-full min-w-[240px] appearance-none rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 pr-10 text-sm text-white outline-none transition hover:border-white/20 focus:border-white/30 sm:w-auto"
+            className="w-full min-w-[240px] appearance-none rounded-xl border border-[#EAE5D9] bg-[#FFFEFA] px-4 py-3 pr-10 text-sm text-[#303A32] outline-none transition hover:border-[#A16F35] focus:border-[#A16F35] sm:w-auto"
           >
-            <option value="All" className="bg-black text-white">
-              All States & UTs
-            </option>
+            <option value="All">All States &amp; UTs</option>
 
             {statesAndUTs.map((state) => (
-              <option
-                key={state}
-                value={state}
-                className="bg-black text-white"
-              >
+              <option key={state} value={state}>
                 {state}
               </option>
             ))}
           </select>
 
-          <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-white/40">
+          <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#626A5D]">
             ▼
           </span>
         </div>
@@ -143,7 +182,7 @@ export function ItineraryFilter({
       {/* NO RESULTS */}
       {filteredItineraries.length === 0 && (
         <div className="py-24 text-center">
-          <p className="text-sm text-white/40">
+          <p className="text-sm text-[#626A5D]">
             No itineraries available for {selectedState}.
           </p>
         </div>

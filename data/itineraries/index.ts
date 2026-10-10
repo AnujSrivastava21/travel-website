@@ -14,6 +14,18 @@ export const itineraries: Itinerary[] = [
     isPremium: false,
     price: 149,
 
+theme: {
+  primary: "#285A83",
+  secondary: "#D8E7F0",
+  background: "#F8F4ED",
+  surface: "#FFFFFF",
+  accent: "#C9794B",
+  text: "#263747",
+  muted: "#77736C",
+  border: "#D7E0E5",
+  buttonText: "#FFFFFF",
+},
+
      days: [
     {
       day: 1,
@@ -125,6 +137,18 @@ export const itineraries: Itinerary[] = [
     title: "Jaisalmer Winter 4N/5D",
     destination: "Jaisalmer, Rajasthan",
     duration: 4,
+    theme: {
+    primary: "#C58B2A",     // Golden sandstone
+    secondary: "#F4E3BD",   // Warm desert sand
+    background: "#FBF6EB",  // Desert cream
+    surface: "#FFFFFF",     // Cards and form fields
+    accent: "#E8B85D",      // Golden sunset
+    text: "#49351F",        // Dark sandstone
+    muted: "#87745B",       // Muted desert brown
+    border: "#E6D3AE",      // Sandstone border
+    buttonText: "#FFFFFF",
+  },
+
     description:
       "A perfect winter escape through the Golden City of Jaisalmer, covering historic havelis, the magnificent Jaisalmer Fort, desert landscapes, golden-hour sunsets, Sam Sand Dunes and an unforgettable night under the stars.",
     coverImage: "/images/iternery/jaislmer_winter.jpg",
@@ -213,8 +237,20 @@ export const itineraries: Itinerary[] = [
 
     coverImage: "/images/iternery/kashmirs.jpg",
 
-    isPremium: true,
+    isPremium: false,
     price: 49,
+
+theme: {
+  primary: "#A64B32",
+  secondary: "#F0D9C4",
+  background: "#FBF5ED",
+  surface: "#FFFFFF",
+  accent: "#C98A45",
+  text: "#49372F",
+  muted: "#88766B",
+  border: "#E6D4C4",
+  buttonText: "#FFFFFF",
+},
 
     days: [
       {
@@ -260,225 +296,225 @@ export const itineraries: Itinerary[] = [
   },
 
   //delhi-Varanasi-2n3d
-  {
-    id: "Delhi-Varanasi-2n3d",
-    slug: "Delhi-Varanasi-2n3d",
-    title: "Delhi–Varanasi 2N/3D",
-    destination: "Varanasi, Uttar Pradesh",
-    duration: 2,
-    description:
-      "A soulful 3-day journey from New Delhi to Varanasi, exploring the ancient ghats, narrow lanes, temples, Ganga Aarti, sunrise boat rides, local markets and the spiritual heart of Kashi.",
-    coverImage: "/images/iternery/kashi.jpg",
-    isPremium: false,
-    price: 149,
+  // {
+  //   id: "Delhi-Varanasi-2n3d",
+  //   slug: "Delhi-Varanasi-2n3d",
+  //   title: "Delhi–Varanasi 2N/3D",
+  //   destination: "Varanasi, Uttar Pradesh",
+  //   duration: 2,
+  //   description:
+  //     "A soulful 3-day journey from New Delhi to Varanasi, exploring the ancient ghats, narrow lanes, temples, Ganga Aarti, sunrise boat rides, local markets and the spiritual heart of Kashi.",
+  //   coverImage: "/images/iternery/kashi.jpg",
+  //   isPremium: false,
+  //   price: 149,
 
-    days: [
-      {
-        day: 1,
-        title: "Arrive in Varanasi — Ghats, Old City & Ganga Aarti",
-        description:
-          "Take an overnight train from New Delhi and reach Varanasi in the morning. Check in, leave your bags and start exploring the old city around noon. Walk through the narrow lanes of Kashi and explore Kashi Vishwanath Temple and the nearby ghats. In the evening, walk towards Dashashwamedh Ghat to witness the famous Ganga Aarti. After the aarti, explore the lively Godowlia market and try some local Banarasi food.",
-        locations: [
-          "New Delhi",
-          "Varanasi",
-          "Kashi Vishwanath Temple",
-          "Dashashwamedh Ghat",
-          "Godowlia Market",
-          "Old Varanasi",
-        ],
-      },
+  //   days: [
+  //     {
+  //       day: 1,
+  //       title: "Arrive in Varanasi — Ghats, Old City & Ganga Aarti",
+  //       description:
+  //         "Take an overnight train from New Delhi and reach Varanasi in the morning. Check in, leave your bags and start exploring the old city around noon. Walk through the narrow lanes of Kashi and explore Kashi Vishwanath Temple and the nearby ghats. In the evening, walk towards Dashashwamedh Ghat to witness the famous Ganga Aarti. After the aarti, explore the lively Godowlia market and try some local Banarasi food.",
+  //       locations: [
+  //         "New Delhi",
+  //         "Varanasi",
+  //         "Kashi Vishwanath Temple",
+  //         "Dashashwamedh Ghat",
+  //         "Godowlia Market",
+  //         "Old Varanasi",
+  //       ],
+  //     },
 
-      {
-        day: 2,
-        title: "Banaras at Sunrise — Boat Ride",
-        description:
-          "Wake up before sunrise and take a boat ride along the Ganga as the ghats slowly come alive. Start your morning at Assi Ghat and experience the peaceful atmosphere and morning Aarti. After the boat ride, explore the ghats on foot through the old lanes of Kashi. Don’t miss Lalita Ghat, Panchganga Ghat, Ganesh Ghat, Manikarnika Ghat, Harishchandra Ghat and Namo Ghat, each offering a different glimpse of life along the Ganga. In the evening, head to Godowlia Market and experience the energy of the busy lanes at night. And while exploring the ghats, don’t miss a hot glass of lemon tea — a simple but unforgettable part of the Kashi experience.",
-        locations: [
-          "Assi Ghat",
-          "Ganga Sunrise Boat Ride",
-          "Manikarnika Ghat",
-          "Lalita Ghat",
-          "Namo Ghat",
-        ],
-      },
+  //     {
+  //       day: 2,
+  //       title: "Banaras at Sunrise — Boat Ride",
+  //       description:
+  //         "Wake up before sunrise and take a boat ride along the Ganga as the ghats slowly come alive. Start your morning at Assi Ghat and experience the peaceful atmosphere and morning Aarti. After the boat ride, explore the ghats on foot through the old lanes of Kashi. Don’t miss Lalita Ghat, Panchganga Ghat, Ganesh Ghat, Manikarnika Ghat, Harishchandra Ghat and Namo Ghat, each offering a different glimpse of life along the Ganga. In the evening, head to Godowlia Market and experience the energy of the busy lanes at night. And while exploring the ghats, don’t miss a hot glass of lemon tea — a simple but unforgettable part of the Kashi experience.",
+  //       locations: [
+  //         "Assi Ghat",
+  //         "Ganga Sunrise Boat Ride",
+  //         "Manikarnika Ghat",
+  //         "Lalita Ghat",
+  //         "Namo Ghat",
+  //       ],
+  //     },
 
-      {
-        day: 3,
-        title: "Morning Bliss in Banaras & Departure",
-        description:
-          "Wake up early once again and spend a quiet morning around Assi Ghat. Experience the morning rituals, walk along the riverside and enjoy a traditional Banarasi breakfast. Take one final walk through the old lanes and pick up Banarasi silk, handicrafts or local sweets before checking out. Begin your journey back to New Delhi in the afternoon or evening.",
-        locations: [
-          "Assi Ghat",
-          "Ganga Ghats",
-          "Banarasi Breakfast",
-          "Godowlia Market",
-          "Varanasi",
-          "New Delhi",
-        ],
-      },
-    ],
-  },
+  //     {
+  //       day: 3,
+  //       title: "Morning Bliss in Banaras & Departure",
+  //       description:
+  //         "Wake up early once again and spend a quiet morning around Assi Ghat. Experience the morning rituals, walk along the riverside and enjoy a traditional Banarasi breakfast. Take one final walk through the old lanes and pick up Banarasi silk, handicrafts or local sweets before checking out. Begin your journey back to New Delhi in the afternoon or evening.",
+  //       locations: [
+  //         "Assi Ghat",
+  //         "Ganga Ghats",
+  //         "Banarasi Breakfast",
+  //         "Godowlia Market",
+  //         "Varanasi",
+  //         "New Delhi",
+  //       ],
+  //     },
+  //   ],
+  // },
 
   //delhi-zanskar-4-days
-  {
-    id: "delhi-zanskar-4-days",
-    slug: "delhi-zanskar-4-days",
-    title: "Delhi to Zanskar — 3N/4D Road Trip Under 10K",
-    destination: "Zanskar, Ladakh",
-    duration: 4,
-    description:
-      "A high-altitude road journey from Delhi through Sissu, Jispa and Keylong, continuing towards the dramatic landscapes of Zanskar.",
-    coverImage: "/images/iternery/zanskar.jpg",
-    isPremium: true,
-    price: 149,
+  // {
+  //   id: "delhi-zanskar-4-days",
+  //   slug: "delhi-zanskar-4-days",
+  //   title: "Delhi to Zanskar — 3N/4D Road Trip Under 10K",
+  //   destination: "Zanskar, Ladakh",
+  //   duration: 4,
+  //   description:
+  //     "A high-altitude road journey from Delhi through Sissu, Jispa and Keylong, continuing towards the dramatic landscapes of Zanskar.",
+  //   coverImage: "/images/iternery/zanskar.jpg",
+  //   isPremium: false,
+  //   price: 149,
 
-    days: [
-      {
-        day: 1,
-        title: "Delhi to Manali",
-        description:
-          "Take an overnight bus from Delhi to Manali. Give your body some time to acclimatize, so there is no need to rush. Relax and explore Manali, Old Manali, the temples, and the riverside views.",
-        locations: ["Delhi", "Manali"],
-      },
-      {
-        day: 2,
-        title: "Towards Zanskar — Stay at Gonbo Rongjon Base Camp",
-        description:
-          "Start your journey early in the morning from Manali. The ride is around 150 km and takes approximately 6–7 hours, so start early. Stay at the Gonbo Rongjon Base Camp and experience the real beauty of the mountains. Don't miss the stargazing after midnight. Temperatures can drop below zero, so bring warm clothes. The camp costs around ₹1,500 per person, and there is no internet connection, so carry enough cash.",
-        locations: ["Manali", "Zanskar"],
-      },
-      {
-        day: 3,
-        title: "Zanskar to Manali",
-        description:
-          "Start your journey early from the camp so you have enough time to explore the hidden gem of Jispa. Visit Keylong and its monastery, and don't forget to stop for a coffee while enjoying the beautiful views around Sissu Lake.",
-        locations: ["Zanskar", "Jispa", "Keylong", "Sissu"],
-      },
-      {
-        day: 4,
-        title: "Manali to Delhi",
-        description:
-          "Return your rented Bullet at around 5 PM. After covering nearly 10 hours of riding, you can either stay in Manali for another night or, if you still have time and energy, take an overnight bus back to Delhi.",
-        locations: ["Manali", "Delhi"],
-      },
-    ],
-  },
+  //   days: [
+  //     {
+  //       day: 1,
+  //       title: "Delhi to Manali",
+  //       description:
+  //         "Take an overnight bus from Delhi to Manali. Give your body some time to acclimatize, so there is no need to rush. Relax and explore Manali, Old Manali, the temples, and the riverside views.",
+  //       locations: ["Delhi", "Manali"],
+  //     },
+  //     {
+  //       day: 2,
+  //       title: "Towards Zanskar — Stay at Gonbo Rongjon Base Camp",
+  //       description:
+  //         "Start your journey early in the morning from Manali. The ride is around 150 km and takes approximately 6–7 hours, so start early. Stay at the Gonbo Rongjon Base Camp and experience the real beauty of the mountains. Don't miss the stargazing after midnight. Temperatures can drop below zero, so bring warm clothes. The camp costs around ₹1,500 per person, and there is no internet connection, so carry enough cash.",
+  //       locations: ["Manali", "Zanskar"],
+  //     },
+  //     {
+  //       day: 3,
+  //       title: "Zanskar to Manali",
+  //       description:
+  //         "Start your journey early from the camp so you have enough time to explore the hidden gem of Jispa. Visit Keylong and its monastery, and don't forget to stop for a coffee while enjoying the beautiful views around Sissu Lake.",
+  //       locations: ["Zanskar", "Jispa", "Keylong", "Sissu"],
+  //     },
+  //     {
+  //       day: 4,
+  //       title: "Manali to Delhi",
+  //       description:
+  //         "Return your rented Bullet at around 5 PM. After covering nearly 10 hours of riding, you can either stay in Manali for another night or, if you still have time and energy, take an overnight bus back to Delhi.",
+  //       locations: ["Manali", "Delhi"],
+  //     },
+  //   ],
+  // },
   //udaipur-weekend-plan
-  {
-    id: "udaipur-weekend-plan",
-    slug: "udaipur-weekend",
-    title: "Udaipur — 3 Day Weekend Itinerary",
-    destination: "Udaipur, Rajasthan",
-    duration: 3,
-    description:
-      "A relaxed three-day itinerary covering Udaipur's lakes, old streets and cultural experiences.",
-    coverImage: "/images/iternery/udaipurs.jpg",
-    isPremium: false,
-    days: [
-  {
-    day: 1,
-    title: "Udaipur — Ghats, Lakes & City Palace",
-    description:
-      "Start your morning at Gangaur Ghat and then walk towards Ambrai Ghat to enjoy beautiful views of Lake Pichola and the City Palace. Spend some time around the old streets and lake area before taking a break for local food. In the evening, make sure you reach City Palace around 5 PM so you can explore the palace museum and experience the beautiful sunset shades over Udaipur. After sunset, spend some time around the nearby lake area before wrapping up your first day.",
-    locations: ["Gangaur Ghat", "Ambrai Ghat", "Lake Pichola", "City Palace"],
-  },
+//   {
+//     id: "udaipur-weekend-plan",
+//     slug: "udaipur-weekend",
+//     title: "Udaipur — 3 Day Weekend Itinerary",
+//     destination: "Udaipur, Rajasthan",
+//     duration: 3,
+//     description:
+//       "A relaxed three-day itinerary covering Udaipur's lakes, old streets and cultural experiences.",
+//     coverImage: "/images/iternery/udaipurs.jpg",
+//     isPremium: false,
+//     days: [
+//   {
+//     day: 1,
+//     title: "Udaipur — Ghats, Lakes & City Palace",
+//     description:
+//       "Start your morning at Gangaur Ghat and then walk towards Ambrai Ghat to enjoy beautiful views of Lake Pichola and the City Palace. Spend some time around the old streets and lake area before taking a break for local food. In the evening, make sure you reach City Palace around 5 PM so you can explore the palace museum and experience the beautiful sunset shades over Udaipur. After sunset, spend some time around the nearby lake area before wrapping up your first day.",
+//     locations: ["Gangaur Ghat", "Ambrai Ghat", "Lake Pichola", "City Palace"],
+//   },
 
-  {
-    day: 2,
-    title: "Bahubali Hills, Monsoon & Kumbhalgarh",
-    description:
-      "Start early and rent a scooty or take a cab towards Bahubali Hills for beautiful panoramic views over the surrounding lakes and hills. After spending some time there, continue towards the Monsoon Palace and enjoy the changing landscapes around Udaipur. Later, head towards Kumbhalgarh and explore the magnificent Kumbhalgarh Fort and its historic palace complex. Take your time exploring the fort before returning to Udaipur by evening.",
-    locations: ["Bahubali Hills", "Monsoon Palace", "Kumbhalgarh Fort", "Udaipur"],
-  },
+//   {
+//     day: 2,
+//     title: "Bahubali Hills, Monsoon & Kumbhalgarh",
+//     description:
+//       "Start early and rent a scooty or take a cab towards Bahubali Hills for beautiful panoramic views over the surrounding lakes and hills. After spending some time there, continue towards the Monsoon Palace and enjoy the changing landscapes around Udaipur. Later, head towards Kumbhalgarh and explore the magnificent Kumbhalgarh Fort and its historic palace complex. Take your time exploring the fort before returning to Udaipur by evening.",
+//     locations: ["Bahubali Hills", "Monsoon Palace", "Kumbhalgarh Fort", "Udaipur"],
+//   },
 
-  {
-    day: 3,
-    title: "Local Streets, Food & Departure",
-    description:
-      "Spend your final morning exploring the local markets and colourful streets of Udaipur. Take your time trying authentic Rajasthani food, shopping for local items and visiting any nearby places you may have missed. Keep the day relaxed so you can enjoy the city without rushing, and later begin your journey back to your hometown.",
-    locations: ["Udaipur Local Market", "Udaipur"],
-  },
-],
-  },
+//   {
+//     day: 3,
+//     title: "Local Streets, Food & Departure",
+//     description:
+//       "Spend your final morning exploring the local markets and colourful streets of Udaipur. Take your time trying authentic Rajasthani food, shopping for local items and visiting any nearby places you may have missed. Keep the day relaxed so you can enjoy the city without rushing, and later begin your journey back to your hometown.",
+//     locations: ["Udaipur Local Market", "Udaipur"],
+//   },
+// ],
+//   },
 // spiti-valley-10-days
-  {
-    id: "spiti-valley-10-days",
-    slug: "spiti-valley-10-days",
-    title: "Spiti Valley — 10 Day Complete Itinerary",
-    destination: "Spiti Valley, Himachal Pradesh",
-    duration: 10,
-    description:
-      "A practical road-trip itinerary covering the major villages, landscapes and experiences of Spiti Valley.",
-    coverImage: "/images/destinations/spiti.jpg",
-    isPremium: true,
-    days: [
-      {
-        day: 1,
-        title: "Delhi to Shimla",
-        description:
-          "Start the journey from Delhi and reach Shimla by overnight bus.",
-        locations: ["Delhi", "Shimla"],
-      },
-      {
-        day: 2,
-        title: "Shimla to Chitkul",
-        description:
-          "Travel towards Kinnaur and explore the beautiful village of Chitkul.",
-        locations: ["Shimla", "Rampur", "Sangla", "Chitkul"],
-      },
-      {
-        day: 3,
-        title: "Chitkul to Kalpa",
-        description: "Continue through the Kinnaur Valley towards Kalpa.",
-        locations: ["Chitkul", "Sangla", "Kalpa"],
-      },
-      {
-        day: 4,
-        title: "Kalpa to Nako",
-        description:
-          "Enter the high-altitude landscape of Spiti through Kinnaur.",
-        locations: ["Kalpa", "Kinnaur", "Nako"],
-      },
-      {
-        day: 5,
-        title: "Nako to Kaza",
-        description: "Explore Tabo and Dhankar before reaching Kaza.",
-        locations: ["Nako", "Tabo", "Dhankar", "Kaza"],
-      },
-      {
-        day: 6,
-        title: "Kaza Exploration",
-        description:
-          "Explore Kaza and experience the local side of Spiti Valley.",
-        locations: ["Kaza"],
-      },
-      {
-        day: 7,
-        title: "Komic, Hikkim & Langza",
-        description: "Visit some of Spiti's famous high-altitude villages.",
-        locations: ["Komic", "Hikkim", "Langza"],
-      },
-      {
-        day: 8,
-        title: "Key, Kibber & Chicham",
-        description:
-          "Explore the famous monastery, villages and one of the world's highest bridges.",
-        locations: ["Key Monastery", "Kibber", "Chicham"],
-      },
-      {
-        day: 9,
-        title: "Kaza to Chandratal",
-        description: "Travel towards the spectacular Chandratal Lake.",
-        locations: ["Kaza", "Losar", "Chandratal"],
-      },
-      {
-        day: 10,
-        title: "Chandratal to Manali",
-        description: "Complete the Spiti circuit and travel towards Manali.",
-        locations: ["Chandratal", "Batal", "Rohtang", "Manali"],
-      },
-    ],
-  },
+  // {
+  //   id: "spiti-valley-10-days",
+  //   slug: "spiti-valley-10-days",
+  //   title: "Spiti Valley — 10 Day Complete Itinerary",
+  //   destination: "Spiti Valley, Himachal Pradesh",
+  //   duration: 10,
+  //   description:
+  //     "A practical road-trip itinerary covering the major villages, landscapes and experiences of Spiti Valley.",
+  //   coverImage: "/images/destinations/spiti.jpg",
+  //   isPremium: true,
+  //   days: [
+  //     {
+  //       day: 1,
+  //       title: "Delhi to Shimla",
+  //       description:
+  //         "Start the journey from Delhi and reach Shimla by overnight bus.",
+  //       locations: ["Delhi", "Shimla"],
+  //     },
+  //     {
+  //       day: 2,
+  //       title: "Shimla to Chitkul",
+  //       description:
+  //         "Travel towards Kinnaur and explore the beautiful village of Chitkul.",
+  //       locations: ["Shimla", "Rampur", "Sangla", "Chitkul"],
+  //     },
+  //     {
+  //       day: 3,
+  //       title: "Chitkul to Kalpa",
+  //       description: "Continue through the Kinnaur Valley towards Kalpa.",
+  //       locations: ["Chitkul", "Sangla", "Kalpa"],
+  //     },
+  //     {
+  //       day: 4,
+  //       title: "Kalpa to Nako",
+  //       description:
+  //         "Enter the high-altitude landscape of Spiti through Kinnaur.",
+  //       locations: ["Kalpa", "Kinnaur", "Nako"],
+  //     },
+  //     {
+  //       day: 5,
+  //       title: "Nako to Kaza",
+  //       description: "Explore Tabo and Dhankar before reaching Kaza.",
+  //       locations: ["Nako", "Tabo", "Dhankar", "Kaza"],
+  //     },
+  //     {
+  //       day: 6,
+  //       title: "Kaza Exploration",
+  //       description:
+  //         "Explore Kaza and experience the local side of Spiti Valley.",
+  //       locations: ["Kaza"],
+  //     },
+  //     {
+  //       day: 7,
+  //       title: "Komic, Hikkim & Langza",
+  //       description: "Visit some of Spiti's famous high-altitude villages.",
+  //       locations: ["Komic", "Hikkim", "Langza"],
+  //     },
+  //     {
+  //       day: 8,
+  //       title: "Key, Kibber & Chicham",
+  //       description:
+  //         "Explore the famous monastery, villages and one of the world's highest bridges.",
+  //       locations: ["Key Monastery", "Kibber", "Chicham"],
+  //     },
+  //     {
+  //       day: 9,
+  //       title: "Kaza to Chandratal",
+  //       description: "Travel towards the spectacular Chandratal Lake.",
+  //       locations: ["Kaza", "Losar", "Chandratal"],
+  //     },
+  //     {
+  //       day: 10,
+  //       title: "Chandratal to Manali",
+  //       description: "Complete the Spiti circuit and travel towards Manali.",
+  //       locations: ["Chandratal", "Batal", "Rohtang", "Manali"],
+  //     },
+  //   ],
+  // },
 // kerala-7-day
   // {
   //   id: "kerala-7-days",
@@ -511,52 +547,52 @@ export const itineraries: Itinerary[] = [
   //   ],
   // },
 // delhi-kalpa-4-days
-  {
-    id: "delhi-kalpa-4-days",
-    slug: "delhi-kalpa-4-days",
-    title: "Delhi to Kalpa — 3N/4D Road Trip",
-    destination: "Kalpa, Himachal Pradesh",
-    duration: 4,
-    description:
-      "A scenic road trip from Delhi to Kalpa through Shimla and Kinnaur, featuring mountain roads, Kinnaur Kailash views, local food, temples, villages, and unforgettable Himalayan landscapes.",
-    coverImage: "/images/iternery/kalpa.jpg",
-    isPremium: false,
-    price: 149,
+  // {
+  //   id: "delhi-kalpa-4-days",
+  //   slug: "delhi-kalpa-4-days",
+  //   title: "Delhi to Kalpa — 3N/4D Road Trip",
+  //   destination: "Kalpa, Himachal Pradesh",
+  //   duration: 4,
+  //   description:
+  //     "A scenic road trip from Delhi to Kalpa through Shimla and Kinnaur, featuring mountain roads, Kinnaur Kailash views, local food, temples, villages, and unforgettable Himalayan landscapes.",
+  //   coverImage: "/images/iternery/kalpa.jpg",
+  //   isPremium: false,
+  //   price: 149,
 
-    days: [
-      {
-        day: 1,
-        title: "Delhi to Shimla",
-        description:
-          "Travel from Delhi to Shimla and spend the evening exploring Mall Road, Christ Church, and the local streets. Grab a pastry and enjoy the mountain vibe, but don't explore too much—you have a long journey ahead the next day.",
-        locations: ["Delhi", "Shimla"],
-      },
+  //   days: [
+  //     {
+  //       day: 1,
+  //       title: "Delhi to Shimla",
+  //       description:
+  //         "Travel from Delhi to Shimla and spend the evening exploring Mall Road, Christ Church, and the local streets. Grab a pastry and enjoy the mountain vibe, but don't explore too much—you have a long journey ahead the next day.",
+  //       locations: ["Delhi", "Shimla"],
+  //     },
 
-      {
-        day: 2,
-        title: "Shimla to Kalpa via Kinnaur Gateway",
-        description:
-          "Start your journey early so you can reach Kalpa by evening. Don't forget to stop at the famous Kinnaur Gateway and capture some pictures. The dramatic mountain roads make this journey an adventurous and thrilling experience. Once you arrive in Kalpa, stay at a homestay or hotel. Pre-booking is recommended, while Zostel Kalpa is a great option for its views of the Kinnaur Kailash Shivling when the weather is clear.",
-        locations: ["Shimla", "Kinnaur Gateway", "Kalpa"],
-      },
+  //     {
+  //       day: 2,
+  //       title: "Shimla to Kalpa via Kinnaur Gateway",
+  //       description:
+  //         "Start your journey early so you can reach Kalpa by evening. Don't forget to stop at the famous Kinnaur Gateway and capture some pictures. The dramatic mountain roads make this journey an adventurous and thrilling experience. Once you arrive in Kalpa, stay at a homestay or hotel. Pre-booking is recommended, while Zostel Kalpa is a great option for its views of the Kinnaur Kailash Shivling when the weather is clear.",
+  //       locations: ["Shimla", "Kinnaur Gateway", "Kalpa"],
+  //     },
 
-      {
-        day: 3,
-        title: "Explore Kalpa & Roghi Village",
-        description:
-          "Start your day by visiting the Kalpa temple, where the famous Rukmini/Raulane festival is celebrated, followed by the monastery. Stop at Negi's Sister's Cafe for momos and try traditional Himachali food such as siddu. Later, visit Roghi Village and the famous Suicide Point. You can also explore the local temple and surrounding village. Most of Kalpa's main attractions can be covered comfortably in one day.",
-        locations: ["Kalpa", "Roghi Village"],
-      },
+  //     {
+  //       day: 3,
+  //       title: "Explore Kalpa & Roghi Village",
+  //       description:
+  //         "Start your day by visiting the Kalpa temple, where the famous Rukmini/Raulane festival is celebrated, followed by the monastery. Stop at Negi's Sister's Cafe for momos and try traditional Himachali food such as siddu. Later, visit Roghi Village and the famous Suicide Point. You can also explore the local temple and surrounding village. Most of Kalpa's main attractions can be covered comfortably in one day.",
+  //       locations: ["Kalpa", "Roghi Village"],
+  //     },
 
-      {
-        day: 4,
-        title: "Kalpa to Delhi",
-        description:
-          "Start your journey early for the return trip to Delhi. If you want to avoid a long and tiring journey in one go, you can stay overnight in Narkanda or Kufri and continue towards Delhi the next day. Otherwise, take the direct route back to Delhi.",
-        locations: ["Kalpa", "Narkanda", "Kufri", "Delhi"],
-      },
-    ],
-  },
+  //     {
+  //       day: 4,
+  //       title: "Kalpa to Delhi",
+  //       description:
+  //         "Start your journey early for the return trip to Delhi. If you want to avoid a long and tiring journey in one go, you can stay overnight in Narkanda or Kufri and continue towards Delhi the next day. Otherwise, take the direct route back to Delhi.",
+  //       locations: ["Kalpa", "Narkanda", "Kufri", "Delhi"],
+  //     },
+  //   ],
+  // },
 // udaipur-chittorgarh-kumbhalgarh-4-days
   // {
   //   id: "udaipur-chittorgarh-kumbhalgarh-4-days",
@@ -906,6 +942,17 @@ export const itineraries: Itinerary[] = [
     coverImage: "/images/iternery/mahakumbh.jpg",
     isPremium: false,
     price: 149,
+theme: {
+  primary: "#87452D",
+  secondary: "#F3E2CC",
+  background: "#FFF9F0",
+  surface: "#FFFFFF",
+  accent: "#D7A84B",
+  text: "#432D24",
+  muted: "#89776A",
+  border: "#E9D6C1",
+  buttonText: "#FFFFFF",
+},
 
     days: [
   {

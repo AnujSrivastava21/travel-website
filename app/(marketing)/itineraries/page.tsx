@@ -1,7 +1,9 @@
+
 import type { Metadata } from "next";
 
 import { itineraries } from "../../../data/itineraries";
 import { ItineraryFilter } from "../../../components/itinerary/itinerary-filter";
+import { headingFont, bodyFont } from "../../font";
 
 export const metadata: Metadata = {
   title: "Travel Itineraries",
@@ -11,24 +13,24 @@ export const metadata: Metadata = {
 
 export default function ItinerariesPage() {
   return (
-    <div className="min-h-screen bg-black pt-32">
-      <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-8">
-        <div className="max-w-3xl">
-          <p className="text-sm uppercase tracking-[0.2em] text-white/40">
-            Plan your journey
-          </p>
-
-          <h1 className="mt-5 text-5xl font-semibold tracking-tight sm:text-6xl">
-            Travel Itineraries
+    <div
+      className={`${headingFont.variable} ${bodyFont.variable} min-h-screen bg-[#F4EFE4] font-[var(--font-body)] text-[#2B2A26] antialiased`}
+    >
+      <section className="mx-auto w-full max-w-6xl px-5 pb-16 pt-28 text-[#2B2A26] sm:px-8 lg:pb-24 lg:pt-32">
+        <div className="max-w-xl">
+          <h1 className="font-[var(--font-heading)] text-4xl font-semibold leading-[1.08] tracking-[-0.02em] text-[#14213D] sm:text-5xl">
+            Travel itineraries
           </h1>
 
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/50">
-            Practical routes built from real journeys — with places to
-            visit, travel days, experiences and useful planning information.
+          <p className="mt-4 text-base leading-7 text-[#4A463F] sm:text-lg sm:leading-8">
+            Practical routes built from real journeys, with places to visit,
+            travel days and a budget you can adjust for your group.
           </p>
         </div>
 
-        <ItineraryFilter itineraries={itineraries} />
+        <div className="mt-10 text-[#2B2A26]">
+          <ItineraryFilter itineraries={itineraries} />
+        </div>
       </section>
     </div>
   );

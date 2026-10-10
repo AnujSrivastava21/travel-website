@@ -47,7 +47,7 @@ export function ItineraryCard({ itinerary }: ItineraryCardProps) {
             role="dialog"
             aria-modal="true"
             aria-labelledby="premium-payment-title"
-            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-amber-300/20 bg-[#101010] p-7 shadow-2xl"
+            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-amber-300/20 bg-[#101010] p-7 text-white shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
             <button
@@ -87,7 +87,9 @@ export function ItineraryCard({ itinerary }: ItineraryCardProps) {
               </p>
 
               <div className="mt-4 flex items-end justify-between border-t border-white/10 pt-4">
-                <span className="text-sm text-white/60">One-time price</span>
+                <span className="text-sm text-white/60">
+                  One-time price
+                </span>
 
                 <span className="text-3xl font-semibold text-amber-300">
                   ₹{price.toLocaleString("en-IN")}
@@ -122,7 +124,7 @@ function CardContent({ itinerary }: { itinerary: Itinerary }) {
   return (
     <>
       {/* IMAGE */}
-      <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-white/5">
+      <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-[#E8E0D1]">
         <Image
           src={itinerary.coverImage}
           alt={itinerary.title}
@@ -136,7 +138,7 @@ function CardContent({ itinerary }: { itinerary: Itinerary }) {
           }`}
         />
 
-        {/* PREMIUM BADGE — LEFT SIDE */}
+        {/* PREMIUM BADGE */}
         {isPremium && (
           <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-amber-300/30 bg-black/70 px-3 py-1.5 text-xs font-medium uppercase tracking-wider text-amber-300 backdrop-blur-md">
             <Sparkles size={13} />
@@ -148,23 +150,23 @@ function CardContent({ itinerary }: { itinerary: Itinerary }) {
       {/* CONTENT */}
       <div className="mt-5">
         <div className="flex items-start justify-between gap-4">
-          <h2 className="text-xl font-medium leading-snug text-white transition group-hover:text-white/70">
+          <h2 className="text-xl font-medium leading-snug text-[#14213D] transition group-hover:text-[#1E4F8F]">
             {itinerary.title}
           </h2>
 
           <ArrowRight
             size={18}
-            className="mt-1 shrink-0 text-white/30 transition group-hover:translate-x-1 group-hover:text-white"
+            className="mt-1 shrink-0 text-[#8B8171] transition group-hover:translate-x-1 group-hover:text-[#1E4F8F]"
           />
         </div>
 
-        <p className="mt-3 text-sm leading-6 text-white/50">
+        <p className="mt-3 text-sm leading-6 text-[#6B665A]">
           {itinerary.description}
         </p>
 
         {/* PREMIUM MESSAGE */}
         {isPremium && (
-          <div className="mt-4 flex items-center gap-2 text-sm text-amber-300">
+          <div className="mt-4 flex items-center gap-2 text-sm text-[#9A6500]">
             <Lock size={14} />
             You have to pay for this itinerary.
           </div>

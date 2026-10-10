@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Navbar } from "../components/navigation/navbar";
-import { Footer } from "../components/layout/footer";
+import { Footer } from "../components/layout/footer"
+import { headingFont, bodyFont } from "./font";
 // import { AuthSessionProvider } from "@/components/providers/session-provider";
 
 import { AuthSessionProvider } from "../components/provider/session-provider";

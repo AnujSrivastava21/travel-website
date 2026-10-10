@@ -1,14 +1,27 @@
+
 "use client";
 
 import Link from "next/link";
-
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, LogOut, Search , ArrowRight} from "lucide-react";
-import { useState } from "react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  LogOut,
+  Search,
+  ArrowRight,
+  Compass,
+} from "lucide-react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import { signOut, useSession } from "next-auth/react";
-import { useEffect, useRef } from "react";
 import { Ephesis } from "next/font/google";
 
+import ItineraryMegaMenu from "./itinerary-mega-menu";
 import { mainNavigation } from "../../config/navigation";
 
 const ephesis = Ephesis({
@@ -16,30 +29,51 @@ const ephesis = Ephesis({
   weight: "400",
 });
 
-export function Navbar() {
+const focusRing =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C58B35] focus-visible:ring-offset-2";
+
+type NavbarProps = {
+  hideNavbar?: boolean;
+};
+
+export function Navbar({ hideNavbar = false }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isItineraryMenuOpen, setIsItineraryMenuOpen] =
+    useState(false);
 
   const pathname = usePathname();
   const { data: session, status } = useSession();
-
   const user = session?.user;
   const firstName = user?.name?.split(" ")[0] ?? "Account";
+
+  const searchRef = useRef<HTMLDivElement>(null);
+  const navbarRef = useRef<HTMLDivElement>(null);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname === href || pathname.startsWith(`${href}/`);
   };
-  const searchRef = useRef<HTMLDivElement>(null);
 
+  // Close menus when navigating to another page.
+  useEffect(() => {
+    setIsItineraryMenuOpen(false);
+    setIsOpen(false);
+    setProfileOpen(false);
+  }, [pathname]);
+
+  // Close the desktop search when clicking outside or pressing Escape.
   useEffect(() => {
     if (!searchOpen) return;
 
     const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Node;
+
       if (
         searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
+        !searchRef.current.contains(target)
       ) {
         setSearchOpen(false);
       }
@@ -55,14 +89,49 @@ export function Navbar() {
     document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener(
+        "mousedown",
+        handleOutsideClick
+      );
       document.removeEventListener("keydown", handleEscape);
     };
   }, [searchOpen]);
 
+  // Close the itinerary dropdown when clicking outside the navbar.
+  useEffect(() => {
+    if (!isItineraryMenuOpen) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        navbarRef.current &&
+        !navbarRef.current.contains(event.target as Node)
+      ) {
+        setIsItineraryMenuOpen(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsItineraryMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleOutsideClick
+      );
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isItineraryMenuOpen]);
+
   const handleLogout = async () => {
     setProfileOpen(false);
     setIsOpen(false);
+    setIsItineraryMenuOpen(false);
 
     await signOut({ callbackUrl: "/" });
   };
@@ -70,179 +139,99 @@ export function Navbar() {
   const closeMobileMenu = () => {
     setIsOpen(false);
     setProfileOpen(false);
+    setSearchOpen(false);
+    setIsItineraryMenuOpen(false);
   };
 
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const query = searchQuery.trim();
+    if (!query) return;
+
+    window.location.href =
+      `/destinations?search=${encodeURIComponent(query)}`;
+
+    setSearchOpen(false);
+  };
+
+  if (hideNavbar) return null;
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div className="border-b border-white/[0.07] bg-black/60 backdrop-blur-2xl">
-        <div className="mx-auto flex h-[72px] max-w-[1400px] items-center px-5 sm:px-6 lg:px-8">
-          {/* LOGO */}
-          <div className="flex flex-1 items-center justify-start">
-            <Link href="/" onClick={closeMobileMenu} className="group shrink-0">
-              <span
-                className={`${ephesis.className} text-[30px] font-normal tracking-wide text-white/95 transition-colors group-hover:text-amber-200`}
+    <header className="fixed inset-x-0 top-0 z-[100] px-3 pt-3 sm:px-5 sm:pt-4">
+      <div
+        ref={navbarRef}
+        className="relative mx-auto max-w-7xl"
+      >
+        {/* NAVBAR */}
+        <div className="rounded-2xl border border-[#DED3C0]/80 bg-[#FFFCF6]/90 shadow-[0_12px_40px_-20px_rgba(20,33,61,0.30)] backdrop-blur-2xl">
+          <div className="flex min-h-[66px] items-center px-3 sm:px-5 lg:px-6">
+            {/* BRAND */}
+            <div className="flex min-w-0 flex-1 items-center">
+              <Link
+                href="/"
+                onClick={closeMobileMenu}
+                className={`group flex shrink-0 items-center gap-2.5 rounded-lg ${focusRing}`}
               >
-                The Local Route
-              </span>
-            </Link>
-          </div>
+                <span className="grid h-10 w-10 place-items-center rounded-full border border-[#D8C59F] bg-[#F1E6D1] text-[#14213D] transition duration-300 group-hover:-rotate-[8deg] group-hover:bg-[#E8D8B7]">
+                  <Compass size={20} strokeWidth={1.6} />
+                </span>
 
-          {/* DESKTOP NAVIGATION */}
-          <nav className="hidden items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.025] p-1.5 shadow-[0_8px_40px_rgba(0,0,0,0.25)] backdrop-blur-xl md:flex">
-            {mainNavigation.map((item) => {
-              const active = isActive(item.href);
-              const isItinerary = item.href === "/itineraries";
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-current={active ? "page" : undefined}
-                  className={`relative isolate overflow-hidden rounded-full px-4 py-2 text-[19px] transition-all duration-300 ${
-                    ephesis.className
-                  } ${
-                    active
-                      ? isItinerary
-                        ? "bg-amber-300/[0.13] text-amber-200 shadow-[inset_0_0_0_1px_rgba(252,211,77,0.25)]"
-                        : "bg-white/[0.09] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
-                      : isItinerary
-                        ? "text-amber-100/75 hover:bg-amber-300/[0.07] hover:text-amber-200"
-                        : "text-white/55 hover:bg-white/[0.06] hover:text-white"
-                  }`}
-                >
-                  {active && isItinerary && (
-                    <span className="pointer-events-none absolute inset-0 -z-10 animate-pulse rounded-full bg-amber-300/[0.08]" />
-                  )}
-                  {item.title}
-                  {active && (
-                    <span
-                      className={`absolute bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full ${
-                        isItinerary ? "bg-amber-300" : "bg-white/80"
-                      }`}
-                    />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* SEARCH + ACCOUNT */}
-          <div className="flex flex-1 items-center justify-end gap-3">
-            {/* Search icon and expandable input */}
-            <div ref={searchRef} className="relative hidden lg:block">
-              {searchOpen && (
-                <input
-                  autoFocus
-                  type="search"
-                  placeholder="Search destinations..."
-                  aria-label="Search destinations"
-                  className="h-10 w-[230px] rounded-full border border-amber-300/40 bg-[#111]/95 pl-4 pr-12 text-[13px] text-white outline-none shadow-[0_0_24px_rgba(252,211,77,0.10)] placeholder:text-white/40 focus:border-amber-300/70 focus:bg-[#151515]"
-                />
-              )}
-
-              <button
-                type="button"
-                aria-label={searchOpen ? "Close search" : "Open search"}
-                aria-expanded={searchOpen}
-                onClick={() => setSearchOpen((value) => !value)}
-                className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 ${
-                  searchOpen
-                    ? "absolute right-0 top-0 border-amber-300/40 bg-amber-300/10 text-amber-200"
-                    : "border-white/[0.10] bg-white/[0.035] text-white/60 hover:border-amber-300/40 hover:bg-amber-300/[0.08] hover:text-amber-200"
-                }`}
-              >
-                {searchOpen ? <X size={17} /> : <Search size={17} />}
-              </button>
-            </div>
-
-            {/* Mobile search icon */}
-            <button
-              type="button"
-              aria-label="Search"
-              onClick={() => {
-                setIsOpen(true);
-                setSearchOpen((value) => !value);
-              }}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.035] text-white/65 transition hover:border-amber-300/40 hover:bg-amber-300/[0.08] hover:text-amber-200 md:hidden"
-            >
-              <Search size={17} />
-            </button>
-
-            {/* ACCOUNT */}
-            {status === "loading" ? (
-              <div className="h-9 w-9 animate-pulse rounded-full bg-white/[0.06]" />
-            ) : user ? (
-              <div className="relative">
-                <button
-                  type="button"
-                  aria-expanded={profileOpen}
-                  aria-label="Open account menu"
-                  onClick={() => setProfileOpen((value) => !value)}
-                  className="flex items-center gap-2 rounded-full border border-white/[0.10] bg-white/[0.045] px-2 py-1.5 text-sm text-white/75 transition hover:border-white/[0.20] hover:bg-white/[0.08] hover:text-white"
-                >
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.07] text-xs">
-                    {firstName.charAt(0).toUpperCase()}
-                  </div>
-
-                  <span className="hidden max-w-20 truncate sm:block">
-                    {firstName}
+                <span className="flex flex-col">
+                  <span
+                    className={`${ephesis.className} whitespace-nowrap text-[28px] leading-none text-[#14213D] sm:text-[33px]`}
+                  >
+                    The Local Route
                   </span>
 
-                  <ChevronDown
-                    size={13}
-                    className={`text-white/40 transition-transform ${
-                      profileOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
+                  <span className="mt-1 hidden text-[8px] font-semibold uppercase tracking-[0.24em] text-[#8A7755] sm:block">
+                    Find your own way
+                  </span>
+                </span>
+              </Link>
+            </div>
 
-                {profileOpen && (
-                  <div className="absolute right-0 mt-3 w-60 overflow-hidden rounded-2xl border border-white/[0.10] bg-[#0c0c0c]/95 shadow-[0_20px_70px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
-                    <div className="border-b border-white/[0.08] p-4">
-                      <p className="truncate text-sm font-medium text-white">
-                        {user.name ?? "Account"}
-                      </p>
-                      <p className="mt-1 truncate text-xs text-white/40">
-                        {user.email}
-                      </p>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="group flex w-full items-center gap-3 px-4 py-3.5 text-sm text-white/55 transition hover:bg-white/[0.06] hover:text-white"
-                    >
-                      <LogOut
-                        size={15}
-                        className="text-white/35 group-hover:text-amber-200"
-                      />
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : null}
-
-            {/* MOBILE MENU BUTTON */}
-            <button
-              type="button"
-              aria-label={isOpen ? "Close menu" : "Open menu"}
-              aria-expanded={isOpen}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-white/70 transition hover:border-amber-300/30 hover:bg-amber-300/[0.08] hover:text-amber-200 md:hidden"
-              onClick={() => setIsOpen((value) => !value)}
+            {/* DESKTOP NAVIGATION */}
+            <nav
+              aria-label="Main navigation"
+              className="hidden items-center gap-1 lg:flex"
             >
-              {isOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </div>
-
-        {/* MOBILE NAVIGATION */}
-        {isOpen && (
-          <div className="border-t border-white/[0.07] bg-black/95 px-5 py-5 backdrop-blur-2xl md:hidden">
-            <nav className="flex flex-col gap-1">
               {mainNavigation.map((item) => {
                 const active = isActive(item.href);
-                const isItinerary = item.href === "/itineraries";
+                const isItineraries =
+                  item.title.toLowerCase() === "itineraries";
+
+                if (isItineraries) {
+                  return (
+                    <button
+                      key={item.href}
+                      type="button"
+                      aria-expanded={isItineraryMenuOpen}
+                      aria-haspopup="true"
+                      onClick={() => {
+                        setIsItineraryMenuOpen((open) => !open);
+                        setProfileOpen(false);
+                        setSearchOpen(false);
+                      }}
+                      className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-[13px] font-semibold transition-colors xl:px-3.5 ${focusRing} ${
+                        isItineraryMenuOpen || active
+                          ? "bg-[#14213D] text-[#FFFCF6] shadow-sm"
+                          : "text-[#59554B] hover:bg-[#F0E7D8] hover:text-[#14213D]"
+                      }`}
+                    >
+                      {item.title}
+
+                      <ChevronDown
+                        size={14}
+                        className={`transition-transform duration-200 ${
+                          isItineraryMenuOpen
+                            ? "rotate-180"
+                            : ""
+                        }`}
+                      />
+                    </button>
+                  );
+                }
 
                 return (
                   <Link
@@ -250,58 +239,295 @@ export function Navbar() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     onClick={closeMobileMenu}
-                    className={`flex items-center justify-between rounded-xl border px-4 py-3 transition-all duration-300 ${
-                      ephesis.className
-                    } text-[22px] ${
+                    className={`rounded-xl px-3 py-2.5 text-[13px] font-semibold transition-colors xl:px-3.5 ${focusRing} ${
                       active
-                        ? isItinerary
-                          ? "border-amber-300/25 bg-amber-300/[0.10] text-amber-200"
-                          : "border-white/[0.10] bg-white/[0.07] font-semibold text-white"
-                        : isItinerary
-                          ? "border-transparent text-amber-100/80 hover:bg-amber-300/[0.06]"
-                          : "border-transparent text-white/65 hover:bg-white/[0.05] hover:text-white"
+                        ? "bg-[#14213D] text-[#FFFCF6] shadow-sm"
+                        : "text-[#59554B] hover:bg-[#F0E7D8] hover:text-[#14213D]"
                     }`}
                   >
-                    <span>{item.title}</span>
-                    <ArrowRight
-                      size={15}
-                      className={active ? "text-amber-200" : "text-white/25"}
-                    />
+                    {item.title}
                   </Link>
                 );
               })}
+            </nav>
 
-              {/* Mobile search input: visual only for now */}
-              {searchOpen && (
-                <input
-                  autoFocus
-                  type="search"
-                  placeholder="Search destinations..."
-                  aria-label="Search destinations"
-                  className="mt-3 h-12 w-full rounded-xl border border-amber-300/35 bg-amber-300/[0.08] px-4 text-sm text-white outline-none placeholder:text-white/40 focus:border-amber-300/70"
-                />
+            {/* RIGHT-SIDE ACTIONS */}
+            <div className="flex flex-1 items-center justify-end gap-2 sm:gap-2.5">
+              {/* DESKTOP SEARCH */}
+              <div
+                ref={searchRef}
+                className="relative hidden md:block"
+              >
+                {searchOpen && (
+                  <form
+                    onSubmit={handleSearch}
+                    className="absolute right-0 top-0 z-30"
+                  >
+                    <input
+                      autoFocus
+                      type="search"
+                      value={searchQuery}
+                      onChange={(event) =>
+                        setSearchQuery(event.target.value)
+                      }
+                      placeholder="Search destinations..."
+                      aria-label="Search destinations"
+                      className="h-10 w-[220px] rounded-full border border-[#D8C8A8] bg-white pl-4 pr-11 text-sm text-[#2B2A26] outline-none placeholder:text-[#8A8172] focus:ring-2 focus:ring-[#C58B35]/30 sm:w-[260px]"
+                    />
+
+                    <button
+                      type="submit"
+                      aria-label="Submit search"
+                      className="absolute right-1 top-1 grid h-8 w-8 place-items-center rounded-full bg-[#14213D] text-white transition hover:bg-[#285078]"
+                    >
+                      <ArrowRight size={15} />
+                    </button>
+                  </form>
+                )}
+
+                <button
+                  type="button"
+                  aria-label={
+                    searchOpen ? "Close search" : "Open search"
+                  }
+                  aria-expanded={searchOpen}
+                  onClick={() => {
+                    setSearchOpen((value) => !value);
+                    setIsItineraryMenuOpen(false);
+                  }}
+                  className={`relative z-20 grid h-10 w-10 place-items-center rounded-full border border-[#E3D8C5] bg-white/80 text-[#14213D] transition hover:border-[#C7AC76] hover:bg-[#F3E8D3] ${focusRing} ${
+                    searchOpen ? "invisible" : ""
+                  }`}
+                >
+                  <Search size={17} strokeWidth={1.8} />
+                </button>
+              </div>
+
+              {/* DESKTOP ACCOUNT */}
+              {status === "loading" ? (
+                <div className="h-10 w-10 animate-pulse rounded-full bg-[#E6DDCE]" />
+              ) : user ? (
+                <div className="relative hidden sm:block">
+                  <button
+                    type="button"
+                    aria-expanded={profileOpen}
+                    aria-label="Open account menu"
+                    onClick={() => {
+                      setProfileOpen((value) => !value);
+                      setIsItineraryMenuOpen(false);
+                    }}
+                    className={`flex h-10 items-center gap-2 rounded-full border border-[#E3D8C5] bg-white/80 py-1 pl-1 pr-3 text-sm font-semibold text-[#14213D] transition hover:border-[#C7AC76] hover:bg-white ${focusRing}`}
+                  >
+                    <span className="grid h-7 w-7 place-items-center rounded-full bg-[#14213D] text-xs font-semibold text-white">
+                      {firstName.charAt(0).toUpperCase()}
+                    </span>
+
+                    <span className="hidden max-w-20 truncate md:block">
+                      {firstName}
+                    </span>
+
+                    <ChevronDown
+                      size={14}
+                      className={`text-[#8A7755] transition-transform ${
+                        profileOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {profileOpen && (
+                    <div className="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-[#E3D8C5] bg-[#FFFCF6] shadow-[0_20px_60px_-20px_rgba(20,33,61,0.30)]">
+                      <div className="border-b border-[#E8DFD0] bg-[#F5EFE3] p-4">
+                        <p className="truncate text-sm font-semibold text-[#14213D]">
+                          {user.name ?? "Account"}
+                        </p>
+
+                        <p className="mt-1 truncate text-xs text-[#777064]">
+                          {user.email}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="group flex w-full items-center gap-3 px-4 py-3.5 text-sm font-semibold text-[#3C3932] transition hover:bg-[#F4EFE4]"
+                      >
+                        <span className="grid h-8 w-8 place-items-center rounded-full bg-[#EDE5D7] text-[#1E4F8F] group-hover:bg-[#E2D3B6]">
+                          <LogOut size={15} />
+                        </span>
+                        Sign out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : null}
+
+              {/* MOBILE SEARCH */}
+              <button
+                type="button"
+                aria-label="Search destinations"
+                onClick={() => {
+                  setIsOpen(true);
+                  setSearchOpen((value) => !value);
+                  setIsItineraryMenuOpen(false);
+                }}
+                className={`grid h-10 w-10 place-items-center rounded-full border border-[#E3D8C5] bg-white/80 text-[#14213D] transition hover:bg-[#F3E8D3] md:hidden ${focusRing}`}
+              >
+                <Search size={17} />
+              </button>
+
+              {/* MOBILE MENU TOGGLE */}
+              <button
+                type="button"
+                aria-label={isOpen ? "Close menu" : "Open menu"}
+                aria-expanded={isOpen}
+                className={`grid h-10 w-10 place-items-center rounded-full border border-[#E3D8C5] bg-white/80 text-[#14213D] transition hover:bg-[#F3E8D3] lg:hidden ${focusRing}`}
+                onClick={() => {
+                  setIsOpen((value) => !value);
+                  setIsItineraryMenuOpen(false);
+                }}
+              >
+                {isOpen ? <X size={19} /> : <Menu size={19} />}
+              </button>
+            </div>
+          </div>
+
+          {/* MOBILE MENU */}
+          {isOpen && (
+            <div className="border-t border-[#E8DFD0] px-3 pb-4 pt-3 lg:hidden sm:px-5">
+              <nav
+                aria-label="Mobile navigation"
+                className="flex flex-col gap-1.5"
+              >
+                {mainNavigation.map((item) => {
+                  const active = isActive(item.href);
+                  const isItineraries =
+                    item.title.toLowerCase() === "itineraries";
+
+                  if (isItineraries) {
+                    return (
+                      <button
+                        key={item.href}
+                        type="button"
+                        aria-expanded={isItineraryMenuOpen}
+                        onClick={() =>
+                          setIsItineraryMenuOpen((open) => !open)
+                        }
+                        className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
+                          isItineraryMenuOpen
+                            ? "bg-[#14213D] text-[#FFFCF6]"
+                            : "text-[#59554B] hover:bg-[#F0E7D8]"
+                        }`}
+                      >
+                        <span>{item.title}</span>
+
+                        <ChevronDown
+                          size={16}
+                          className={`transition-transform ${
+                            isItineraryMenuOpen
+                              ? "rotate-180"
+                              : ""
+                          }`}
+                        />
+                      </button>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={closeMobileMenu}
+                      aria-current={active ? "page" : undefined}
+                      className={`rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                        active
+                          ? "bg-[#14213D] text-[#FFFCF6]"
+                          : "text-[#59554B] hover:bg-[#F0E7D8] hover:text-[#14213D]"
+                      }`}
+                    >
+                      {item.title}
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* MOBILE ITINERARY DROPDOWN */}
+              {isItineraryMenuOpen && (
+                <div className="mt-3">
+                  <ItineraryMegaMenu
+                    variant="mobile"
+                    onClose={closeMobileMenu}
+                  />
+                </div>
               )}
 
+              {/* MOBILE SEARCH FORM */}
+              {searchOpen && (
+                <form
+                  onSubmit={handleSearch}
+                  className="mt-3 flex gap-2"
+                >
+                  <input
+                    autoFocus
+                    type="search"
+                    value={searchQuery}
+                    onChange={(event) =>
+                      setSearchQuery(event.target.value)
+                    }
+                    placeholder="Search destinations..."
+                    aria-label="Search destinations"
+                    className="h-11 min-w-0 flex-1 rounded-xl border border-[#D8C8A8] bg-white px-4 text-sm text-[#2B2A26] outline-none placeholder:text-[#8A8172] focus:ring-2 focus:ring-[#C58B35]/30"
+                  />
+
+                  <button
+                    type="submit"
+                    aria-label="Submit search"
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#14213D] text-white transition hover:bg-[#285078]"
+                  >
+                    <ArrowRight size={17} />
+                  </button>
+                </form>
+              )}
+
+              {/* MOBILE ACCOUNT */}
               {user && (
-                <div className="mt-4 border-t border-white/[0.08] pt-4">
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-white">
-                      {user.name ?? firstName}
-                    </p>
-                    <p className="mt-1 text-xs text-white/40">{user.email}</p>
+                <div className="mt-4 border-t border-[#E8DFD0] pt-4 sm:hidden">
+                  <div className="mb-3 flex items-center gap-3">
+                    <span className="grid h-10 w-10 place-items-center rounded-full bg-[#14213D] text-sm font-semibold text-white">
+                      {firstName.charAt(0).toUpperCase()}
+                    </span>
+
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-[#14213D]">
+                        {user.name ?? firstName}
+                      </p>
+
+                      <p className="truncate text-xs text-[#777064]">
+                        {user.email}
+                      </p>
+                    </div>
                   </div>
 
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.03] px-4 py-3 text-sm text-white/65 transition hover:bg-white/[0.07] hover:text-white"
+                    className={`flex w-full items-center justify-center gap-2 rounded-xl border border-[#E3D8C5] bg-white px-4 py-3 text-sm font-semibold text-[#14213D] transition hover:bg-[#F0E7D8] ${focusRing}`}
                   >
                     <LogOut size={16} />
-                    Logout
+                    Sign out
                   </button>
                 </div>
               )}
-            </nav>
+            </div>
+          )}
+        </div>
+
+        {/* DESKTOP ITINERARY MEGA MENU */}
+        {isItineraryMenuOpen && !isOpen && (
+          <div className="hidden lg:block">
+            <ItineraryMegaMenu
+              variant="desktop"
+              onClose={() => setIsItineraryMenuOpen(false)}
+            />
           </div>
         )}
       </div>

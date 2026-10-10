@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -7,7 +8,13 @@ import BudgetForm from "./BudgetForm";
 import BudgetResult from "./BudgetResult";
 import TransportExplorer from "./TransportExplorer";
 
-import type { CityTransport, Itinerary, TransportType } from "./budget-types";
+
+import type {
+  CityTransport,
+  DestinationTheme,
+  Itinerary,
+  TransportType,
+} from "./budget-types";
 
 type EditingSection = "arrival" | "departure";
 type MobileView = "form" | "transport";
@@ -18,7 +25,26 @@ type Props = {
   onClose: () => void;
 };
 
-export default function BudgetPopup({ itinerary, open, onClose }: Props) {
+const defaultTheme: DestinationTheme = {
+  primary: "#1E4F8F",
+  secondary: "#E8EEF7",
+  background: "#F4EFE4",
+  surface: "#FFFFFF",
+  accent: "#E8A317",
+  text: "#2B2A26",
+  muted: "#6B665A",
+  border: "#DDD3BE",
+  buttonText: "#FFFFFF",
+};
+
+const iconButton =
+  "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+
+export default function BudgetPopup({
+  itinerary,
+  open,
+  onClose,
+}: Props) {
   const [step, setStep] = useState<"budget" | "result">("budget");
   const [members, setMembers] = useState(2);
   const [isMobile, setIsMobile] = useState(false);
@@ -36,16 +62,24 @@ export default function BudgetPopup({ itinerary, open, onClose }: Props) {
   const [departureTransport, setDepartureTransport] =
     useState<TransportType | null>(null);
 
-  const [cityTransport, setCityTransport] = useState<CityTransport | null>(
-    null,
-  );
+  const [cityTransport, setCityTransport] =
+    useState<CityTransport | null>(null);
 
   const [arrivalTrainPrice, setArrivalTrainPrice] = useState(0);
   const [arrivalBusPrice, setArrivalBusPrice] = useState(0);
   const [departureTrainPrice, setDepartureTrainPrice] = useState(0);
   const [departureBusPrice, setDepartureBusPrice] = useState(0);
 
-  // Detect mobile screens without changing the desktop layout.
+  // Use the selected itinerary's theme.
+  const theme = itinerary.theme ?? defaultTheme;
+
+  const themedIconButtonStyle = {
+    borderColor: theme.border,
+    color: theme.text,
+    outlineColor: theme.accent,
+  };
+
+  // Detect mobile screens.
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 1023px)");
 
@@ -103,7 +137,6 @@ export default function BudgetPopup({ itinerary, open, onClose }: Props) {
     }
   };
 
-  // After choosing a ticket, return to the form.
   const handleTicketSelected = (
     section: EditingSection,
     transport: TransportType,
@@ -223,45 +256,80 @@ export default function BudgetPopup({ itinerary, open, onClose }: Props) {
     isMobile && mobileView === "transport" && step === "budget";
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 p-0 backdrop-blur-md sm:p-5">
-      <div className="flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden border border-white/10 bg-[#090909] shadow-2xl sm:h-auto sm:max-h-[90dvh] sm:max-w-5xl sm:rounded-2xl">
-        <header className="shrink-0 px-4 pt-3 sm:px-5">
-          <div className="mx-auto flex w-full items-center justify-between gap-3 border-b border-white/10 pb-3">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-[#14213D]/60 p-0 backdrop-blur-sm sm:p-5">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Travel budget planner"
+        className="flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden shadow-[0_30px_80px_-20px_rgba(20,33,61,0.6)] sm:h-auto sm:max-h-[90dvh] sm:max-w-5xl sm:rounded-3xl"
+        style={{
+          backgroundColor: theme.background,
+          color: theme.text,
+        }}
+      >
+        {/* Destination-specific accent strip */}
+        <div
+          className="h-1.5 shrink-0"
+          style={{
+            background: `linear-gradient(to right, ${theme.primary}, ${theme.primary}, ${theme.accent})`,
+          }}
+        />
+
+        <header className="shrink-0 px-4 pt-4 sm:px-6">
+          <div
+            className="mx-auto flex w-full items-center justify-between gap-3 border-b pb-4"
+            style={{ borderColor: theme.border }}
+          >
             <div className="flex min-w-0 items-center gap-3">
               {showingMobileTransport ? (
                 <button
                   type="button"
                   onClick={() => setMobileView("form")}
                   aria-label="Back to budget form"
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 text-white/70 transition hover:bg-white/10 hover:text-white"
+                  className={iconButton}
+                  style={themedIconButtonStyle}
                 >
-                  <ArrowLeft size={16} />
+                  <ArrowLeft size={18} />
                 </button>
               ) : step === "result" ? (
                 <button
                   type="button"
                   onClick={() => setStep("budget")}
                   aria-label="Back to budget form"
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 text-white/70 transition hover:bg-white/10 hover:text-white"
+                  className={iconButton}
+                  style={themedIconButtonStyle}
                 >
-                  <ArrowLeft size={16} />
+                  <ArrowLeft size={18} />
                 </button>
               ) : null}
 
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.16em] text-white/45">
+                <p
+                  className="text-xs font-medium"
+                  style={{ color: theme.muted }}
+                >
                   Travel budget planner
                 </p>
 
-                <h2 className="mt-1 truncate text-base font-semibold text-white sm:text-lg">
+                <h2
+                  className="truncate font-sans text-xl font-bold tracking-tight sm:text-2xl"
+                  style={{ color: theme.text }}
+                >
                   {step === "result"
-                    ? "Budget overview"
+                    ? "Your budget"
                     : showingMobileTransport
                       ? editingSection === "arrival"
                         ? "Arrival ticket"
                         : "Return ticket"
                       : "Plan your budget"}
                 </h2>
+
+                <p
+                  className="mt-0.5 truncate text-xs"
+                  style={{ color: theme.muted }}
+                >
+                  {itinerary.destination}
+                </p>
               </div>
             </div>
 
@@ -269,9 +337,10 @@ export default function BudgetPopup({ itinerary, open, onClose }: Props) {
               type="button"
               onClick={handleClose}
               aria-label="Close budget planner"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 text-white/60 transition hover:bg-white/10 hover:text-white"
+              className={iconButton}
+              style={themedIconButtonStyle}
             >
-              <X size={16} />
+              <X size={18} />
             </button>
           </div>
         </header>
@@ -284,7 +353,7 @@ export default function BudgetPopup({ itinerary, open, onClose }: Props) {
           }`}
         >
           <main
-            className={`min-w-0 p-4 sm:p-5 lg:overflow-y-auto ${
+            className={`min-w-0 p-4 sm:p-6 lg:overflow-y-auto ${
               showingMobileTransport ? "hidden lg:block" : "block"
             }`}
           >
@@ -301,6 +370,7 @@ export default function BudgetPopup({ itinerary, open, onClose }: Props) {
                 departureTrainPrice={departureTrainPrice}
                 departureBusPrice={departureBusPrice}
                 canCalculate={canCalculate}
+                theme={theme}
                 onMembersChange={setMembers}
                 onArrivalChange={handleArrivalChange}
                 onDepartureChange={handleDepartureChange}
@@ -331,26 +401,31 @@ export default function BudgetPopup({ itinerary, open, onClose }: Props) {
           </main>
 
           <aside
-            className={`min-h-0 min-w-0 border-t border-white/10 bg-white/[0.015] p-3 sm:p-4 lg:border-l lg:border-t-0 ${
+            className={`min-h-0 min-w-0 border-t p-4 sm:p-6 lg:border-l lg:border-t-0 ${
               step === "budget"
                 ? showingMobileTransport
                   ? "flex flex-col"
                   : "hidden lg:flex lg:flex-col"
                 : "hidden"
             }`}
+            style={{
+              backgroundColor: theme.background,
+              borderColor: theme.border,
+            }}
           >
             <TransportExplorer
-  members={members}
-  activeTransport={activeTransport}
-  editingSection={editingSection}
-  onTrainPriceChange={(price) =>
-    handleTrainPriceChange(editingSection, price)
-  }
-  onBusPriceChange={(price) =>
-    handleBusPriceChange(editingSection, price)
-  }
-  onTicketSelected={handleTicketSelected}
-/>
+              members={members}
+              activeTransport={activeTransport}
+              editingSection={editingSection}
+               theme={theme}
+              onTrainPriceChange={(price) =>
+                handleTrainPriceChange(editingSection, price)
+              }
+              onBusPriceChange={(price) =>
+                handleBusPriceChange(editingSection, price)
+              }
+              onTicketSelected={handleTicketSelected}
+            />
           </aside>
         </div>
       </div>

@@ -1,93 +1,123 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown, ArrowRight, Check, Map, Wallet, Route, Compass } from "lucide-react";
+import {
+  ArrowRight,
+  BedDouble,
+  Compass,
+  Route,
+  Wallet,
+} from "lucide-react";
 
 import { ItineraryPopup } from "../components/navigation/itinerary-popup";
+import { headingFont, bodyFont } from "./font";
 
-const features = [
-  {
-    number: "01",
-    icon: Route,
-    title: "Routes that make sense",
-    description:
-      "Know where to go, what to visit first, how to travel between places, and which stops are actually worth your time.",
-    detail: "Day-by-day travel routes",
-  },
-  {
-    number: "02",
-    icon: Wallet,
-    title: "A budget you can plan around",
-    description:
-      "Understand the expected costs of transport, stays, food and activities before you start your journey.",
-    detail: "Practical budget breakdowns",
-  },
-  {
-    number: "03",
-    icon: Map,
-    title: "The details that save time",
-    description:
-      "Plan your travel days with useful stops, local experiences and overnight stays instead of figuring everything out on the go.",
-    detail: "Stays, transport and experiences",
-  },
-];
+/*
+  Brand palette: The Local Route
+  Forest green  #263D32  primary
+  Deep green    #1D3027  dark sections
+  Sand gold     #A16F35  accents and actions
+  Warm ivory    #F8F6F0  page background
+  White         #FFFEFA  cards and surfaces
+  Sandstone     #EAE5D9  borders
+  Stone         #303A32  headings and text
+  Sage grey     #626A5D  muted text
 
-const services = [
+  Fonts:
+  Headings: Fraunces
+  Body and UI: Figtree
+*/
+
+const EMAIL = "anujsrivastava.dev@gmail.com";
+const CUSTOM_PLAN_LINK = `mailto:${EMAIL}?subject=Personalized%20Trip%20Planning`;
+const COLLAB_LINK = `mailto:${EMAIL}?subject=Travel%20Content%20Collaboration`;
+
+const featuredItineraries = [
   {
-    number: "01",
-    label: "Ready-made plans",
-    title: "Find a trip. Follow the plan.",
-    description:
-      "Explore detailed itineraries with routes, daily activities, stays and estimated budgets. Find a trip that fits your time and travel style.",
-    points: [
-      "Day-by-day itineraries",
-      "Routes and transport guidance",
-      "Budget and stay suggestions",
-    ],
+    title: "Delhi, Bikaner, Jaisalmer and Jodhpur",
+    nights: 6,
+    stops: "Delhi · Bikaner · Jaisalmer · Jodhpur",
+    image: "/images/home/hero.jpg",
     href: "/itineraries",
-    action: "Browse itineraries",
   },
   {
-    number: "02",
-    label: "Personalized planning",
-    title: "Your trip, your way.",
-    description:
-      "Have a destination in mind but don't know where to start? Get help putting together a practical journey around your budget, dates and preferences.",
-    points: [
-      "Personalized route planning",
-      "Budget-conscious suggestions",
-      "One-on-one trip guidance",
-    ],
-    href: "mailto:anujsrivastava.dev@gmail.com?subject=Personalized%20Trip%20Planning",
-    action: "Plan my trip",
+    title: "Replace with your second itinerary",
+    nights: 5,
+    stops: "Stop one · Stop two · Stop three",
+    image: "/images/home/hero.jpg",
+    href: "/itineraries",
   },
   {
-    number: "03",
-    label: "Content creation",
-    title: "Make your destination stand out.",
-    description:
-      "I create cinematic travel reels and destination stories for stays, local experiences and places worth discovering.",
-    points: [
-      "Cinematic travel reels",
-      "Destination storytelling",
-      "Travel-focused content",
-    ],
-    href: "mailto:anujsrivastava.dev@gmail.com?subject=Travel%20Content%20Collaboration",
-    action: "Discuss a collaboration",
+    title: "Replace with your third itinerary",
+    nights: 4,
+    stops: "Stop one · Stop two · Stop three",
+    image: "/images/home/hero.jpg",
+    href: "/itineraries",
   },
 ];
+
+const inside = [
+  {
+    icon: Route,
+    title: "A day-by-day route",
+    text: "What to see, in what order, and which stops are worth your time.",
+  },
+  {
+    icon: Wallet,
+    title: "A budget for your group",
+    text: "Choose travellers, train or bus, and local transport to see what the trip costs.",
+  },
+  {
+    icon: BedDouble,
+    title: "Stays and meals",
+    text: "Where to sleep each night and what to expect to spend on food.",
+  },
+  {
+    icon: Compass,
+    title: "Getting around",
+    text: "How to arrive, move between places and get back home.",
+  },
+];
+
+const steps = [
+  {
+    title: "Pick a trip",
+    text: "Browse itineraries and choose one that fits your days and your style.",
+  },
+  {
+    title: "See your budget",
+    text: "Add your group size and transport. You get an estimate before you commit to anything.",
+  },
+  {
+    title: "Follow the plan",
+    text: "Use the day-by-day route to book, pack and go. No more dozens of open tabs.",
+  },
+];
+
+const container = "mx-auto w-full max-w-6xl px-5 sm:px-8";
+const sectionSpace = "py-14 sm:py-16 lg:py-20";
+
+const h2 =
+  "font-[var(--font-heading)] text-3xl font-semibold leading-[1.12] tracking-[-0.015em] sm:text-4xl";
+
+const lead = "text-base leading-7 text-[#626A5D]";
+
+const focusLight =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A16F35] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F6F0]";
 
 export default function HomePage() {
   return (
-    <div className="bg-black text-white">
+    <div
+      className={`${headingFont.variable} ${bodyFont.variable} bg-[#F8F6F0] font-[var(--font-body)] text-[#303A32] antialiased`}
+    >
       <ItineraryPopup />
 
       {/* HERO */}
-      <section className="relative flex min-h-[85svh] items-end overflow-hidden bg-black sm:min-h-screen">
+      <section className="relative flex min-h-[78svh] items-end overflow-hidden bg-[#1D3027] sm:min-h-[82svh]">
         <div className="absolute inset-0">
           <Image
             src="/images/home/hero.jpg"
-            alt="A scenic travel destination in India"
+            alt="Golden sandstone fort rising above a desert town in Rajasthan"
             fill
             priority
             sizes="100vw"
@@ -95,125 +125,146 @@ export default function HomePage() {
           />
         </div>
 
-        <div className="absolute inset-0 bg-black/45" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1D3027]/75 via-[#1D3027]/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1D3027]/70 via-transparent to-[#1D3027]/20" />
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pb-14 pt-32 lg:px-8 lg:pb-20">
-          <div className="max-w-3xl">
-            <div className="mb-5 flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.18em] text-white/70 sm:text-xs">
-              <span className="h-px w-7 bg-amber-300" />
-              Your next trip starts here
-            </div>
+        <div className={`${container} relative z-10 pb-14 pt-28 lg:pb-20`}>
+          <div className="max-w-2xl">
+            <h1 className="font-[var(--font-heading)] text-4xl font-semibold leading-[1.08] tracking-[-0.02em] text-white sm:text-5xl lg:text-6xl">
+              Know the route. Know the cost. Just go.
+            </h1>
 
-            <h1 className="max-w-3xl text-3xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
-  Pick a destination.
-  <span className="block text-white/60">
-    I’ll figure out the route.
-  </span>
-</h1>
-
-            <p className="mt-5 max-w-xl text-sm leading-6 text-white/80 sm:text-base sm:leading-7">
-              You choose the destination. I&apos;ll help you figure out the
-              route, stays, budget and everything in between with practical
-              travel itineraries.
+            <p className="mt-5 max-w-lg text-base leading-7 text-white/90 sm:text-lg sm:leading-8">
+              Day-by-day itineraries across India, with stays, transport and
+              a budget for your group, so planning takes an evening, not
+              weeks of open tabs.
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/itineraries"
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-black transition hover:bg-white/90"
+                className="group inline-flex items-center gap-2 rounded-full bg-[#A16F35] px-6 py-3 text-base font-semibold text-white shadow-[0_12px_28px_-12px_rgba(161,111,53,0.65)] transition hover:bg-[#8E5E2D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1D3027]"
               >
-                Explore itineraries
+                Browse itineraries
                 <ArrowRight
-                  size={16}
+                  size={18}
                   className="transition-transform group-hover:translate-x-1"
                 />
               </Link>
 
               <Link
-                href="mailto:anujsrivastava.dev@gmail.com?subject=Personalized%20Trip%20Planning"
-                className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur-md transition hover:bg-white/20"
+                href={CUSTOM_PLAN_LINK}
+                className="inline-flex items-center rounded-full border border-white/50 bg-white/10 px-6 py-3 text-base font-semibold text-white backdrop-blur-md transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1D3027]"
               >
-                Plan my trip
-                <ArrowRight size={16} />
+                Get a custom plan
               </Link>
             </div>
-
-            <Link
-              href="/itineraries"
-              className="mt-10 inline-flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.18em] text-white/60 transition hover:text-white sm:text-xs"
-            >
-              Find your next journey
-              <ArrowDown size={14} className="animate-bounce" />
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* THE PROBLEM WE SOLVE */}
-      <section className="border-b border-white/10 bg-[#080808]">
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
-          <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-amber-300/70">
-                Travel planning, simplified
-              </p>
-
-              <h2 className="mt-5 max-w-lg text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-                A trip plan that
-                <span className="block text-white/45">
-                  actually makes sense.
-                </span>
+      {/* FEATURED ITINERARIES */}
+      <section>
+        <div className={`${container} ${sectionSpace}`}>
+          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <div className="max-w-lg">
+              <h2 className={`${h2} text-[#263D32]`}>
+                Pick a trip. Follow the plan.
               </h2>
-            </div>
 
-            <div className="max-w-xl">
-              <p className="text-base leading-7 text-white/65 sm:text-lg sm:leading-8">
-                Planning a trip shouldn&apos;t mean spending hours searching
-                through dozens of tabs, comparing routes and wondering how much
-                everything will cost.
-              </p>
-
-              <p className="mt-5 text-sm leading-7 text-white/40 sm:text-base">
-                Find useful travel plans in one place, understand your options
-                before you leave, and spend more of your time experiencing the
-                destination instead of figuring out what to do next.
+              <p className={`mt-3 ${lead}`}>
+                Every itinerary comes with the route, the stays and a budget
+                you can adjust for your group.
               </p>
             </div>
+
+            <Link
+              href="/itineraries"
+              className={`group inline-flex shrink-0 items-center gap-2 rounded-full text-base font-semibold text-[#263D32] ${focusLight}`}
+            >
+              View all itineraries
+              <ArrowRight
+                size={18}
+                className="transition-transform group-hover:translate-x-1"
+              />
+            </Link>
           </div>
 
-          {/* PRACTICAL BENEFITS */}
-          <div className="mt-14 grid gap-4 md:grid-cols-3">
-            {features.map((feature) => {
-              const Icon = feature.icon;
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
+            {featuredItineraries.map((trip) => (
+              <Link
+                key={trip.title}
+                href={trip.href}
+                className={`group flex flex-col overflow-hidden rounded-3xl bg-[#FFFEFA] shadow-[0_14px_28px_-18px_rgba(38,61,50,0.25)] ring-1 ring-[#EAE5D9] transition hover:ring-[#A16F35] ${focusLight}`}
+              >
+                <div className="relative aspect-[3/2] overflow-hidden">
+                  <Image
+                    src={trip.image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-cover transition duration-500 group-hover:scale-105"
+                  />
 
-              return (
-                <div
-                  key={feature.number}
-                  className="group rounded-2xl border border-white/10 bg-white/[0.025] p-6 transition duration-300 hover:border-amber-200/25 hover:bg-white/[0.045] sm:p-7"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-amber-200/80">
-                      <Icon size={19} strokeWidth={1.6} />
-                    </span>
+                  <span className="absolute left-3 top-3 rounded-full bg-[#FFFEFA]/95 px-3 py-1 text-xs font-semibold text-[#263D32]">
+                    {trip.nights} nights
+                  </span>
+                </div>
 
-                    <span className="text-xs tracking-widest text-white/25">
-                      {feature.number}
-                    </span>
-                  </div>
-
-                  <h3 className="mt-8 text-lg font-medium text-white">
-                    {feature.title}
+                <div className="flex flex-1 flex-col p-5">
+                  <h3 className="font-[var(--font-heading)] text-xl font-semibold leading-snug tracking-[-0.01em] text-[#263D32]">
+                    {trip.title}
                   </h3>
 
-                  <p className="mt-3 text-sm leading-6 text-white/50">
-                    {feature.description}
+                  <p className="mt-1.5 text-sm text-[#626A5D]">
+                    {trip.stops}
                   </p>
 
-                  <div className="mt-6 flex items-center gap-2 border-t border-white/10 pt-4 text-xs text-white/40">
-                    <Check size={14} className="text-amber-200/70" />
-                    {feature.detail}
-                  </div>
+                  <span className="mt-auto inline-flex items-center gap-2 pt-4 text-sm font-semibold text-[#8E5E2D]">
+                    See itinerary and budget
+                    <ArrowRight
+                      size={16}
+                      className="transition-transform group-hover:translate-x-1"
+                    />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* WHAT'S INSIDE */}
+      <section className="bg-[#FFFEFA]">
+        <div className={`${container} ${sectionSpace}`}>
+          <div className="max-w-lg">
+            <h2 className={`${h2} text-[#263D32]`}>
+              Everything you need to book with confidence.
+            </h2>
+
+            <p className={`mt-3 ${lead}`}>
+              Each itinerary answers the questions that normally cost you
+              hours of searching.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+            {inside.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <div key={item.title}>
+                  <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[#E4EADF] text-[#263D32]">
+                    <Icon size={20} strokeWidth={1.8} />
+                  </span>
+
+                  <h3 className="mt-4 font-[var(--font-heading)] text-base font-semibold text-[#263D32]">
+                    {item.title}
+                  </h3>
+
+                  <p className="mt-1.5 text-sm leading-6 text-[#626A5D]">
+                    {item.text}
+                  </p>
                 </div>
               );
             })}
@@ -222,274 +273,114 @@ export default function HomePage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="border-b border-white/10 bg-black">
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
-          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/40">
-                Simple by design
-              </p>
+      <section className="bg-[#263D32] text-white">
+        <div className={`${container} ${sectionSpace}`}>
+          <h2 className={`${h2} max-w-md`}>
+            From idea to itinerary in three steps.
+          </h2>
 
-              <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                From idea to itinerary.
+          <ol className="mt-10 grid gap-8 md:grid-cols-3">
+            {steps.map((step, index) => (
+              <li
+                key={step.title}
+                className="border-t border-white/20 pt-5"
+              >
+                <span className="font-[var(--font-heading)] text-4xl font-semibold text-[#D4AC73]">
+                  {index + 1}
+                </span>
+
+                <h3 className="mt-3 font-[var(--font-heading)] text-lg font-semibold">
+                  {step.title}
+                </h3>
+
+                <p className="mt-1.5 max-w-xs text-base leading-7 text-white/80">
+                  {step.text}
+                </p>
+              </li>
+            ))}
+          </ol>
+
+          <Link
+            href="/itineraries"
+            className="group mt-10 inline-flex items-center gap-2 rounded-full bg-[#A16F35] px-6 py-3 text-base font-semibold text-white transition hover:bg-[#8E5E2D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#263D32]"
+          >
+            Start with an itinerary
+            <ArrowRight
+              size={18}
+              className="transition-transform group-hover:translate-x-1"
+            />
+          </Link>
+        </div>
+      </section>
+
+      {/* CUSTOM PLAN + CONTACT */}
+      <section>
+        <div className={`${container} ${sectionSpace}`}>
+          <div className="relative overflow-hidden rounded-3xl bg-[#334B3D] p-7 text-white sm:p-10">
+            {/* Jharokha arch motif */}
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 150 60"
+              className="pointer-events-none absolute -bottom-1 right-0 h-28 w-auto text-white/10 sm:h-36"
+              fill="currentColor"
+            >
+              <path d="M0 60V30a15 15 0 0 1 30 0v30Z" />
+              <path d="M40 60V22a17 17 0 0 1 34 0v38Z" />
+              <path d="M84 60V30a15 15 0 0 1 30 0v30Z" />
+              <path d="M122 60V36a14 14 0 0 1 28 0v24Z" />
+            </svg>
+
+            <div className="relative max-w-xl">
+              <h2 className={h2}>
+                Can&apos;t find your trip? I&apos;ll plan it with you.
               </h2>
 
-              <p className="mt-3 max-w-lg text-sm leading-6 text-white/45">
-                No complicated planning process. Just a clearer way to prepare
-                for your next adventure.
+              <p className="mt-3 text-base leading-7 text-white/90">
+                Tell me where you want to go, when, and what you can spend.
+                I&apos;ll put together a route and a budget that fits.
               </p>
+
+              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+                <Link
+                  href={CUSTOM_PLAN_LINK}
+                  className="group inline-flex items-center gap-2 rounded-full bg-[#A16F35] px-6 py-3 text-base font-semibold text-white transition hover:bg-[#8E5E2D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#334B3D]"
+                >
+                  Get a custom plan
+                  <ArrowRight
+                    size={18}
+                    className="transition-transform group-hover:translate-x-1"
+                  />
+                </Link>
+
+                <Link
+                  href={COLLAB_LINK}
+                  className="text-sm font-semibold text-white underline decoration-white/50 underline-offset-4 transition hover:decoration-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                >
+                  Travel content and collaborations
+                </Link>
+              </div>
             </div>
+          </div>
+
+          {/* Personal note */}
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="max-w-xl text-base leading-7 text-[#626A5D]">
+              I travel to experience places, meet people and find the roads
+              less travelled, and I share what I learn so you can travel
+              better.
+            </p>
 
             <Link
-              href="/itineraries"
-              className="group inline-flex items-center gap-2 text-sm text-white/65 transition hover:text-white"
+              href="/journey"
+              className={`group inline-flex shrink-0 items-center gap-2 rounded-full text-base font-semibold text-[#263D32] ${focusLight}`}
             >
-              See available plans
+              My journey
               <ArrowRight
                 size={16}
                 className="transition-transform group-hover:translate-x-1"
               />
             </Link>
           </div>
-
-          <div className="mt-12 grid gap-8 sm:grid-cols-3 sm:gap-6">
-            {[
-              {
-                number: "01",
-                title: "Choose your destination",
-                text: "Find a trip that matches your interests, available days and budget.",
-              },
-              {
-                number: "02",
-                title: "Explore the plan",
-                text: "Check the route, daily schedule, suggested stays and estimated expenses.",
-              },
-              {
-                number: "03",
-                title: "Make it happen",
-                text: "Use the itinerary to prepare your journey, or get in touch for personalized planning.",
-              },
-            ].map((step) => (
-              <div key={step.number} className="border-t border-white/15 pt-5">
-                <span className="text-xs font-medium tracking-widest text-amber-200/70">
-                  STEP {step.number}
-                </span>
-
-                <h3 className="mt-5 text-lg font-medium text-white">
-                  {step.title}
-                </h3>
-
-                <p className="mt-3 max-w-sm text-sm leading-6 text-white/45">
-                  {step.text}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ITINERARY CTA */}
-      <section className="relative overflow-hidden border-b border-white/10 bg-[#080808]">
-        <div className="pointer-events-none absolute -right-40 top-1/2 h-[450px] w-[450px] -translate-y-1/2 rounded-full bg-amber-500/[0.06] blur-[130px]" />
-
-        <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
-          <div className="grid gap-12 lg:grid-cols-[1fr_0.7fr] lg:items-center">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-amber-200/60">
-                Your journey, better planned
-              </p>
-
-              <h2 className="mt-5 max-w-2xl text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-                The journey starts
-                <span className="block text-white/40">
-                  before you leave.
-                </span>
-              </h2>
-
-              <p className="mt-6 max-w-xl text-sm leading-7 text-white/55 sm:text-base sm:leading-8">
-                Find practical routes, useful stops, stay suggestions and
-                budget guidance in one place. Spend less time wondering about
-                the plan and more time looking forward to the journey.
-              </p>
-
-              <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/40">
-                <span>Routes</span>
-                <span className="text-white/20">/</span>
-                <span>Stays</span>
-                <span className="text-white/20">/</span>
-                <span>Budgets</span>
-                <span className="text-white/20">/</span>
-                <span>Experiences</span>
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-6 sm:p-8">
-              <p className="text-xs uppercase tracking-[0.18em] text-white/40">
-                Ready for your next trip?
-              </p>
-
-              <h3 className="mt-4 text-2xl font-semibold tracking-tight">
-                Let&apos;s find your route.
-              </h3>
-
-              <p className="mt-3 text-sm leading-6 text-white/50">
-                Explore the available itineraries and find a plan for your next
-                adventure.
-              </p>
-
-              <Link
-                href="/itineraries"
-                className="group mt-7 flex items-center justify-between rounded-xl bg-white px-5 py-4 text-sm font-semibold text-black transition hover:bg-amber-100"
-              >
-                Browse travel itineraries
-                <ArrowRight
-                  size={17}
-                  className="transition-transform group-hover:translate-x-1"
-                />
-              </Link>
-
-              <Link
-                href="mailto:anujsrivastava.dev@gmail.com?subject=Personalized%20Trip%20Planning"
-                className="mt-4 flex items-center justify-center gap-2 text-sm text-white/55 transition hover:text-white"
-              >
-                Need a personalized plan?
-                <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* WHAT I OFFER */}
-      <section className="border-b border-white/10 bg-black">
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
-          <div className="max-w-2xl">
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/40">
-              More ways to travel better
-            </p>
-
-            <h2 className="mt-5 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-              One destination.
-              <span className="block text-white/40">
-                Three ways I can help.
-              </span>
-            </h2>
-
-            <p className="mt-5 text-sm leading-7 text-white/50 sm:text-base">
-              Whether you need a ready-made route, a plan designed around your
-              needs, or creative content for your travel business, start here.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
-            {services.map((service) => (
-              <div
-                key={service.number}
-                className="group flex flex-col rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-transparent p-6 transition duration-300 hover:-translate-y-1 hover:border-white/25 sm:p-7"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs tracking-widest text-white/35">
-                    {service.number}
-                  </span>
-
-                  <span className="text-[10px] uppercase tracking-[0.16em] text-white/35">
-                    {service.label}
-                  </span>
-                </div>
-
-                <h3 className="mt-9 text-2xl font-semibold leading-snug tracking-tight">
-                  {service.title}
-                </h3>
-
-                <p className="mt-4 text-sm leading-7 text-white/50">
-                  {service.description}
-                </p>
-
-                <div className="mt-7 space-y-3">
-                  {service.points.map((point) => (
-                    <div
-                      key={point}
-                      className="flex items-start gap-3 text-sm text-white/65"
-                    >
-                      <Check
-                        size={15}
-                        className="mt-0.5 shrink-0 text-amber-200/70"
-                      />
-                      <span>{point}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-auto pt-8">
-                  <Link
-                    href={service.href}
-                    className="inline-flex items-center gap-2 text-sm font-medium text-white transition hover:text-amber-200"
-                  >
-                    {service.action}
-                    <ArrowRight
-                      size={15}
-                      className="transition-transform group-hover:translate-x-1"
-                    />
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* CONTACT CTA */}
-          <div className="mt-6 flex flex-col gap-6 rounded-2xl border border-white/10 bg-white/[0.035] p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-200/60">
-                Have something in mind?
-              </p>
-
-              <h3 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-                Tell me what you&apos;re planning.
-              </h3>
-
-              <p className="mt-3 text-sm leading-6 text-white/45">
-                Share your destination, trip idea or collaboration request.
-                Let&apos;s figure out the next step together.
-              </p>
-            </div>
-
-            <a
-              href="mailto:anujsrivastava.dev@gmail.com?subject=Travel%20Planning%20%2F%20Collaboration"
-              className="group inline-flex shrink-0 items-center justify-between gap-8 rounded-xl border border-white/15 px-5 py-4 transition hover:border-amber-200/40 hover:bg-white/[0.04]"
-            >
-              <span>
-                <span className="block text-[10px] uppercase tracking-[0.18em] text-white/40">
-                  Get in touch
-                </span>
-                <span className="mt-1 block text-sm font-medium">
-                  Email me
-                </span>
-              </span>
-
-              <ArrowRight
-                size={17}
-                className="transition-transform group-hover:translate-x-1"
-              />
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* PERSONAL NOTE — KEEP JUST ABOVE THE SITE FOOTER */}
-      <section className="bg-black px-6 py-7 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs leading-6 text-white/40 sm:text-sm">
-            I travel to experience places, meet people and discover the roads
-            less travelled — and I share what I learn to help you travel better.
-          </p>
-
-          <Link
-            href="/journey"
-            className="inline-flex shrink-0 items-center gap-2 text-xs text-white/55 transition hover:text-white"
-          >
-            My journey
-            <ArrowRight size={13} />
-          </Link>
         </div>
       </section>
     </div>
