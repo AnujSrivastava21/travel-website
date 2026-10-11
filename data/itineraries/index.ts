@@ -12,7 +12,7 @@ export const itineraries: Itinerary[] = [
       "A perfect one-week Rajasthan road-and-rail journey from New Delhi covering Bikaner, Jaisalmer and Jodhpur, with grand forts, royal havelis, desert landscapes, golden sunsets, local markets and the unique culture of western Rajasthan.",
     coverImage: "/images/Itinerary/jodhpur.jpg",
     isPremium: false,
-    price: 149,
+    price: 0,
 
 theme: {
   primary: "#285A83",
@@ -153,7 +153,7 @@ theme: {
       "A perfect winter escape through the Golden City of Jaisalmer, covering historic havelis, the magnificent Jaisalmer Fort, desert landscapes, golden-hour sunsets, Sam Sand Dunes and an unforgettable night under the stars.",
     coverImage: "/images/Itinerary/jaisalmer.jpg",
     isPremium: false,
-    price: 149,
+    price: 0,
 
     days: [
       {
@@ -366,7 +366,7 @@ theme: {
       "A high-altitude road journey from Delhi through Sissu, Jispa and Keylong, continuing towards the dramatic landscapes of Zanskar.",
     coverImage: "/images/Itinerary/zanskars.jpg",
     isPremium: false,
-    price: 149,
+    price: 99,
     theme: {
   primary: "#526777",
   secondary: "#DCE5E9",
@@ -548,7 +548,7 @@ theme: {
       "A relaxed Kerala journey covering backwaters, beaches, villages and local experiences.",
     coverImage: "/images/Itinerary/kerla.jpg",
     isPremium: false,
-    price: 149,
+    price: 29,
 theme: {
   primary: "#286653",
   secondary: "#DDEBE2",
@@ -589,7 +589,7 @@ theme: {
       "A scenic road trip from Delhi to Kalpa through Shimla and Kinnaur, featuring mountain roads, Kinnaur Kailash views, local food, temples, villages, and unforgettable Himalayan landscapes.",
     coverImage: "/images/Itinerary/kalpa.jpg",
     isPremium: false,
-    price: 149,
+    price: 39,
 
     days: [
       {
@@ -637,7 +637,7 @@ theme: {
       "A perfect long-weekend journey through Udaipur, Kumbhalgarh and Chittorgarh, covering lakes, palaces, forts, temples, local food and unforgettable sunset views.",
     coverImage: "/images/Itinerary/chittaurgarh.jpg",
     isPremium: false,
-    price: 149,
+    price: 0,
     theme: {
   primary: "#356B78",
   secondary: "#D9E8E8",
@@ -712,7 +712,7 @@ theme: {
       "A perfect long-weekend journey through Udaipur, Kumbhalgarh and Chittorgarh, covering lakes, palaces, forts, temples, local food and unforgettable sunset views.",
     coverImage: "/images/Itinerary/rameshwaram.jpg",
     isPremium: false,
-    price: 149,
+    price: 29,
 
     days: [
       {
@@ -780,7 +780,7 @@ theme: {
       "A perfect long-weekend journey through Udaipur, Kumbhalgarh and Chittorgarh, covering lakes, palaces, forts, temples, local food and unforgettable sunset views.",
     coverImage: "/images/Itinerary/shilong.jpg",
     isPremium: false,
-    price: 149,
+    price: 99,
 theme: {
   primary: "#3D6858",
   secondary: "#DCE9E2",
@@ -858,7 +858,7 @@ theme: {
       "A perfect long-weekend journey through Udaipur, Kumbhalgarh and Chittorgarh, covering lakes, palaces, forts, temples, local food and unforgettable sunset views.",
     coverImage: "/images/Itinerary/gangtok.jpg",
     isPremium: false,
-    price: 149,
+    price: 99,
 theme: {
   primary: "#365D8D",
   secondary: "#DCE7F5",
@@ -936,7 +936,7 @@ theme: {
       "A perfect long-weekend journey through Udaipur, Kumbhalgarh and Chittorgarh, covering lakes, palaces, forts, temples, local food and unforgettable sunset views.",
     coverImage: "/images/Itinerary/chandratal.jpg",
     isPremium: false,
-    price: 149,
+    price: 99,
 
     days: [
       {
@@ -1004,7 +1004,7 @@ theme: {
       "A perfect long-weekend journey through Udaipur, Kumbhalgarh and Chittorgarh, covering lakes, palaces, forts, temples, local food and unforgettable sunset views.",
     coverImage: "/images/Itinerary/varansi.jpg",
     isPremium: false,
-    price: 149,
+    price: 29,
 theme: {
   primary: "#87452D",
   secondary: "#F3E2CC",

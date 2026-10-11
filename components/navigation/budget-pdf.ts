@@ -1,3 +1,4 @@
+
 import jsPDF from "jspdf";
 
 import type {
@@ -27,8 +28,8 @@ type DownloadBudgetPDFProps = {
 type RGB = [number, number, number];
 
 type Block = {
-  h: number; // block height (mm)
-  gap: number; // space after the block (mm)
+  h: number;
+  gap: number;
   draw: (x: number, top: number) => void;
 };
 
@@ -60,30 +61,89 @@ export function downloadBudgetPDF({
   const footerReserve = 22;
   const usableHeight = pageHeight - topMargin - footerReserve;
 
-  /*
-   * ==========================================
-   * THEME: ICE / CRYSTAL
-   * ==========================================
-   */
-  const C: Record<string, RGB> = {
-    bgTop: [222, 239, 255],
-    bgMid: [241, 249, 255],
-    bgBottom: [219, 237, 252],
-    ink: [14, 36, 64],
-    body: [46, 68, 98],
-    muted: [96, 118, 146],
-    accent: [16, 112, 184],
-    accentSoft: [120, 195, 245],
-    border: [178, 210, 238],
-    shadow: [70, 120, 170],
+  // ==========================================
+  // DYNAMIC CITY THEME
+  // ==========================================
+
+  const fallbackTheme = {
+    primary: "#87452D",
+    secondary: "#F3E2CC",
+    background: "#FFF9F0",
+    surface: "#FFFFFF",
+    accent: "#D7A84B",
+    text: "#432D24",
+    muted: "#89776A",
+    border: "#E9D6C1",
+    buttonText: "#FFFFFF",
   };
 
-  const PT = 0.352778; // 1pt in mm
+  const theme = {
+    ...fallbackTheme,
+    ...(itinerary.theme ?? {}),
+  };
+
+  const hexToRgb = (hex: string): RGB => {
+    const clean = hex.replace("#", "").trim();
+
+    const full =
+      clean.length === 3
+        ? clean
+            .split("")
+            .map((char) => char + char)
+            .join("")
+        : clean;
+
+    if (!/^[0-9a-fA-F]{6}$/.test(full)) {
+      return [255, 255, 255];
+    }
+
+    return [
+      parseInt(full.slice(0, 2), 16),
+      parseInt(full.slice(2, 4), 16),
+      parseInt(full.slice(4, 6), 16),
+    ];
+  };
+
+  const mix = (a: RGB, b: RGB, t: number): RGB => [
+    Math.round(a[0] + (b[0] - a[0]) * t),
+    Math.round(a[1] + (b[1] - a[1]) * t),
+    Math.round(a[2] + (b[2] - a[2]) * t),
+  ];
+
+  const C = {
+    bgTop: hexToRgb(theme.background),
+    bgMid: mix(
+      hexToRgb(theme.background),
+      hexToRgb(theme.secondary),
+      0.12,
+    ),
+    bgBottom: mix(
+      hexToRgb(theme.background),
+      hexToRgb(theme.secondary),
+      0.25,
+    ),
+    ink: hexToRgb(theme.text),
+    body: mix(
+      hexToRgb(theme.text),
+      hexToRgb(theme.muted),
+      0.25,
+    ),
+    muted: hexToRgb(theme.muted),
+    accent: hexToRgb(theme.primary),
+    accentSoft: hexToRgb(theme.secondary),
+    highlight: hexToRgb(theme.accent),
+    border: hexToRgb(theme.border),
+    shadow: hexToRgb(theme.primary),
+    surface: hexToRgb(theme.surface),
+    buttonText: hexToRgb(theme.buttonText),
+  };
+
+  const PT = 0.352778;
   doc.setLineHeightFactor(1.4);
 
-  const lh = (size: number) => size * 1.4 * PT; // line pitch
-  const asc = (size: number) => size * PT * 0.82; // top -> baseline
-  const dsc = (size: number) => size * PT * 0.28; // baseline -> bottom
+  const lh = (size: number) => size * 1.4 * PT;
+  const asc = (size: number) => size * PT * 0.82;
+  const dsc = (size: number) => size * PT * 0.28;
 
   const money = (value: number) =>
     `INR ${Math.round(value).toLocaleString("en-IN")}`;
@@ -102,11 +162,10 @@ export function downloadBudgetPDF({
     }
   };
 
-  /*
-   * ==========================================
-   * LOW LEVEL HELPERS
-   * ==========================================
-   */
+  // ==========================================
+  // LOW-LEVEL HELPERS
+  // ==========================================
+
   const setOpacity = (opacity: number) => {
     doc.setGState(
       new (doc as any).GState({
@@ -115,12 +174,6 @@ export function downloadBudgetPDF({
       }),
     );
   };
-
-  const mix = (a: RGB, b: RGB, t: number): RGB => [
-    Math.round(a[0] + (b[0] - a[0]) * t),
-    Math.round(a[1] + (b[1] - a[1]) * t),
-    Math.round(a[2] + (b[2] - a[2]) * t),
-  ];
 
   const setText = (size: number, bold: boolean, color: RGB) => {
     doc.setFont("helvetica", bold ? "bold" : "normal");
@@ -147,15 +200,17 @@ export function downloadBudgetPDF({
     strength: number,
   ) => {
     const layers = 7;
+
     doc.setFillColor(color[0], color[1], color[2]);
+
     for (let i = 0; i < layers; i++) {
       setOpacity(strength * 0.25);
       doc.circle(cx, cy, radius * (1 - i / layers), "F");
     }
+
     setOpacity(1);
   };
 
-  // Diagonal, centred, translucent watermark
   const drawWatermark = (text: string, centerY: number) => {
     const angle = 32;
     const rad = (angle * Math.PI) / 180;
@@ -175,59 +230,152 @@ export function downloadBudgetPDF({
     setOpacity(1);
   };
 
-  // Instagram logo drawn with vector shapes
-  const drawInstagramIcon = (x: number, top: number, size: number) => {
+  const drawInstagramIcon = (
+    x: number,
+    top: number,
+    size: number,
+  ) => {
     doc.setDrawColor(221, 42, 123);
-    doc.setFillColor(221, 42, 123);
     doc.setLineWidth(0.45);
 
-    doc.roundedRect(x, top, size, size, size * 0.3, size * 0.3, "S");
-    doc.circle(x + size / 2, top + size / 2, size * 0.22, "S");
-    doc.circle(x + size * 0.76, top + size * 0.24, size * 0.06, "F");
+    doc.roundedRect(
+      x,
+      top,
+      size,
+      size,
+      size * 0.3,
+      size * 0.3,
+      "S",
+    );
+
+    doc.circle(
+      x + size / 2,
+      top + size / 2,
+      size * 0.22,
+      "S",
+    );
+
+    doc.circle(
+      x + size * 0.76,
+      top + size * 0.24,
+      size * 0.06,
+      "F",
+    );
   };
 
-  // Icy gradient background + glow orbs + watermark (every page)
+  // ==========================================
+  // THEMED BACKGROUND
+  // ==========================================
+
   const drawBackground = () => {
     const steps = 70;
     const stripH = pageHeight / steps;
 
     for (let i = 0; i < steps; i++) {
       const t = i / (steps - 1);
+
       const color =
         t < 0.5
           ? mix(C.bgTop, C.bgMid, t * 2)
           : mix(C.bgMid, C.bgBottom, (t - 0.5) * 2);
 
       doc.setFillColor(color[0], color[1], color[2]);
-      doc.rect(0, i * stripH, pageWidth, stripH + 0.4, "F");
+      doc.rect(
+        0,
+        i * stripH,
+        pageWidth,
+        stripH + 0.4,
+        "F",
+      );
     }
 
-    glowOrb(pageWidth - 8, 30, 58, [130, 200, 255], 0.22);
-    glowOrb(6, pageHeight * 0.55, 50, [165, 185, 255], 0.16);
-    glowOrb(pageWidth * 0.72, pageHeight - 6, 52, [120, 225, 235], 0.18);
+    glowOrb(
+      pageWidth - 8,
+      30,
+      58,
+      C.accentSoft,
+      0.22,
+    );
+
+    glowOrb(
+      6,
+      pageHeight * 0.55,
+      50,
+      C.border,
+      0.16,
+    );
+
+    glowOrb(
+      pageWidth * 0.72,
+      pageHeight - 6,
+      52,
+      C.highlight,
+      0.12,
+    );
 
     drawWatermark("The local Route", pageHeight * 0.3);
     drawWatermark("The local Route", pageHeight * 0.74);
   };
 
-  // Frosted glass panel
-  const glassCard = (x: number, top: number, w: number, h: number) => {
-    doc.setFillColor(C.shadow[0], C.shadow[1], C.shadow[2]);
-    setOpacity(0.05);
-    doc.roundedRect(x + 0.4, top + 1.6, w, h, 5, 5, "F");
-    setOpacity(0.06);
-    doc.roundedRect(x + 0.2, top + 0.8, w, h, 5, 5, "F");
+  // ==========================================
+  // GLASS CARD
+  // ==========================================
 
-    doc.setFillColor(255, 255, 255);
-    setOpacity(0.66);
+  const glassCard = (
+    x: number,
+    top: number,
+    w: number,
+    h: number,
+  ) => {
+    doc.setFillColor(C.shadow[0], C.shadow[1], C.shadow[2]);
+
+    setOpacity(0.05);
+    doc.roundedRect(
+      x + 0.4,
+      top + 1.6,
+      w,
+      h,
+      5,
+      5,
+      "F",
+    );
+
+    setOpacity(0.06);
+    doc.roundedRect(
+      x + 0.2,
+      top + 0.8,
+      w,
+      h,
+      5,
+      5,
+      "F",
+    );
+
+    doc.setFillColor(
+      C.surface[0],
+      C.surface[1],
+      C.surface[2],
+    );
+
+    setOpacity(0.78);
     doc.roundedRect(x, top, w, h, 5, 5, "F");
 
-    doc.setDrawColor(C.border[0], C.border[1], C.border[2]);
+    doc.setDrawColor(
+      C.border[0],
+      C.border[1],
+      C.border[2],
+    );
+
     doc.setLineWidth(0.4);
     setOpacity(0.95);
     doc.roundedRect(x, top, w, h, 5, 5, "S");
 
-    doc.setDrawColor(255, 255, 255);
+    doc.setDrawColor(
+      C.surface[0],
+      C.surface[1],
+      C.surface[2],
+    );
+
     doc.setLineWidth(0.6);
     setOpacity(0.95);
     doc.line(x + 6, top + 0.5, x + w - 6, top + 0.5);
@@ -235,7 +383,10 @@ export function downloadBudgetPDF({
     setOpacity(1);
   };
 
-  // Small translucent pill with centred text
+  // ==========================================
+  // THEMED PILL
+  // ==========================================
+
   const pill = (
     x: number,
     top: number,
@@ -244,20 +395,51 @@ export function downloadBudgetPDF({
     text: string,
     size: number,
   ) => {
-    doc.setFillColor(C.accentSoft[0], C.accentSoft[1], C.accentSoft[2]);
-    setOpacity(0.2);
-    doc.roundedRect(x, top, w, h, h / 2, h / 2, "F");
+    doc.setFillColor(
+      C.accentSoft[0],
+      C.accentSoft[1],
+      C.accentSoft[2],
+    );
 
-    doc.setDrawColor(C.accent[0], C.accent[1], C.accent[2]);
+    setOpacity(0.5);
+    doc.roundedRect(
+      x,
+      top,
+      w,
+      h,
+      h / 2,
+      h / 2,
+      "F",
+    );
+
+    doc.setDrawColor(
+      C.accent[0],
+      C.accent[1],
+      C.accent[2],
+    );
+
     doc.setLineWidth(0.25);
-    setOpacity(0.4);
-    doc.roundedRect(x, top, w, h, h / 2, h / 2, "S");
+    setOpacity(0.55);
+    doc.roundedRect(
+      x,
+      top,
+      w,
+      h,
+      h / 2,
+      h / 2,
+      "S",
+    );
+
     setOpacity(1);
 
     setText(size, true, C.accent);
-    doc.text(text, x + w / 2, top + h / 2 + size * PT * 0.34, {
-      align: "center",
-    });
+
+    doc.text(
+      text,
+      x + w / 2,
+      top + h / 2 + size * PT * 0.34,
+      { align: "center" },
+    );
   };
 
   const sectionLabel = (
@@ -270,7 +452,6 @@ export function downloadBudgetPDF({
     doc.text(text, x, baseline);
   };
 
-  // Lays out pill chips in wrapping rows
   const layoutChips = (
     labels: string[],
     maxW: number,
@@ -281,18 +462,33 @@ export function downloadBudgetPDF({
     doc.setFont("helvetica", "bold");
     doc.setFontSize(size);
 
-    const chips: { label: string; w: number; x: number; row: number }[] = [];
+    const chips: {
+      label: string;
+      w: number;
+      x: number;
+      row: number;
+    }[] = [];
+
     let cx = 0;
     let row = 0;
 
     labels.forEach((raw) => {
       const maxText = maxW - padX * 2;
+
       const label =
         doc.getTextWidth(raw) > maxText
-          ? (doc.splitTextToSize(raw, maxText) as string[])[0]
+          ? (
+              doc.splitTextToSize(
+                raw,
+                maxText,
+              ) as string[]
+            )[0]
           : raw;
 
-      const w = Math.min(doc.getTextWidth(label) + padX * 2, maxW);
+      const w = Math.min(
+        doc.getTextWidth(label) + padX * 2,
+        maxW,
+      );
 
       if (cx > 0 && cx + w > maxW) {
         row++;
@@ -303,19 +499,16 @@ export function downloadBudgetPDF({
       cx += w + gap;
     });
 
-    return { chips, rows: labels.length > 0 ? row + 1 : 0 };
+    return {
+      chips,
+      rows: labels.length > 0 ? row + 1 : 0,
+    };
   };
 
-  /*
-   * ==========================================
-   * BLOCK BUILDERS
-   * Every block measures itself first, so the
-   * layout can be fitted before anything is
-   * drawn. `s` is a spacing/size scale (1 = roomy).
-   * ==========================================
-   */
+  // ==========================================
+  // HERO CARD
+  // ==========================================
 
-  // ---- Hero: title, destination, duration, travellers, description ----
   const buildHero = (s: number): Block => {
     const pad = 6.5 * s;
     const fLabel = 8 * s;
@@ -325,9 +518,16 @@ export function downloadBudgetPDF({
 
     const innerW = contentWidth - pad * 2 - 8 * s;
 
-    const titleLines = wrap(itinerary.title, fTitle, true, innerW);
+    const titleLines = wrap(
+      itinerary.title,
+      fTitle,
+      true,
+      innerW,
+    );
+
     const descLines = wrap(
-      itinerary.description || "Your planned travel itinerary.",
+      itinerary.description ||
+        "Your planned travel itinerary.",
       fDesc,
       false,
       innerW,
@@ -339,31 +539,58 @@ export function downloadBudgetPDF({
       `${members} traveler${members === 1 ? "" : "s"}`,
     ].filter(Boolean) as string[];
 
-    const chipLayout = layoutChips(chipLabels, innerW, fChip, 3.6 * s, 2.5 * s);
+    const chipLayout = layoutChips(
+      chipLabels,
+      innerW,
+      fChip,
+      3.6 * s,
+      2.5 * s,
+    );
+
     const chipH = 6 * s;
     const chipPitch = chipH + 2 * s;
 
     const labelBase = pad + asc(fLabel);
-    const titleBase = labelBase + dsc(fLabel) + asc(fTitle) + 2.2 * s;
-    const titleLast = titleBase + (titleLines.length - 1) * lh(fTitle);
-    const chipsTop = titleLast + dsc(fTitle) + 2.8 * s;
+
+    const titleBase =
+      labelBase + dsc(fLabel) + asc(fTitle) + 2.2 * s;
+
+    const titleLast =
+      titleBase + (titleLines.length - 1) * lh(fTitle);
+
+    const chipsTop =
+      titleLast + dsc(fTitle) + 2.8 * s;
+
     const chipsBottom =
-      chipsTop + (chipLayout.rows - 1) * chipPitch + chipH;
-    const descBase = chipsBottom + 2.4 * s + asc(fDesc);
-    const descLast = descBase + (descLines.length - 1) * lh(fDesc);
+      chipsTop +
+      (chipLayout.rows - 1) * chipPitch +
+      chipH;
+
+    const descBase =
+      chipsBottom + 2.4 * s + asc(fDesc);
+
+    const descLast =
+      descBase + (descLines.length - 1) * lh(fDesc);
+
     const h = descLast + dsc(fDesc) + pad;
 
     return {
       h,
       gap: 4.5 * s,
+
       draw: (x, top) => {
         glassCard(x, top, contentWidth, h);
 
-        // Crystal facets (corner)
         const xr = x + contentWidth;
 
-        doc.setFillColor(C.accentSoft[0], C.accentSoft[1], C.accentSoft[2]);
-        setOpacity(0.2);
+        doc.setFillColor(
+          C.accentSoft[0],
+          C.accentSoft[1],
+          C.accentSoft[2],
+        );
+
+        setOpacity(0.3);
+
         doc.triangle(
           xr - 7,
           top + 7,
@@ -374,8 +601,14 @@ export function downloadBudgetPDF({
           "F",
         );
 
-        doc.setFillColor(255, 255, 255);
-        setOpacity(0.5);
+        doc.setFillColor(
+          C.highlight[0],
+          C.highlight[1],
+          C.highlight[2],
+        );
+
+        setOpacity(0.12);
+
         doc.triangle(
           xr - 7,
           top + h - 7,
@@ -385,9 +618,15 @@ export function downloadBudgetPDF({
           top + 16,
           "F",
         );
+
         setOpacity(1);
 
-        sectionLabel("TRIP BUDGET", x + pad, top + labelBase, fLabel);
+        sectionLabel(
+          "TRIP BUDGET",
+          x + pad,
+          top + labelBase,
+          fLabel,
+        );
 
         setText(fTitle, true, C.ink);
         doc.text(titleLines, x + pad, top + titleBase);
@@ -409,7 +648,10 @@ export function downloadBudgetPDF({
     };
   };
 
-  // ---- Summary: total + per person ----
+  // ==========================================
+  // BUDGET SUMMARY
+  // ==========================================
+
   const buildSummary = (s: number): Block => {
     const pad = 6.5 * s;
     const fCap = 7.5 * s;
@@ -417,14 +659,17 @@ export function downloadBudgetPDF({
     const fPer = 15 * s;
 
     const capBase = pad + asc(fCap);
-    const totalBase = capBase + dsc(fCap) + asc(fTotal) + 2.2 * s;
-    const h = totalBase + dsc(fTotal) + pad;
 
+    const totalBase =
+      capBase + dsc(fCap) + asc(fTotal) + 2.2 * s;
+
+    const h = totalBase + dsc(fTotal) + pad;
     const splitX = contentWidth * 0.6;
 
     return {
       h,
       gap: 4.5 * s,
+
       draw: (x, top) => {
         glassCard(x, top, contentWidth, h);
 
@@ -435,19 +680,29 @@ export function downloadBudgetPDF({
           fCap,
         );
 
-        setText(fTotal, true, C.ink);
-        doc.text(money(total), x + pad, top + totalBase);
+        setText(fTotal, true, C.highlight);
+        doc.text(
+          money(total),
+          x + pad,
+          top + totalBase,
+        );
 
-        // divider
-        doc.setDrawColor(C.border[0], C.border[1], C.border[2]);
+        doc.setDrawColor(
+          C.border[0],
+          C.border[1],
+          C.border[2],
+        );
+
         doc.setLineWidth(0.3);
         setOpacity(0.9);
+
         doc.line(
           x + splitX - 6 * s,
           top + pad,
           x + splitX - 6 * s,
           top + h - pad,
         );
+
         setOpacity(1);
 
         sectionLabel(
@@ -458,26 +713,43 @@ export function downloadBudgetPDF({
         );
 
         setText(fPer, true, C.accent);
-        doc.text(money(perPerson), x + splitX, top + totalBase);
+        doc.text(
+          money(perPerson),
+          x + splitX,
+          top + totalBase,
+        );
       },
     };
   };
 
-  // ---- Breakdown: transport | expenses side by side ----
+  // ==========================================
+  // TRANSPORT AND EXPENSE BREAKDOWN
+  // ==========================================
+
   const buildBreakdown = (s: number): Block => {
     const pad = 6.5 * s;
     const fHdr = 8 * s;
     const fRow = 9 * s;
     const rowPitch = 7.6 * s;
     const gutter = 9 * s;
-    const colW = (contentWidth - pad * 2 - gutter) / 2;
+
+    const colW =
+      (contentWidth - pad * 2 - gutter) / 2;
 
     const transportRows: [string, number][] = [
-      [`Arrival (${formatTransport(arrivalTransport)})`, arrivalCost],
-      [`Departure (${formatTransport(departureTransport)})`, departureCost],
+      [
+        `Arrival (${formatTransport(arrivalTransport)})`,
+        arrivalCost,
+      ],
+      [
+        `Departure (${formatTransport(departureTransport)})`,
+        departureCost,
+      ],
       [
         `Local transport (${formatCityTransport(cityTransport)}${
-          cityTransport === "scooty" ? ` x${numberOfScooties}` : ""
+          cityTransport === "scooty"
+            ? ` x${numberOfScooties}`
+            : ""
         })`,
         cityTransportCost,
       ],
@@ -490,8 +762,12 @@ export function downloadBudgetPDF({
     ];
 
     const hdrBase = pad + asc(fHdr);
-    const firstRow = hdrBase + dsc(fHdr) + 3.2 * s + asc(fRow);
-    const h = firstRow + 2 * rowPitch + dsc(fRow) + pad;
+
+    const firstRow =
+      hdrBase + dsc(fHdr) + 3.2 * s + asc(fRow);
+
+    const h =
+      firstRow + 2 * rowPitch + dsc(fRow) + pad;
 
     const drawColumn = (
       title: string,
@@ -499,7 +775,12 @@ export function downloadBudgetPDF({
       colX: number,
       top: number,
     ) => {
-      sectionLabel(title, colX, top + hdrBase, fHdr);
+      sectionLabel(
+        title,
+        colX,
+        top + hdrBase,
+        fHdr,
+      );
 
       rows.forEach(([label, amount], i) => {
         const base = top + firstRow + i * rowPitch;
@@ -509,19 +790,39 @@ export function downloadBudgetPDF({
         const amountW = doc.getTextWidth(amountText);
 
         setText(fRow, false, C.body);
+
         const fitted = (
-          doc.splitTextToSize(label, colW - amountW - 3) as string[]
+          doc.splitTextToSize(
+            label,
+            colW - amountW - 3,
+          ) as string[]
         )[0];
+
         doc.text(fitted, colX, base);
 
         setText(fRow, true, C.ink);
-        doc.text(amountText, colX + colW, base, { align: "right" });
+
+        doc.text(amountText, colX + colW, base, {
+          align: "right",
+        });
 
         if (i < rows.length - 1) {
-          doc.setDrawColor(C.border[0], C.border[1], C.border[2]);
+          doc.setDrawColor(
+            C.border[0],
+            C.border[1],
+            C.border[2],
+          );
+
           doc.setLineWidth(0.25);
           setOpacity(0.75);
-          doc.line(colX, base + 2.5 * s, colX + colW, base + 2.5 * s);
+
+          doc.line(
+            colX,
+            base + 2.5 * s,
+            colX + colW,
+            base + 2.5 * s,
+          );
+
           setOpacity(1);
         }
       });
@@ -530,22 +831,29 @@ export function downloadBudgetPDF({
     return {
       h,
       gap: 4.5 * s,
+
       draw: (x, top) => {
         glassCard(x, top, contentWidth, h);
 
         const leftX = x + pad;
         const rightX = leftX + colW + gutter;
 
-        // column divider
-        doc.setDrawColor(C.border[0], C.border[1], C.border[2]);
+        doc.setDrawColor(
+          C.border[0],
+          C.border[1],
+          C.border[2],
+        );
+
         doc.setLineWidth(0.3);
         setOpacity(0.9);
+
         doc.line(
           leftX + colW + gutter / 2,
           top + pad,
           leftX + colW + gutter / 2,
           top + h - pad,
         );
+
         setOpacity(1);
 
         drawColumn("TRANSPORT", transportRows, leftX, top);
@@ -554,26 +862,49 @@ export function downloadBudgetPDF({
     };
   };
 
-  // ---- Itinerary heading (drawn together with the first day) ----
+  // ==========================================
+  // DAILY ITINERARY HEADING
+  // ==========================================
+
   const headingHeight = (s: number) => 7.5 * s;
 
-  const drawHeading = (x: number, top: number, s: number) => {
+  const drawHeading = (
+    x: number,
+    top: number,
+    s: number,
+  ) => {
     const f = 8.5 * s;
     const label = "DAILY ITINERARY";
     const base = top + asc(f) + 0.5 * s;
 
     setText(f, true, C.accent);
     doc.text(label, x + 1, base);
+
     const w = doc.getTextWidth(label);
 
-    doc.setDrawColor(C.border[0], C.border[1], C.border[2]);
+    doc.setDrawColor(
+      C.border[0],
+      C.border[1],
+      C.border[2],
+    );
+
     doc.setLineWidth(0.3);
     setOpacity(0.9);
-    doc.line(x + w + 5, base - 1.2 * s, x + contentWidth, base - 1.2 * s);
+
+    doc.line(
+      x + w + 5,
+      base - 1.2 * s,
+      x + contentWidth,
+      base - 1.2 * s,
+    );
+
     setOpacity(1);
   };
 
-  // ---- One day card ----
+  // ==========================================
+  // DAILY ITINERARY CARD
+  // ==========================================
+
   const buildDay = (
     day: Itinerary["days"][number],
     s: number,
@@ -587,9 +918,16 @@ export function downloadBudgetPDF({
     const fDesc = 8.8 * s;
     const fChip = 7.5 * s;
 
-    const innerW = contentWidth - pad * 2 - badge - textGap;
+    const innerW =
+      contentWidth - pad * 2 - badge - textGap;
 
-    const titleLines = wrap(day.title, fTitle, true, innerW);
+    const titleLines = wrap(
+      day.title,
+      fTitle,
+      true,
+      innerW,
+    );
+
     const descLines = day.description
       ? wrap(day.description, fDesc, false, innerW)
       : [];
@@ -601,70 +939,139 @@ export function downloadBudgetPDF({
       3.2 * s,
       2.2 * s,
     );
+
     const chipH = 5.4 * s;
     const chipPitch = chipH + 1.9 * s;
 
-    const headH = withHeading ? headingHeight(s) : 0;
+    const headH = withHeading
+      ? headingHeight(s)
+      : 0;
 
     const titleBase = pad + asc(fTitle);
-    let last = titleBase + (titleLines.length - 1) * lh(fTitle);
+
+    let last =
+      titleBase + (titleLines.length - 1) * lh(fTitle);
+
     let bottom = last + dsc(fTitle);
 
     let descBase = 0;
+
     if (descLines.length > 0) {
       descBase = bottom + 1.4 * s + asc(fDesc);
-      last = descBase + (descLines.length - 1) * lh(fDesc);
+
+      last =
+        descBase + (descLines.length - 1) * lh(fDesc);
+
       bottom = last + dsc(fDesc);
     }
 
     let chipsTop = 0;
+
     if (chipLayout.rows > 0) {
       chipsTop = bottom + 2.2 * s;
-      bottom = chipsTop + (chipLayout.rows - 1) * chipPitch + chipH;
+
+      bottom =
+        chipsTop +
+        (chipLayout.rows - 1) * chipPitch +
+        chipH;
     }
 
-    const cardH = Math.max(bottom + pad, pad * 2 + badge);
+    const cardH = Math.max(
+      bottom + pad,
+      pad * 2 + badge,
+    );
 
     return {
       h: headH + cardH,
       gap: 4.5 * s,
+
       draw: (x, top) => {
-        if (withHeading) drawHeading(x, top, s);
+        if (withHeading) {
+          drawHeading(x, top, s);
+        }
 
         const cTop = top + headH;
+
         glassCard(x, cTop, contentWidth, cardH);
 
-        // Day badge
         const bx = x + pad;
         const by = cTop + pad;
 
-        doc.setFillColor(C.accentSoft[0], C.accentSoft[1], C.accentSoft[2]);
-        setOpacity(0.22);
-        doc.roundedRect(bx, by, badge, badge, 3 * s, 3 * s, "F");
+        doc.setFillColor(
+          C.accentSoft[0],
+          C.accentSoft[1],
+          C.accentSoft[2],
+        );
 
-        doc.setDrawColor(C.accent[0], C.accent[1], C.accent[2]);
+        setOpacity(0.5);
+
+        doc.roundedRect(
+          bx,
+          by,
+          badge,
+          badge,
+          3 * s,
+          3 * s,
+          "F",
+        );
+
+        doc.setDrawColor(
+          C.accent[0],
+          C.accent[1],
+          C.accent[2],
+        );
+
         doc.setLineWidth(0.25);
-        setOpacity(0.4);
-        doc.roundedRect(bx, by, badge, badge, 3 * s, 3 * s, "S");
+        setOpacity(0.65);
+
+        doc.roundedRect(
+          bx,
+          by,
+          badge,
+          badge,
+          3 * s,
+          3 * s,
+          "S",
+        );
+
         setOpacity(1);
 
         setText(5.2 * s, true, C.accent);
-        doc.text("DAY", bx + badge / 2, by + 4.3 * s, { align: "center" });
+
+        doc.text(
+          "DAY",
+          bx + badge / 2,
+          by + 4.3 * s,
+          { align: "center" },
+        );
 
         setText(10.5 * s, true, C.ink);
-        doc.text(`${day.day}`, bx + badge / 2, by + 10 * s, {
-          align: "center",
-        });
 
-        // Text column
+        doc.text(
+          `${day.day}`,
+          bx + badge / 2,
+          by + 10 * s,
+          { align: "center" },
+        );
+
         const tx = x + pad + badge + textGap;
 
         setText(fTitle, true, C.ink);
-        doc.text(titleLines, tx, cTop + titleBase);
+
+        doc.text(
+          titleLines,
+          tx,
+          cTop + titleBase,
+        );
 
         if (descLines.length > 0) {
           setText(fDesc, false, C.body);
-          doc.text(descLines, tx, cTop + descBase);
+
+          doc.text(
+            descLines,
+            tx,
+            cTop + descBase,
+          );
         }
 
         chipLayout.chips.forEach((chip) => {
@@ -681,7 +1088,10 @@ export function downloadBudgetPDF({
     };
   };
 
-  // ---- Empty itinerary ----
+  // ==========================================
+  // EMPTY ITINERARY
+  // ==========================================
+
   const buildEmptyDays = (s: number): Block => {
     const pad = 6.5 * s;
     const f = 9 * s;
@@ -691,11 +1101,19 @@ export function downloadBudgetPDF({
     return {
       h: headH + cardH,
       gap: 4.5 * s,
+
       draw: (x, top) => {
         drawHeading(x, top, s);
-        glassCard(x, top + headH, contentWidth, cardH);
+
+        glassCard(
+          x,
+          top + headH,
+          contentWidth,
+          cardH,
+        );
 
         setText(f, false, C.body);
+
         doc.text(
           "No daily itinerary details available.",
           x + pad,
@@ -705,9 +1123,13 @@ export function downloadBudgetPDF({
     };
   };
 
-  // ---- Disclaimer (plain text, no card) ----
+  // ==========================================
+  // DISCLAIMER
+  // ==========================================
+
   const buildDisclaimer = (s: number): Block => {
     const f = 7.5 * s;
+
     const lines = wrap(
       "This is an estimated budget. Actual expenses may vary depending on availability, season, and personal choices.",
       f,
@@ -718,12 +1140,17 @@ export function downloadBudgetPDF({
     return {
       h: lines.length * lh(f),
       gap: 0,
+
       draw: (x, top) => {
         setText(f, false, C.muted);
         doc.text(lines, x, top + asc(f));
       },
     };
   };
+
+  // ==========================================
+  // BUILD PDF BLOCKS
+  // ==========================================
 
   const buildBlocks = (s: number): Block[] => {
     const blocks: Block[] = [
@@ -741,18 +1168,14 @@ export function downloadBudgetPDF({
     }
 
     blocks.push(buildDisclaimer(s));
+
     return blocks;
   };
 
-  /*
-   * ==========================================
-   * AUTO-FIT
-   * Use the fewest pages possible, then pick
-   * the roomiest scale that still fits them.
-   * No wasted page, no nearly-empty last page
-   * caused by a few extra lines.
-   * ==========================================
-   */
+  // ==========================================
+  // AUTO-FIT AND PAGINATION
+  // ==========================================
+
   const paginate = (blocks: Block[]): Block[][] => {
     const pages: Block[][] = [[]];
     let used = 0;
@@ -760,7 +1183,10 @@ export function downloadBudgetPDF({
     blocks.forEach((block) => {
       const current = pages[pages.length - 1];
 
-      if (current.length > 0 && used + block.h > usableHeight) {
+      if (
+        current.length > 0 &&
+        used + block.h > usableHeight
+      ) {
         pages.push([]);
         used = 0;
       }
@@ -774,25 +1200,29 @@ export function downloadBudgetPDF({
 
   const scales = [1, 0.97, 0.94, 0.91, 0.88, 0.85];
 
-  const minPages = paginate(buildBlocks(scales[scales.length - 1])).length;
+  const minPages = paginate(
+    buildBlocks(scales[scales.length - 1]),
+  ).length;
 
   let pages: Block[][] = [];
 
   for (const s of scales) {
     const candidate = paginate(buildBlocks(s));
+
     if (candidate.length === minPages) {
       pages = candidate;
       break;
     }
   }
 
-  /*
-   * ==========================================
-   * DRAW
-   * ==========================================
-   */
+  // ==========================================
+  // DRAW ALL PAGES
+  // ==========================================
+
   pages.forEach((blocks, pageIndex) => {
-    if (pageIndex > 0) doc.addPage();
+    if (pageIndex > 0) {
+      doc.addPage();
+    }
 
     drawBackground();
 
@@ -804,11 +1234,10 @@ export function downloadBudgetPDF({
     });
   });
 
-  /*
-   * ==========================================
-   * FOOTER: credit, Instagram, page numbers
-   * ==========================================
-   */
+  // ==========================================
+  // FOOTER
+  // ==========================================
+
   const totalPages = doc.getNumberOfPages();
 
   for (let page = 1; page <= totalPages; page++) {
@@ -819,17 +1248,47 @@ export function downloadBudgetPDF({
     const pillX = pageWidth - margin - pillW;
     const pillTop = pageHeight - 18;
 
-    doc.setFillColor(255, 255, 255);
-    setOpacity(0.6);
-    doc.roundedRect(pillX, pillTop, pillW, pillH, pillH / 2, pillH / 2, "F");
+    doc.setFillColor(
+      C.surface[0],
+      C.surface[1],
+      C.surface[2],
+    );
 
-    doc.setDrawColor(C.border[0], C.border[1], C.border[2]);
+    setOpacity(0.8);
+
+    doc.roundedRect(
+      pillX,
+      pillTop,
+      pillW,
+      pillH,
+      pillH / 2,
+      pillH / 2,
+      "F",
+    );
+
+    doc.setDrawColor(
+      C.border[0],
+      C.border[1],
+      C.border[2],
+    );
+
     doc.setLineWidth(0.3);
     setOpacity(0.95);
-    doc.roundedRect(pillX, pillTop, pillW, pillH, pillH / 2, pillH / 2, "S");
+
+    doc.roundedRect(
+      pillX,
+      pillTop,
+      pillW,
+      pillH,
+      pillH / 2,
+      pillH / 2,
+      "S",
+    );
+
     setOpacity(1);
 
     setText(8, true, C.muted);
+
     doc.text(
       `Page ${page} of ${totalPages}`,
       pillX + pillW / 2,
@@ -837,34 +1296,58 @@ export function downloadBudgetPDF({
       { align: "center" },
     );
 
-    // Creator credit
     const creditText = "Created by Anuj Srivastava";
+
     setText(8, true, C.ink);
-    doc.text(creditText, margin, pillTop + 5);
+
+    doc.text(
+      creditText,
+      margin,
+      pillTop + 5,
+    );
+
     const creditW = doc.getTextWidth(creditText);
 
-    // Instagram logo + handle
     const iconSize = 5;
     const iconX = margin + creditW + 6;
     const handle = "@srivastava_._anuj";
 
-    drawInstagramIcon(iconX, pillTop + 1.25, iconSize);
+    drawInstagramIcon(
+      iconX,
+      pillTop + 1.25,
+      iconSize,
+    );
 
     setText(8, false, C.body);
-    doc.text(handle, iconX + iconSize + 2, pillTop + 5);
+
+    doc.text(
+      handle,
+      iconX + iconSize + 2,
+      pillTop + 5,
+    );
+
     const handleW = doc.getTextWidth(handle);
 
-    doc.link(iconX, pillTop, iconSize + 2 + handleW, pillH, {
-      url: "https://instagram.com/srivastava_._anuj",
-    });
+    doc.link(
+      iconX,
+      pillTop,
+      iconSize + 2 + handleW,
+      pillH,
+      {
+        url: "https://instagram.com/srivastava_._anuj",
+      },
+    );
   }
 
-  /*
-   * ==========================================
-   * DOWNLOAD
-   * ==========================================
-   */
-  const safeName = (itinerary.slug || itinerary.title || "trip-budget")
+  // ==========================================
+  // DOWNLOAD
+  // ==========================================
+
+  const safeName = (
+    itinerary.slug ||
+    itinerary.title ||
+    "trip-budget"
+  )
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
