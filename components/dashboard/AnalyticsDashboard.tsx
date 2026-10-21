@@ -581,11 +581,12 @@ export default function AnalyticsDashboard({
 
       return {
         p: plan,
-        views,
-        prev,
-        buy,
-        revenue: buy * plan.price,
-        revenuePrev: buyPrev * plan.price,
+  views,
+  prev,
+  buy,
+  buyPrev,
+  revenue: buy * plan.price,
+  revenuePrev: buyPrev * plan.price,
       };
     });
 
@@ -600,7 +601,7 @@ export default function AnalyticsDashboard({
       selectedRows.map((row) => row.buy)
     );
 
-    const purchasesPrev = sum(
+   const purchasesPrev = sum(
   selectedRows.map((row) => row.buyPrev)
 );
 
