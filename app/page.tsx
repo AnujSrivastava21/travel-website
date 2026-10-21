@@ -7,7 +7,7 @@ import { Suspense } from "react";
 import { ItineraryPopup } from "../components/navigation/itinerary-popup";
 import { headingFont, bodyFont } from "./font";
 import { HomeSearchResults } from "../components/search/home-search-results";
-import { itineraries } from "../data/itineraries/index";
+import { itineraries } from "../data/itineraries";
 
 /*
   Brand palette: The Local Route
@@ -19,10 +19,6 @@ import { itineraries } from "../data/itineraries/index";
   Sandstone     #EAE5D9  borders
   Stone         #303A32  headings and text
   Sage grey     #626A5D  muted text
-
-  Fonts:
-  Headings: Fraunces
-  Body and UI: Figtree
 */
 
 const EMAIL = "anujsrivastava.dev@gmail.com";
@@ -177,7 +173,6 @@ export default function HomePage() {
                 href={`/itineraries/${itinerary.slug}`}
                 className={`group block min-w-0 overflow-hidden rounded-2xl border border-[#EAE5D9] bg-[#FFFEFA] transition duration-300 hover:-translate-y-1 hover:shadow-lg ${focusLight}`}
               >
-                {/* Cover image */}
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#E4EADF]">
                   <Image
                     src={itinerary.coverImage}
@@ -194,7 +189,6 @@ export default function HomePage() {
                   </span>
                 </div>
 
-                {/* Itinerary details */}
                 <div className="min-w-0 p-5">
                   <p className="break-words text-xs font-semibold uppercase tracking-[0.16em] text-[#A16F35]">
                     {itinerary.destination}

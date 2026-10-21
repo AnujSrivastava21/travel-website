@@ -2,222 +2,186 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
-import { itineraries } from "../../data/itineraries/index";
-
-type Props = {
-  query: string;
-  onSelect: () => void;
+type SearchItinerary = {
+  id: string;
+  slug: string;
+  title: string;
+  destination: string;
+  description: string;
+  duration: number | null;
+  coverImage: string | null;
 };
 
-function normalize(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/&/g, " and ")
-    .replace(/[^a-z0-9\s-]/g, " ")
-    .replace(/-/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+type NavbarSearchResultsProps = {
+  query: string;
+  onSelect?: () => void;
+};
 
-function levenshtein(a: string, b: string): number {
-  const row = Array.from({ length: b.length + 1 }, (_, index) => index);
+export function NavbarSearchResults({
+  query,
+  onSelect,
+}: NavbarSearchResultsProps) {
+  const [results, setResults] = useState<SearchItinerary[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  for (let i = 1; i <= a.length; i++) {
-    let diagonal = row[0];
-    row[0] = i;
+  useEffect(() => {
+    const searchTerm = query.trim();
 
-    for (let j = 1; j <= b.length; j++) {
-      const previous = row[j];
-
-      row[j] = Math.min(
-        row[j] + 1,
-        row[j - 1] + 1,
-        diagonal + (a[i - 1] === b[j - 1] ? 0 : 1),
-      );
-
-      diagonal = previous;
+    if (searchTerm.length < 2) {
+      setResults([]);
+      setLoading(false);
+      setError(false);
+      return;
     }
-  }
 
-  return row[b.length];
-}
+    const controller = new AbortController();
 
-function wordMatches(queryWord: string, textWord: string): boolean {
-  if (queryWord === textWord) return true;
+    const timer = setTimeout(async () => {
+      setLoading(true);
+      setError(false);
 
-  if (queryWord.length >= 4 && textWord.includes(queryWord)) {
-    return true;
-  }
+      try {
+        const response = await fetch(
+          `/api/itineraries-search?q=${encodeURIComponent(searchTerm)}`,
+          { signal: controller.signal }
+        );
 
-  if (queryWord.length < 5 || textWord.length < 5) {
-    return false;
-  }
+        if (!response.ok) {
+          throw new Error("Search request failed");
+        }
 
-  const maxDistance = queryWord.length >= 8 ? 2 : 1;
+        const data: { results?: SearchItinerary[] } =
+          await response.json();
 
-  return (
-    Math.abs(queryWord.length - textWord.length) <= maxDistance &&
-    levenshtein(queryWord, textWord) <= maxDistance
-  );
-}
+        setResults(data.results ?? []);
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
 
-function collectText(value: unknown): string[] {
-  if (typeof value === "string") {
-    return [value];
-  }
+        setResults([]);
+        setError(true);
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    }, 300);
 
-  if (Array.isArray(value)) {
-    return value.flatMap(collectText);
-  }
-
-  if (value && typeof value === "object") {
-    const ignoredKeys = new Set([
-      "id",
-      "image",
-      "imageurl",
-      "coverimage",
-      "thumbnail",
-      "url",
-      "price",
-    ]);
-
-    return Object.entries(value)
-      .filter(([key]) => !ignoredKeys.has(key.toLowerCase()))
-      .flatMap(([, nestedValue]) => collectText(nestedValue));
-  }
-
-  return [];
-}
-
-function getScore(
-  itinerary: (typeof itineraries)[number],
-  query: string,
-): number {
-  const queryWords = normalize(query).split(" ").filter(Boolean);
-
-  if (!queryWords.length) return 0;
-
-  const searchableText = [
-    itinerary.destination,
-    itinerary.title,
-    itinerary.description,
-    itinerary.slug,
-    ...collectText(itinerary.days),
-  ];
-
-  const textWords = [
-    ...new Set(
-      searchableText
-        .flatMap((text) => normalize(text).split(" "))
-        .filter(Boolean),
-    ),
-  ];
-
-  const matches = queryWords.every((queryWord) =>
-    textWords.some((textWord) => wordMatches(queryWord, textWord)),
-  );
-
-  if (!matches) return 0;
-
-  let score = 1;
-  const normalizedQuery = normalize(query);
-  const destination = normalize(itinerary.destination);
-  const title = normalize(itinerary.title);
-
-  if (destination === normalizedQuery) {
-    score += 150;
-  } else if (destination.includes(normalizedQuery)) {
-    score += 100;
-  }
-
-  if (title.includes(normalizedQuery)) {
-    score += 70;
-  }
-
-  return score;
-}
-
-export function NavbarSearchResults({ query, onSelect }: Props) {
-  const results = useMemo(() => {
-    if (!query.trim()) return [];
-
-    return itineraries
-      .map((itinerary, index) => ({
-        itinerary,
-        index,
-        score: getScore(itinerary, query),
-      }))
-      .filter((item) => item.score > 0)
-      .sort((a, b) => b.score - a.score || a.index - b.index)
-      .slice(0, 8)
-      .map((item) => item.itinerary);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
   }, [query]);
 
-  if (!query.trim()) return null;
+  if (query.trim().length < 2) {
+    return null;
+  }
 
   return (
-    <div className="w-full min-w-0 overflow-hidden rounded-2xl border border-[#EAE5D9] bg-[#FFFEFA] text-left shadow-[0_18px_45px_-15px_rgba(20,33,61,0.28)]">
+    <div
+      role="listbox"
+      aria-label="Itinerary suggestions"
+      className="overflow-hidden rounded-2xl border border-[#EAE5D9]
+        bg-[#FFFEFA] shadow-[0_20px_60px_-20px_rgba(29,48,39,0.25)]"
+    >
+      {/* DROPDOWN HEADER */}
       <div className="border-b border-[#EAE5D9] px-4 py-3">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8A622C]">
-          Search results
+        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8A7355]">
+          Discover your route
         </p>
 
-        <p className="mt-1 truncate text-sm text-[#626A5D]">
-          Matches for &ldquo;{query.trim()}&rdquo;
+        <p className="mt-1 text-xs text-[#626A5D]">
+          Matching itineraries
         </p>
       </div>
 
-      <div className="max-h-[min(60vh,380px)] overflow-y-auto overscroll-contain p-2">
-        {results.length > 0 ? (
-          <div className="flex flex-col gap-1">
-            {results.map((itinerary) => (
-              <Link
-                key={itinerary.id}
-                href={`/itineraries/${itinerary.slug}`}
-                onNavigate={onSelect}
-                className="block w-full min-w-0 touch-manipulation rounded-xl px-3 py-3 transition-colors hover:bg-[#F4F0E7] active:bg-[#E4EADF]"
+      {/* LOADING */}
+      {loading && (
+        <p className="px-4 py-4 text-sm text-[#626A5D]">
+          Finding your next journey...
+        </p>
+      )}
+
+      {/* ERROR */}
+      {!loading && error && (
+        <p className="px-4 py-4 text-sm text-red-700">
+          Search failed. Please try again.
+        </p>
+      )}
+
+      {/* EMPTY RESULTS */}
+      {!loading && !error && results.length === 0 && (
+        <p className="px-4 py-4 text-sm text-[#626A5D]">
+          No matching itineraries found.
+        </p>
+      )}
+
+      {/* SCROLLABLE RESULTS */}
+      {!loading && !error && results.length > 0 && (
+        <div className="max-h-[360px] overflow-y-auto overscroll-contain">
+          {results.map((item) => (
+            <Link
+              key={item.id}
+              href={`/itineraries/${item.slug}`}
+              role="option"
+              onClick={onSelect}
+              className="group flex items-center gap-4 border-b
+                border-[#EAE5D9]/70 px-4 py-3 transition-colors
+                last:border-b-0 hover:bg-[#F3F1E9]"
+            >
+              {/* TITLE AND DESCRIPTION */}
+              <div className="min-w-0 flex-1">
+                <p
+                  className="line-clamp-1 text-sm font-semibold
+                    text-[#263D32] transition-colors
+                    group-hover:text-[#A16F35]"
+                >
+                  {item.title}
+                </p>
+
+                <p className="mt-1 text-[11px] font-medium text-[#8A7355]">
+                  {item.destination}
+                  {item.duration ? ` · ${item.duration} days` : ""}
+                </p>
+
+                <p
+                  className="mt-1.5 line-clamp-2 text-xs
+                    leading-relaxed text-[#626A5D]"
+                >
+                  {item.description ||
+                    "Explore destinations, local experiences, and a journey at your own pace."}
+                </p>
+              </div>
+
+              {/* IMAGE ON THE RIGHT */}
+              <div
+                className="h-[76px] w-[96px] shrink-0 overflow-hidden
+                  rounded-xl bg-[#E4EADF]"
               >
-                <p className="truncate text-xs font-medium text-[#8A622C]">
-                  {itinerary.destination}
-                </p>
-
-                <p className="mt-1 text-sm font-semibold leading-5 text-[#263D32]">
-                  {itinerary.title}
-                </p>
-
-                <p className="mt-1 line-clamp-2 text-xs leading-5 text-[#626A5D]">
-                  {itinerary.description}
-                </p>
-
-                <p className="mt-2 text-xs font-semibold text-[#8A622C]">
-                  View itinerary →
-                </p>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="px-3 py-8 text-center">
-            <p className="text-sm font-semibold text-[#263D32]">
-              No matching itineraries
-            </p>
-
-            <p className="mt-2 text-xs leading-5 text-[#626A5D]">
-              Try another spelling or search for a sightseeing location.
-            </p>
-          </div>
-        )}
-      </div>
-
-      {results.length > 0 && (
-        <div className="border-t border-[#EAE5D9] px-4 py-3">
-          <p className="text-xs text-[#626A5D]">
-            Showing up to {results.length} matching{" "}
-            {results.length === 1 ? "itinerary" : "itineraries"}
-          </p>
+                {item.coverImage ? (
+                  <img
+                    src={item.coverImage}
+                    alt={item.destination || item.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover
+                      transition-transform duration-300
+                      group-hover:scale-105"
+                  />
+                ) : (
+                  <div
+                    className="flex h-full items-center justify-center
+                      text-xs text-[#626A5D]"
+                  >
+                    Explore
+                  </div>
+                )}
+              </div>
+            </Link>
+          ))}
         </div>
       )}
     </div>

@@ -72,6 +72,12 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
     if (!searchOpen) return;
 
     const handleOutsideClick = (event: MouseEvent) => {
+      // The desktop search container is hidden on mobile. Do not let its
+      // outside-click handler close mobile results before a Link can navigate.
+      if (!window.matchMedia("(min-width: 768px)").matches) {
+        return;
+      }
+
       if (
         searchRef.current &&
         !searchRef.current.contains(event.target as Node)
@@ -293,7 +299,7 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
 
                     {/* DESKTOP SEARCH DROPDOWN */}
                     {searchQuery.trim() && (
-                      <div className="absolute right-0 top-12 z-[110] w-[min(90vw,420px)] min-w-0">
+                      <div className="absolute right-0 top-16 z-[110] w-[min(90vw,420px)] min-w-0">
                         <NavbarSearchResults
                           query={searchQuery}
                           onSelect={closeSearchResults}
@@ -514,10 +520,7 @@ export function Navbar({ hideNavbar = false }: NavbarProps) {
 
                   {searchQuery.trim() && (
                     <div className="relative z-[110] mt-2">
-                      <NavbarSearchResults
-                        query={searchQuery}
-                        onSelect={closeSearchResults}
-                      />
+                      <NavbarSearchResults query={searchQuery} />
                     </div>
                   )}
                 </div>

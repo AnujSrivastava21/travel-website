@@ -1,8 +1,7 @@
-
 import Link from "next/link";
 import { Users } from "lucide-react";
 import { Ephesis } from "next/font/google";
-import { prisma } from "../../lib/prisma";
+// import { prisma } from "../../lib/prisma";
 
 const ephesis = Ephesis({
   subsets: ["latin"],
@@ -13,8 +12,6 @@ const linkClass =
   "w-fit rounded-sm text-sm text-white/80 transition hover:text-[#D4AC73] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AC73] focus-visible:ring-offset-2 focus-visible:ring-offset-[#263D32] sm:text-[15px]";
 
 export async function Footer() {
-  const userCount = await prisma.user.count();
-
   return (
     <footer className="bg-[#263D32] text-white">
       <div className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-8 sm:py-12 lg:py-14">
@@ -38,12 +35,7 @@ export async function Footer() {
                 <Users size={15} />
               </span>
 
-              <span>
-                <strong className="font-semibold text-white">
-                  {userCount}
-                </strong>{" "}
-                {userCount === 1 ? "person sees" : "people see"} this profile
-              </span>
+              <span>Discover India, one journey at a time</span>
             </div>
           </div>
 

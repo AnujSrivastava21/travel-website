@@ -3,10 +3,20 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { itineraries } from "../../data/itineraries/index";
-import type { Itinerary } from "../../types/itinerary";
+type SearchItinerary = {
+  id: string | number;
+  slug: string;
+  title: string;
+  destination: string;
+  description: string;
+  days: unknown[];
+  duration?: number;
+  coverImage?: string;
+  isPremium?: boolean;
+  price?: number;
+};
 
 function normalize(value: string): string {
   return value
@@ -96,8 +106,12 @@ function wordMatches(queryWord: string, textWord: string): boolean {
   return levenshtein(queryWord, textWord) <= maxDistance;
 }
 
-function searchScore(itinerary: Itinerary, query: string): number {
+function searchScore(
+  itinerary: SearchItinerary,
+  query: string,
+): number {
   const queryWords = normalize(query).split(" ").filter(Boolean);
+
   if (!queryWords.length) return 0;
 
   const destination = normalize(itinerary.destination);
@@ -127,11 +141,17 @@ function searchScore(itinerary: Itinerary, query: string): number {
 
   let score = 1;
 
-  if (destination === normalize(query)) score += 150;
-  else if (queryWords.some((word) => destination.includes(word))) score += 100;
+  if (destination === normalize(query)) {
+    score += 150;
+  } else if (queryWords.some((word) => destination.includes(word))) {
+    score += 100;
+  }
 
-  if (title === normalize(query)) score += 120;
-  else if (queryWords.some((word) => title.includes(word))) score += 70;
+  if (title === normalize(query)) {
+    score += 120;
+  } else if (queryWords.some((word) => title.includes(word))) {
+    score += 70;
+  }
 
   if (
     collectText(itinerary.days).some((text) =>
@@ -153,6 +173,57 @@ export function HomeSearchResults() {
   const rawQuery = searchParams.get("search") ?? "";
   const query = rawQuery.trim();
 
+  const [itineraries, setItineraries] = useState<SearchItinerary[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!query) {
+      setItineraries([]);
+      setLoading(false);
+      setError("");
+      return;
+    }
+
+    const controller = new AbortController();
+
+    async function fetchResults() {
+      setLoading(true);
+      setError("");
+
+      try {
+        const response = await fetch(
+          `/api/itineraries-search?q=${encodeURIComponent(query)}`,
+          { signal: controller.signal },
+        );
+
+        if (!response.ok) {
+          throw new Error("Unable to load search results.");
+        }
+
+        const data: { results: SearchItinerary[] } =
+          await response.json();
+
+        setItineraries(data.results);
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
+
+        setItineraries([]);
+        setError("Something went wrong. Please try searching again.");
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchResults();
+
+    return () => controller.abort();
+  }, [query]);
+
   const results = useMemo(() => {
     if (!query) return [];
 
@@ -165,7 +236,7 @@ export function HomeSearchResults() {
       .filter((result) => result.score > 0)
       .sort((a, b) => b.score - a.score || a.index - b.index)
       .map((result) => result.itinerary);
-  }, [query]);
+  }, [itineraries, query]);
 
   if (!query) return null;
 
@@ -186,8 +257,13 @@ export function HomeSearchResults() {
           </h2>
 
           <p className="mt-2 text-sm text-[#626A5D]">
-            {results.length} matching{" "}
-            {results.length === 1 ? "itinerary" : "itineraries"}
+            {loading
+              ? "Searching your itineraries..."
+              : error
+                ? "Search unavailable"
+                : `${results.length} matching ${
+                    results.length === 1 ? "itinerary" : "itineraries"
+                  }`}
           </p>
         </div>
 
@@ -199,7 +275,18 @@ export function HomeSearchResults() {
         </Link>
       </div>
 
-      {results.length > 0 ? (
+      {loading ? (
+        <div className="rounded-2xl border border-[#EAE5D9] bg-[#FFFEFA] px-5 py-12 text-center text-sm text-[#626A5D]">
+          Finding itineraries from the database...
+        </div>
+      ) : error ? (
+        <div
+          role="alert"
+          className="rounded-2xl border border-[#EAE5D9] bg-[#FFFEFA] px-5 py-12 text-center"
+        >
+          <p className="text-sm text-[#626A5D]">{error}</p>
+        </div>
+      ) : results.length > 0 ? (
         <div className="flex w-full min-w-0 flex-col gap-3">
           {results.map((itinerary) => (
             <Link

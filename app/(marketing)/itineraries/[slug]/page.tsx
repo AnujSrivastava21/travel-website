@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -12,13 +11,11 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { itineraries } from "../../../../data/itineraries";
+import { getItinerariesFromDatabase } from "../../../../lib/itineraries-db";
 import { ItineraryBudgetButton } from "../../../../components/navigation/itinerary-budget-button";
 
 interface ItineraryPageProps {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 }
 
 const colors = {
@@ -35,17 +32,13 @@ const colors = {
   success: "#356345",
 };
 
-export async function generateStaticParams() {
-  return itineraries.map((itinerary) => ({
-    slug: itinerary.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: ItineraryPageProps): Promise<Metadata> {
   const { slug } = await params;
-
+  const itineraries = await getItinerariesFromDatabase();
   const itinerary = itineraries.find((item) => item.slug === slug);
 
   if (!itinerary) return {};
@@ -60,7 +53,7 @@ export default async function ItineraryPage({
   params,
 }: ItineraryPageProps) {
   const { slug } = await params;
-
+  const itineraries = await getItinerariesFromDatabase();
   const itinerary = itineraries.find((item) => item.slug === slug);
 
   if (!itinerary) notFound();
@@ -70,13 +63,12 @@ export default async function ItineraryPage({
       className="min-h-screen overflow-hidden font-sans antialiased"
       style={{ backgroundColor: colors.ivory, color: colors.text }}
     >
-      {/* HERO */}
       <section
         className="relative isolate flex min-h-[620px] items-end overflow-hidden sm:min-h-[700px]"
         style={{ backgroundColor: colors.deepForest }}
       >
         <Image
-          src={itinerary.coverImage}
+          src={itinerary.coverImage || "/images/placeholder.jpg"}
           alt={itinerary.title}
           fill
           priority
@@ -189,21 +181,13 @@ export default async function ItineraryPage({
             </div>
           </div>
         </div>
-
-        <div className="pointer-events-none absolute right-6 top-28 hidden h-24 w-24 rounded-full border border-white/20 lg:block" />
-        <div
-          className="pointer-events-none absolute right-12 top-32 hidden h-12 w-12 rounded-full border lg:block"
-          style={{ borderColor: `${colors.lightGold}99` }}
-        />
       </section>
 
-      {/* ITINERARY + BUDGET SIDEBAR */}
       <section
         id="day-by-day"
         className="scroll-mt-24 px-4 pb-12 pt-8 sm:px-6 sm:pt-16 lg:px-10 lg:pb-20"
       >
         <div className="mx-auto grid max-w-7xl items-start gap-8 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-12">
-          {/* LEFT: DAY-BY-DAY ITINERARY */}
           <div className="order-2 min-w-0 lg:order-1">
             <div
               className="mb-7 border-b pb-6 sm:mb-8"
@@ -267,7 +251,6 @@ export default async function ItineraryPage({
               </div>
             </div>
 
-            {/* DAY CARDS */}
             <div className="space-y-4">
               {itinerary.days.map((day, index) => {
                 const isLast = index === itinerary.days.length - 1;
@@ -368,7 +351,6 @@ export default async function ItineraryPage({
             </div>
           </div>
 
-          {/* RIGHT: BUDGET PLANNER SIDEBAR */}
           <aside className="order-1 min-w-0 lg:sticky lg:top-24 lg:order-2">
             <div
               className="overflow-hidden rounded-2xl border"
@@ -377,7 +359,6 @@ export default async function ItineraryPage({
                 backgroundColor: colors.surface,
               }}
             >
-              {/* SIDEBAR HEADER */}
               <div
                 className="p-5 text-white sm:p-6"
                 style={{ backgroundColor: colors.forest }}
@@ -399,7 +380,6 @@ export default async function ItineraryPage({
                 </p>
               </div>
 
-              {/* SIDEBAR BODY */}
               <div className="p-5 sm:p-6">
                 <div className="space-y-3">
                   <div
@@ -409,7 +389,6 @@ export default async function ItineraryPage({
                     <span className="text-sm" style={{ color: colors.muted }}>
                       Destination
                     </span>
-
                     <span
                       className="max-w-[55%] truncate text-right text-sm font-semibold"
                       style={{ color: colors.forest }}
@@ -425,7 +404,6 @@ export default async function ItineraryPage({
                     <span className="text-sm" style={{ color: colors.muted }}>
                       Duration
                     </span>
-
                     <span
                       className="text-sm font-semibold"
                       style={{ color: colors.forest }}
@@ -438,7 +416,6 @@ export default async function ItineraryPage({
                     <span className="text-sm" style={{ color: colors.muted }}>
                       Travel plan
                     </span>
-
                     <span
                       className="text-sm font-semibold"
                       style={{ color: colors.forest }}
@@ -480,7 +457,6 @@ export default async function ItineraryPage({
               </div>
             </div>
 
-            {/* PREMIUM CARD */}
             {itinerary.isPremium && (
               <div
                 className="mt-4 rounded-2xl border p-5"
@@ -517,13 +493,9 @@ export default async function ItineraryPage({
                   style={{ borderColor: colors.border }}
                 >
                   <div>
-                    <p
-                      className="text-[11px]"
-                      style={{ color: colors.muted }}
-                    >
+                    <p className="text-[11px]" style={{ color: colors.muted }}>
                       One-time access
                     </p>
-
                     <p
                       className="mt-1 font-serif text-2xl font-semibold"
                       style={{ color: colors.forest }}

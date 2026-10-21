@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "import:itineraries": "tsx --env-file=.env.local scripts/import-itineraries.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",
@@ -14,27 +15,32 @@
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "clsx": "^2.1.1",
-    "dotenv": "^18.0.3",
+    "dotenv": "^18.0.8",
+    "exceljs": "^4.4.0",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.48.0",
     "motion": "^13.4.2",
     "next": "16.3.6",
     "next-auth": "^5.0.0-beta.32",
-    "pg": "^8.23.0",
+    "pg": "^8.23.1",
     "qrcode.react": "^4.2.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-icons": "^5.7.0",
-    "tailwind-merge": "^3.7.0"
+    "resend": "^6.34.1",
+    "tailwind-merge": "^3.7.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "26.6.2",
+    "@types/pg": "^8.23.1",
     "@types/react": "19.3.0",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
     "prisma": "^7.10.0",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15"
   }
 }

@@ -2,8 +2,9 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, Lock, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
+import { ArrowRight, Eye, Lock, Sparkles } from "lucide-react";
 
 import type { Itinerary } from "../../types/itinerary";
 
@@ -13,16 +14,36 @@ interface ItineraryCardProps {
 
 export function ItineraryCard({ itinerary }: ItineraryCardProps) {
   const isPremium = Boolean(itinerary.isPremium);
+  const router = useRouter();
+  const isNavigating = useRef(false);
+
+  async function handleCardClick() {
+    if (isNavigating.current) return;
+
+    isNavigating.current = true;
+
+    try {
+      await fetch(
+        `/api/itineraries/${encodeURIComponent(itinerary.slug)}/view`,
+        { method: "POST" }
+      );
+    } catch (error) {
+      console.error("Failed to record itinerary view:", error);
+    } finally {
+      router.push(`/itineraries/${itinerary.slug}`);
+    }
+  }
 
   return (
     <article className="group">
-      <Link
-        href={`/itineraries/${itinerary.slug}`}
-        className="block"
+      <button
+        type="button"
+        onClick={handleCardClick}
+        className="block w-full text-left"
         aria-label={`View ${itinerary.title} itinerary`}
       >
         <CardContent itinerary={itinerary} />
-      </Link>
+      </button>
     </article>
   );
 }
@@ -51,6 +72,12 @@ function CardContent({ itinerary }: { itinerary: Itinerary }) {
             Premium
           </div>
         )}
+
+        {/* View count */}
+        <div className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full border border-white/20 bg-black/65 px-3 py-1.5 text-xs font-medium text-white shadow-sm backdrop-blur-md">
+          <Eye size={14} />
+          <span>{(itinerary.views ?? 0).toLocaleString("en-IN")}</span>
+        </div>
       </div>
 
       <div className="mt-5">
